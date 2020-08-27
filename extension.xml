@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root version="3.3.11" release="3">
+	<!-- Please see the LICENSE.md file included with this distribution for attribution and copyright information. -->
+	<properties>
+		<name>Loaded Indicator</name>
+		<version>1.0.0</version>
+		<author>bmos (Wil Thieme)</author>
+		<description>This extension aids in tracking whether ranged weapons are loaded</description>
+		<ruleset>
+			<name>PFRPG</name>
+		</ruleset>
+		<ruleset>
+			<name>3.5E</name>
+		</ruleset>
+	</properties>
+
+	<announcement text="https://github.com/bmos\nLoaded Indicator v1.0.0:\nThis extension aids in tracking whether ranged weapons are loaded." font="emotefont" />
+
+	<base>
+		<!-- Campaign Records -->
+		<includefile source="campaign/record_char_actions.xml" />
+		<!-- Strings -->
+		<includefile source="strings/strings_weapon_loaded.xml" />
+	</base>
+</root>
