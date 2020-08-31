@@ -19,6 +19,7 @@
 	<base>
 		<!-- Campaign Records -->
 		<includefile source="campaign/record_char_actions.xml" />
+		<includefile source="campaign/record_charmini_actions.xml" />
 		<!-- Strings -->
 		<includefile source="strings/strings_weapon_loaded.xml" />
 	</base>

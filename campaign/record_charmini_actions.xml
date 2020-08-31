@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- 
+  Please see the license.html file included with this distribution for 
+  attribution and copyright information.
+-->
+
+<root>
+	<windowclass name="charmini_weapon" merge="join">
+		<sheetdata>
+			<label name="label_ammo">
+				<anchored to="rangeincrement" position="righthigh" offset="10,0" />
+				<static textres="charmini_label_weaponammo" />
+			</label>
+			<buttonfield name="isloaded">
+				<anchored width="12" height="12">
+					<top parent="label_ammo" anchor="top" relation="relative" offset="4" />
+					<right parent="label_ammo" anchor="left" relation="relative" offset="3" />
+				</anchored>
+				<state icon="button_checkoff" tooltipres="tooltip_actions_unloaded" />
+				<state icon="button_checkon" tooltipres="tooltip_actions_loaded" />
+				<default>0</default>
+				<script>
+					function onInit()
+						local sNode = getDatabaseNode().getParent().getNodeName()
+						DB.addHandler(sNode, "onChildUpdate", onDataChanged)
+						onDataChanged()
+					end
+					function onDataChanged()
+						local bRanged = (window.type.getValue() == 1)
+						
+						if bRanged then setVisible(true) else setVisible(false) end
+					end
+				</script>
+			</buttonfield>
+		</sheetdata>
+	</windowclass>
+</root>
