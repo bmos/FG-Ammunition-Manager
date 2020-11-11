@@ -3,7 +3,7 @@
 	<!-- Please see the LICENSE.md file included with this distribution for attribution and copyright information. -->
 	<properties>
 		<name>Loaded Indicator</name>
-		<version>1.0.0</version>
+		<version>1.0</version>
 		<author>bmos (Wil Thieme)</author>
 		<description>This extension aids in tracking whether ranged weapons are loaded</description>
 		<ruleset>
@@ -14,7 +14,7 @@
 		</ruleset>
 	</properties>
 
-	<announcement text="https://github.com/bmos\nLoaded Indicator v1.0.0:\nThis extension aids in tracking whether ranged weapons are loaded." font="emotefont" />
+	<announcement text="https://github.com/bmos\nLoaded Indicator v1.0:\nThis extension aids in tracking whether ranged weapons are loaded." font="emotefont" />
 
 	<base>
 		<!-- Campaign Records -->
