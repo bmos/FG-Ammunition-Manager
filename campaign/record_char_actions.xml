@@ -155,7 +155,11 @@
 					function hasLoadAction()
 						local bRanged = (window.type.getValue() == 1);
 						local sWeaponName = string.lower(DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon'));
-						local bHasLoadAction = StringManager.contains({ 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'loadaction' }, sWeaponName);
+						local bHasLoadAction = false
+						local tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'loadaction' }
+						for _,v in pairs(tLoadWeapons) do
+							if string.find(sWeaponName, v) then bHasLoadAction = true; end
+						end
 						
 						if bRanged and bHasLoadAction then return true; end
 					end
