@@ -19,6 +19,124 @@
 				<delaykeyupdate />
 			</stringu>
 		
+			<number_charweaponattacktotal name="attack1">
+				<anchored to="attackframe" position="insidetopleft" offset="3,0" width="27" height="20" />
+				<modifier>0</modifier>
+				<name>Attack 1</name>
+				<source><name>attack1modifier</name><op>+</op></source>
+				<script>
+					function onDoubleClick(x,y)
+						local nodeAttack = getDatabaseNode().getParent();
+						
+						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
+						if window.isloaded.hasLoadAction() and bNotLoaded then
+							local nodeActor = nodeAttack.getChild('...');
+							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
+							
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
+						end
+						
+						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						
+						return action();
+					end
+				</script>
+			</number_charweaponattacktotal>
+			<number_charweaponattacktotal name="attack2">
+				<anchored to="attack1" position="right" offset="5,0" width="27" />
+				<modifier>-5</modifier>
+				<name>Attack 2</name>
+				<source><name>attack2modifier</name><op>+</op></source>
+				<script>
+					function onDoubleClick(x,y)
+						local nodeAttack = getDatabaseNode().getParent();
+						
+						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
+						if window.isloaded.hasLoadAction() and bNotLoaded then
+							local nodeActor = nodeAttack.getChild('...');
+							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
+							
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
+						end
+						
+						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						
+						return action();
+					end
+				</script>
+			</number_charweaponattacktotal>
+			<number_charweaponattacktotal name="attack3">
+				<anchored to="attack2" position="right" offset="5,0" width="27" />
+				<modifier>-10</modifier>
+				<name>Attack 3</name>
+				<source><name>attack3modifier</name><op>+</op></source>
+				<script>
+					function onDoubleClick(x,y)
+						local nodeAttack = getDatabaseNode().getParent();
+						
+						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
+						if window.isloaded.hasLoadAction() and bNotLoaded then
+							local nodeActor = nodeAttack.getChild('...');
+							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
+							
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
+						end
+						
+						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						
+						return action();
+					end
+				</script>
+			</number_charweaponattacktotal>
+			<number_charweaponattacktotal name="attack4">
+				<anchored to="attack3" position="right" offset="5,0" width="27" />
+				<modifier>-15</modifier>
+				<name>Attack 4</name>
+				<source><name>attack4modifier</name><op>+</op></source>
+				<script>
+					function onDoubleClick(x,y)
+						local nodeAttack = getDatabaseNode().getParent();
+						
+						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
+						if window.isloaded.hasLoadAction() and bNotLoaded then
+							local nodeActor = nodeAttack.getChild('...');
+							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
+							
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
+						end
+						
+						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						
+						return action();
+					end
+				</script>
+			</number_charweaponattacktotal>
+			<number_charweaponfullattack name="attacks">
+				<anchored to="attackicons" position="over" />
+				<script>
+					function onDoubleClick(x,y)
+						local nodeAttack = getDatabaseNode().getParent();
+						
+						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
+						if window.isloaded.hasLoadAction() and bNotLoaded then
+							local nodeActor = nodeAttack.getChild('...');
+							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
+							
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
+						end
+						
+						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						
+						return action();
+					end
+				</script>
+			</number_charweaponfullattack>
+
 			<!-- Ranged specific fields -->
 			<buttonfield name="isloaded">
 				<anchored width="12" height="12">
