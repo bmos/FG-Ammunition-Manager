@@ -5,6 +5,20 @@
 <root>
 	<windowclass name="char_weapon" merge="join">
 		<sheetdata>
+			<stringu name="name">
+				<anchored height="20">
+					<top offset="5" />
+					<left parent="leftanchor" anchor="right" relation="relative" offset="2" />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="0" />
+				</anchored>
+				<script>
+					function onValueChanged()
+						window.isloaded.onDataChanged();
+					end
+				</script>
+				<delaykeyupdate />
+			</stringu>
+		
 			<!-- Ranged specific fields -->
 			<buttonfield name="isloaded">
 				<anchored width="12" height="12">
