@@ -8,5 +8,5 @@
 	<string name="tooltip_actions_unloaded">Not Loaded</string>
 	<!-- Chat Messages -->
 	<string name="char_actions_load">%s is loading their %s.</string>
-	<string name="char_actions_notloaded">%s has attacked with an unloaded %s.</string>
+	<string name="char_actions_notloaded">%s is attacking with an unloaded %s.</string>
 </root>
