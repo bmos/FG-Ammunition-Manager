@@ -1,6 +1,6 @@
 # PFRPG Loaded Indicator
 This extension aids in tracking whether ranged weapons are loaded. To do this, it adds a checkbox to the left of the ammo label on the weapons section of the actions tab.
-This checkbox is only shown for some weapons (those with 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', or 'rifle' in the weapon name).
+This checkbox is only shown for some weapons (those with 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', or 'loadaction' in the weapon name).
 Loading the weapon will post a message to chat to help monitor the action-economy.
 Attacks made with these weapons without loading first will post a message to chat.
 
