@@ -3,6 +3,8 @@ This extension aids in tracking whether ranged weapons are loaded. To do this, i
 This checkbox is only shown for some weapons (those with 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', or 'loadaction' in the weapon name).
 Loading the weapon will post a message to chat to help monitor the action-economy.
 Attacks made with these weapons without loading first will post a message to chat.
+Attacking will mark-off ammunition automatically.
+Attacking will post to chat if there is no ammunition available or if the final arrow is used.
 
 # Compatibility and Instructions
 This extension has been tested with [FantasyGrounds Classic](https://www.fantasygrounds.com/home/FantasyGroundsClassic.php) 3.3.12 and [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.0.1 (2020-11-11).
