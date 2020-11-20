@@ -22,20 +22,21 @@
 			<number_charweaponfullattack name="attacks">
 				<anchored to="attackicons" position="over" />
 				<script>
-					function onDoubleClick(x,y)
+					function automateAmmo()
 						local nodeAttack = getDatabaseNode().getParent();
 						
 						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
 						if window.isloaded.hasLoadAction() and bNotLoaded then
-							local nodeActor = nodeAttack.getChild('...');
-							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+							local rActor = ActorManager.getActor("", nodeAttack.getChild('...'));
 							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
 							
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), nil, rActor);
 						end
 						
 						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
-						
+					end
+					function onDoubleClick(x,y)
+						automateAmmo()
 						return action();
 					end
 				</script>
@@ -47,18 +48,7 @@
 				<source><name>attack1modifier</name><op>+</op></source>
 				<script>
 					function onDoubleClick(x,y)
-						local nodeAttack = getDatabaseNode().getParent();
-						
-						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
-						if window.isloaded.hasLoadAction() and bNotLoaded then
-							local nodeActor = nodeAttack.getChild('...');
-							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
-							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
-							
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
-						end
-						
-						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						window.attacks.automateAmmo()
 						
 						return action();
 					end
@@ -71,18 +61,7 @@
 				<source><name>attack2modifier</name><op>+</op></source>
 				<script>
 					function onDoubleClick(x,y)
-						local nodeAttack = getDatabaseNode().getParent();
-						
-						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
-						if window.isloaded.hasLoadAction() and bNotLoaded then
-							local nodeActor = nodeAttack.getChild('...');
-							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
-							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
-							
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
-						end
-						
-						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						window.attacks.automateAmmo()
 						
 						return action();
 					end
@@ -95,18 +74,7 @@
 				<source><name>attack3modifier</name><op>+</op></source>
 				<script>
 					function onDoubleClick(x,y)
-						local nodeAttack = getDatabaseNode().getParent();
-						
-						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
-						if window.isloaded.hasLoadAction() and bNotLoaded then
-							local nodeActor = nodeAttack.getChild('...');
-							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
-							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
-							
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
-						end
-						
-						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						window.attacks.automateAmmo()
 						
 						return action();
 					end
@@ -119,18 +87,7 @@
 				<source><name>attack4modifier</name><op>+</op></source>
 				<script>
 					function onDoubleClick(x,y)
-						local nodeAttack = getDatabaseNode().getParent();
-						
-						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
-						if window.isloaded.hasLoadAction() and bNotLoaded then
-							local nodeActor = nodeAttack.getChild('...');
-							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
-							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
-							
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
-						end
-						
-						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						window.attacks.automateAmmo()
 						
 						return action();
 					end
@@ -167,11 +124,10 @@
 						if hasLoadAction() then setVisible(true); else setVisible(false); end
 					end
 					function onButtonPress()
-						local nodeActor = getDatabaseNode().getChild('....');
-						local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+						local rActor = ActorManager.getActor("", getDatabaseNode().getChild('....'));
 						local sWeaponName = DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon');
 
-						if (getValue() == 1) then ChatManager.Message(string.format(Interface.getString('char_actions_load'), sActorName, sWeaponName)); end
+						if (getValue() == 1) then ChatManager.Message(string.format(Interface.getString('char_actions_load'), string.lower(sWeaponName)), nil, rActor); end
 					end
 				</script>
 			</buttonfield>

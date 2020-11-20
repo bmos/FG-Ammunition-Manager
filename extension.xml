@@ -10,6 +10,7 @@
 		<description>This extension aids in tracking whether ranged weapons are loaded</description>
 		<ruleset name="PFRPG" />
 		<ruleset name="3.5E" />
+		<dependency name="Full OverlayPackage with other icons" />
 	</properties>
 
 	<announcement text="https://github.com/bmos\nLoaded Indicator v1.1:\nThis extension aids in tracking whether ranged weapons are loaded." font="emotefont" />
@@ -20,5 +21,7 @@
 		<includefile source="campaign/record_charmini_actions.xml" />
 		<!-- Strings -->
 		<includefile source="strings/strings_weapon_loaded.xml" />
+		<!-- Scripts -->
+		<script name="AmmunitionManager" file="scripts/manager_ammunition.lua" />
 	</base>
 </root>
