@@ -158,7 +158,7 @@
 						local bHasLoadAction = false
 						local tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'loadaction' }
 						for _,v in pairs(tLoadWeapons) do
-							if string.find(sWeaponName, v) then bHasLoadAction = true; end
+							if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
 						end
 						
 						if bRanged and bHasLoadAction then return true; end
