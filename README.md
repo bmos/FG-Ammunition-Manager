@@ -7,5 +7,5 @@ Attacks made with these weapons without loading first will post a message to cha
 # Compatibility and Instructions
 This extension has been tested with [FantasyGrounds Classic](https://www.fantasygrounds.com/home/FantasyGroundsClassic.php) 3.3.12 and [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.0.1 (2020-11-11).
 
-# Example Image
-<img src="https://i.imgur.com/I7lGDxE.png"/>
+# Video Demonstration (click for video)
+[<img src="https://i.ytimg.com/vi_webp/lvVUHWsz9DE/hqdefault.webp">](https://www.youtube.com/watch?v=lvVUHWsz9DE)
