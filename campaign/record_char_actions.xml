@@ -16,14 +16,26 @@
 				<default>0</default>
 				<script>
 					function onInit()
-						local sNode = getDatabaseNode().getParent().getNodeName()
-						DB.addHandler(sNode, "onChildUpdate", onDataChanged)
-						onDataChanged()
+						local sNode = getDatabaseNode().getParent().getNodeName();
+						DB.addHandler(sNode, "onChildUpdate", onDataChanged);
+						onDataChanged();
+					end
+					function hasLoadAction()
+						local bRanged = (window.type.getValue() == 1);
+						local sWeaponName = string.lower(DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon'));
+						local bHasLoadAction = StringManager.contains({ 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle' }, sWeaponName);
+						
+						if bRanged and bHasLoadAction then return true; end
 					end
 					function onDataChanged()
-						local bRanged = (window.type.getValue() == 1)
-						
-						if bRanged then setVisible(true) else setVisible(false) end
+						if hasLoadAction() then setVisible(true); else setVisible(false); end
+					end
+					function onButtonPress()
+						local nodeActor = getDatabaseNode().getChild('....');
+						local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+						local sWeaponName = DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon');
+
+						if (getValue() == 1) then ChatManager.Message(string.format(Interface.getString('char_actions_load'), sActorName, sWeaponName)); end
 					end
 				</script>
 			</buttonfield>
