@@ -7,6 +7,7 @@ Attacking will mark-off ammunition automatically.
 Attacking will post to chat if there is no ammunition available or if the final arrow is used.
 
 # Compatibility and Instructions
+This extension requires Kelrugem's [Full OverlayPackage](https://www.fantasygrounds.com/forums/showthread.php?50143-Save-overlay-extension-(idea-from-Ken-L)) extension.
 This extension has been tested with [FantasyGrounds Classic](https://www.fantasygrounds.com/home/FantasyGroundsClassic.php) 3.3.12 and [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.0.1 (2020-11-11).
 
 # Video Demonstration (click for video)
