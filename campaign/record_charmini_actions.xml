@@ -8,10 +8,54 @@
 <root>
 	<windowclass name="charmini_weapon" merge="join">
 		<sheetdata>
-			<label name="label_ammo">
-				<anchored to="rangeincrement" position="righthigh" offset="10,0" />
-				<static textres="charmini_label_weaponammo" />
-			</label>
+			<number_charweaponfullattack name="attacks">
+				<anchored to="attackicons" position="over" />
+				<readonly />
+				<script>
+					function onDoubleClick(x,y)
+						local nodeAttack = getDatabaseNode().getParent();
+						
+						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
+						if window.isloaded.hasLoadAction() and bNotLoaded then
+							local nodeActor = nodeAttack.getChild('...');
+							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
+							
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
+						end
+						
+						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						
+						return action();
+					end
+				</script>
+			</number_charweaponfullattack>
+			<number_charweaponattacktotal name="attack1">
+				<anchored position="insidetopright" offset="117,5" width="30" height="20" />
+				<frame name="fieldlight" offset="5,5,5,5" />
+				<modifier>0</modifier>
+				<name>Attack 1</name>
+				<source><name>attack1modifier</name><op>+</op></source>
+				<script>
+					function onDoubleClick(x,y)
+						local nodeAttack = getDatabaseNode().getParent();
+						
+						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
+						if window.isloaded.hasLoadAction() and bNotLoaded then
+							local nodeActor = nodeAttack.getChild('...');
+							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
+							
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
+						end
+						
+						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						
+						return action();
+					end
+				</script>
+			</number_charweaponattacktotal>
+			
 			<buttonfield name="isloaded">
 				<anchored width="12" height="12">
 					<top parent="label_ammo" anchor="top" relation="relative" offset="4" />
@@ -22,14 +66,26 @@
 				<default>0</default>
 				<script>
 					function onInit()
-						local sNode = getDatabaseNode().getParent().getNodeName()
-						DB.addHandler(sNode, "onChildUpdate", onDataChanged)
-						onDataChanged()
+						local sNode = getDatabaseNode().getParent().getNodeName();
+						DB.addHandler(sNode, "onChildUpdate", onDataChanged);
+						onDataChanged();
+					end
+					function hasLoadAction()
+						local bRanged = (window.type.getValue() == 1);
+						local sWeaponName = string.lower(DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon'));
+						local bHasLoadAction = StringManager.contains({ 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle' }, sWeaponName);
+						
+						if bRanged and bHasLoadAction then return true; end
 					end
 					function onDataChanged()
-						local bRanged = (window.type.getValue() == 1)
-						
-						if bRanged then setVisible(true) else setVisible(false) end
+						if hasLoadAction() then setVisible(true); else setVisible(false); end
+					end
+					function onButtonPress()
+						local nodeActor = getDatabaseNode().getChild('....');
+						local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+						local sWeaponName = DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon');
+
+						if (getValue() == 1) then ChatManager.Message(string.format(Interface.getString('char_actions_load'), sActorName, sWeaponName)); end
 					end
 				</script>
 			</buttonfield>
