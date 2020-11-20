@@ -18,7 +18,28 @@
 				</script>
 				<delaykeyupdate />
 			</stringu>
-		
+			
+			<number_charweaponfullattack name="attacks">
+				<anchored to="attackicons" position="over" />
+				<script>
+					function onDoubleClick(x,y)
+						local nodeAttack = getDatabaseNode().getParent();
+						
+						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
+						if window.isloaded.hasLoadAction() and bNotLoaded then
+							local nodeActor = nodeAttack.getChild('...');
+							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
+							
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
+						end
+						
+						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+						
+						return action();
+					end
+				</script>
+			</number_charweaponfullattack>		
 			<number_charweaponattacktotal name="attack1">
 				<anchored to="attackframe" position="insidetopleft" offset="3,0" width="27" height="20" />
 				<modifier>0</modifier>
@@ -115,28 +136,7 @@
 					end
 				</script>
 			</number_charweaponattacktotal>
-			<number_charweaponfullattack name="attacks">
-				<anchored to="attackicons" position="over" />
-				<script>
-					function onDoubleClick(x,y)
-						local nodeAttack = getDatabaseNode().getParent();
-						
-						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
-						if window.isloaded.hasLoadAction() and bNotLoaded then
-							local nodeActor = nodeAttack.getChild('...');
-							local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
-							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
-							
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sActorName, sWeaponName));
-						end
-						
-						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
-						
-						return action();
-					end
-				</script>
-			</number_charweaponfullattack>
-
+			
 			<!-- Ranged specific fields -->
 			<buttonfield name="isloaded">
 				<anchored width="12" height="12">
