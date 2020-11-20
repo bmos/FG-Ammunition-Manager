@@ -156,7 +156,7 @@
 						local bRanged = (window.type.getValue() == 1);
 						local sWeaponName = string.lower(DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon'));
 						local bHasLoadAction = false
-						local tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'loadaction' }
+						local tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
 						for _,v in pairs(tLoadWeapons) do
 							if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
 						end
