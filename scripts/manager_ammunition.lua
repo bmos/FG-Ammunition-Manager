@@ -299,7 +299,10 @@ function onAttack_new(rSource, rTarget, rRoll)
 	-- bmos adding automatic ammunition ticker and chat messaging
 	if rRoll.sDesc:match("%[ATTACK %(R") or rRoll.sDesc:match("%[ATTACK #%d+ %(R") then
 		local sWeaponName = rRoll.sDesc:match('%b][');
-		sWeaponName = sWeaponName:gsub('%]', ''); sWeaponName = sWeaponName:gsub('%[', '');
+		if not sWeaponName and rRoll.sDesc:match("%[ATTACK %(R") then sWeaponName = rRoll.sDesc:gsub('%[ATTACK %(R', '') end
+		if not sWeaponName and rRoll.sDesc:match("%[ATTACK #%d+ %(R") then sWeaponName = rRoll.sDesc:gsub('%[ATTACK #%d+ %(R', '') end
+		sWeaponName = sWeaponName:gsub('%p+', '');
+		sWeaponName = sWeaponName:gsub('%[', '');
 		sWeaponName = StringManager.trim(sWeaponName);
 		
 		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist')
