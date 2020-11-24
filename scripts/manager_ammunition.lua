@@ -297,32 +297,31 @@ function onAttack_new(rSource, rTarget, rRoll)
 	-- END
 
 	-- bmos adding automatic ammunition ticker and chat messaging
-	if rRoll.sDesc:match("%[ATTACK %(R") or rRoll.sDesc:match("%[ATTACK #%d+ %(R") then
-		local sWeaponName = rRoll.sDesc:match('%b][');
-		if not sWeaponName and rRoll.sDesc:match("%[ATTACK %(R") then sWeaponName = rRoll.sDesc:gsub('%[ATTACK %(R', '') end
-		if not sWeaponName and rRoll.sDesc:match("%[ATTACK #%d+ %(R") then sWeaponName = rRoll.sDesc:gsub('%[ATTACK #%d+ %(R', '') end
-		sWeaponName = sWeaponName:gsub('%p+', '');
-		sWeaponName = sWeaponName:gsub('%[', '');
+	if not rRoll.sDesc:match('%[CONFIRM%]') and (rRoll.sDesc:match('%[ATTACK %(R%)%]') or rRoll.sDesc:match('%[ATTACK #%d+ %(R%)%]')) then
+		local sWeaponName = rRoll.sDesc;
+		sWeaponName = sWeaponName:gsub('%[ATTACK %(R%)%]', '');
+		sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(R%)%]', '');
+		sWeaponName = sWeaponName:gsub('%[FULL%]', '');
 		sWeaponName = StringManager.trim(sWeaponName);
 		
-		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist')
+		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
 		for _,v in pairs(nodeWeaponList.getChildren()) do
-			if DB.getValue(v, 'name', '') == sWeaponName then
-				local nMaxAmmo = DB.getValue(v, 'maxammo', 0)
-				local nAmmoUsed = DB.getValue(v, 'ammo', 0) + 1
+			if StringManager.trim(DB.getValue(v, 'name', '')) == sWeaponName then
+				local nMaxAmmo = DB.getValue(v, 'maxammo', 0);
+				local nAmmoUsed = DB.getValue(v, 'ammo', 0) + 1;
 				
 				if nMaxAmmo ~= 0 then
 					if nAmmoUsed == nMaxAmmo then
-						ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource)
-						DB.setValue(v, 'ammo', 'number', nAmmoUsed)
+						ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+						DB.setValue(v, 'ammo', 'number', nAmmoUsed);
 					elseif nAmmoUsed > nMaxAmmo then
-						ChatManager.Message(string.format(Interface.getString('char_actions_noammo'), sWeaponName), true, rSource)
+						ChatManager.Message(string.format(Interface.getString('char_actions_noammo'), sWeaponName), true, rSource);
 					else
-						DB.setValue(v, 'ammo', 'number', nAmmoUsed)
+						DB.setValue(v, 'ammo', 'number', nAmmoUsed);
 					end
 					
 					if rAction.sResult == 'miss' or rAction.sResult == 'fumble' then -- bmos adding arrow recovery automation
-						DB.setValue(v, 'missedshots', 'number', DB.getValue(v, 'missedshots', 0) + 1)
+						DB.setValue(v, 'missedshots', 'number', DB.getValue(v, 'missedshots', 0) + 1);
 					end
 				end
 			end
