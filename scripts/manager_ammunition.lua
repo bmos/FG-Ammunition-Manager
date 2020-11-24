@@ -310,7 +310,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 				local nMaxAmmo = DB.getValue(v, 'maxammo', 0);
 				local nAmmoUsed = DB.getValue(v, 'ammo', 0) + 1;
 				
-				if nMaxAmmo ~= 0 then
+				if nMaxAmmo ~= 0 and not EffectManager35E.hasEffectCondition(rSource, 'INFAMMO') then
 					if nAmmoUsed == nMaxAmmo then
 						ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
 						DB.setValue(v, 'ammo', 'number', nAmmoUsed);
