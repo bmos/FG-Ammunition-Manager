@@ -116,14 +116,15 @@
 					end
 					function onButtonPress()
 						local nodeActor = getDatabaseNode().getChild('....');
+						local rActor = ActorManager.getActor("", nodeActor);
 						local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
 
 						local nodeWeapon = window.getDatabaseNode();
-						local sWeaponName = DB.getValue(nodeWeapon, 'name', 'ranged weapon');
+						local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 
 						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
 						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
-						if (getValue() == 1) and nMaxAttacks >= 1 then ChatManager.Message(string.format(Interface.getString('char_actions_load'), sActorName, sWeaponName)); end
+						if (getValue() == 1) and nMaxAttacks >= 1 then ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), nil, rActor); end
 					end
 				</script>
 			</buttonfield>
