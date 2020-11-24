@@ -301,7 +301,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 		local sWeaponName = rRoll.sDesc;
 		sWeaponName = sWeaponName:gsub('%[ATTACK %(R%)%]', '');
 		sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(R%)%]', '');
-		sWeaponName = sWeaponName:gsub('%[FULL%]', '');
+		sWeaponName = sWeaponName:gsub('%[.+%]', '');
 		sWeaponName = StringManager.trim(sWeaponName);
 		
 		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
