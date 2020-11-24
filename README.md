@@ -5,6 +5,9 @@ Loading these weapon will post a message to chat to help monitor the action-econ
 Attacks made with these weapons without loading first will post a message to chat.
 Attacking will mark-off ammunition automatically.
 Attacking will post to chat if there is no ammunition available or if the final arrow is used.
+Ranged attacks that miss will now increment a per-weapon counter.
+If you open the weapon details page from the actions tab, you can now enter a percentage of missed arrows to recover.
+Double-clicking on this percentage will add those arrows back to the quiver.
 
 # Compatibility and Instructions
 This extension requires Kelrugem's [Full OverlayPackage](https://www.fantasygrounds.com/forums/showthread.php?50143-Save-overlay-extension-(idea-from-Ken-L)) extension.

@@ -301,20 +301,25 @@ function onAttack_new(rSource, rTarget, rRoll)
 		local sWeaponName = rRoll.sDesc:match('%b][');
 		sWeaponName = sWeaponName:gsub('%]', ''); sWeaponName = sWeaponName:gsub('%[', '');
 		sWeaponName = StringManager.trim(sWeaponName);
+		
 		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist')
 		for _,v in pairs(nodeWeaponList.getChildren()) do
 			if DB.getValue(v, 'name', '') == sWeaponName then
 				local nMaxAmmo = DB.getValue(v, 'maxammo', 0)
-				local nAmmo = DB.getValue(v, 'ammo', 0) + 1
+				local nAmmoUsed = DB.getValue(v, 'ammo', 0) + 1
 				
 				if nMaxAmmo ~= 0 then
-					if nAmmo == nMaxAmmo then
+					if nAmmoUsed == nMaxAmmo then
 						ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource)
-						DB.setValue(v, 'ammo', 'number', nAmmo)
-					elseif nAmmo > nMaxAmmo then
+						DB.setValue(v, 'ammo', 'number', nAmmoUsed)
+					elseif nAmmoUsed > nMaxAmmo then
 						ChatManager.Message(string.format(Interface.getString('char_actions_noammo'), sWeaponName), true, rSource)
 					else
-						DB.setValue(v, 'ammo', 'number', nAmmo)
+						DB.setValue(v, 'ammo', 'number', nAmmoUsed)
+					end
+					
+					if rAction.sResult == 'miss' or rAction.sResult == 'fumble' then -- bmos adding arrow recovery automation
+						DB.setValue(v, 'missedshots', 'number', DB.getValue(v, 'missedshots', 0) + 1)
 					end
 				end
 			end

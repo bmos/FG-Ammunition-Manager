@@ -133,4 +133,106 @@
 			</buttonfield>
 		</sheetdata>
 	</windowclass>
+	
+	<windowclass name="char_weapon_editor" merge="join">
+		<frame>recordsheet</frame>
+		<placement>
+			<size width="400" height="388" />
+		</placement>
+		<sizelimits>
+			<minimum width="400" height="388" />
+			<dynamic />
+		</sizelimits>
+		<nodelete />
+		<playercontrol />
+		<tooltip control="name" />
+		<sheetdata>
+			<windowtitlebar name="title">
+				<resource>weapon_title</resource>
+			</windowtitlebar>
+			
+			<frame_record_editor name="contentframe" />
+
+			<subwindow_record name="main">
+				<class>char_weapon_editor_main</class>
+				<activate />
+			</subwindow_record>
+			<scrollbar_record>
+				<target>main</target>
+			</scrollbar_record>
+
+			<resize_recordsheet />
+			<close_recordsheet />
+		</sheetdata>
+	</windowclass>
+	<windowclass name="char_weapon_editor_main" merge="join">
+		<sheetdata>
+			<!-- Ammo -->
+			<header_column name="header_ammo">
+				<insertbefore>header_damage</insertbefore>
+				<static textres="weapon_header_ammo" />
+				<center />
+			</header_column>
+			<basicnumber name="recoverypercentage">
+				<anchored width="40" height="20">
+					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
+					<left offset="5" />
+				</anchored>
+				<default>50</default>
+				<script>
+					function onDoubleClick(x,y)
+						local nMisses = window.missedshots.getValue() or 0
+						if nMisses >= 1 then
+							local nPercent = 0.01 * (getValue() or 50)
+							local nAmmoRecovered = math.floor(nMisses * nPercent)
+							ChatManager.SystemMessage(string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered))
+
+							local nAmmoUsed = DB.getValue(window.getDatabaseNode(), 'ammo', 0) - nAmmoRecovered
+							if nAmmoUsed and nAmmoUsed &lt; 0 then ChatManager.SystemMessage(string.format(Interface.getString('char_actions_excessammunition'), -1 * nAmmoUsed)) end
+							DB.setValue(window.getDatabaseNode(), 'ammo', 'number', math.max(nAmmoUsed, 0))
+
+							window.missedshots.setValue(0)
+						end
+					end
+				</script>
+			</basicnumber>
+			<label_fieldtop name="label_recoverypercentage">
+				<anchored to="recoverypercentage" />
+				<static textres="weapon_label_recoverypercentage" />
+			</label_fieldtop>
+			<label name="label_ammopercentof">
+				<anchored to="recoverypercentage" position="righthigh" offset="5,0" width="35" />
+				<static>% of </static>
+				<center />
+			</label>
+			<basicnumber name="missedshots">
+				<anchored to="label_ammopercentof" position="righthigh" offset="5,0" width="40" height="20" />
+				<default>0</default>
+				<hideonvalue>0</hideonvalue>
+				<!-- <readonly /> -->
+			</basicnumber>
+			<label_fieldtop name="label_missedshots">
+				<anchored to="missedshots" />
+				<static textres="weapon_label_missedshots" />
+				<!-- <script>
+					function onInit()
+						if not User.isHost() then
+							window.header_ammo.setVisible(false)
+							window.missedshots.setVisible(false)
+							window.label_missedshots.setVisible(false)
+							window.label_ammopercentof.setVisible(false)
+							window.recoverypercentage.setVisible(false)
+							window.label_recoverypercentage.setVisible(false)
+						end
+					end
+				</script> -->
+			</label_fieldtop>
+			<stringu name="label_ammotutorial">
+				<anchored to="missedshots" position="righthigh" offset="5,0" width="250" />
+				<static textres="tutorial_recoverammo" />
+				<readonly />
+			</stringu>
+		</sheetdata>
+	</windowclass>
+
 </root>
