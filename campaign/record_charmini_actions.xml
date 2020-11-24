@@ -56,7 +56,7 @@
 						end
 					end
 					function onDoubleClick(x,y)
-						if not automateAmmo() then return action(); end
+						if not automateAmmo() then window.isloaded.setValue(0); return action(); end
 					end
 				</script>
 			</number_charweaponfullattack>
@@ -81,7 +81,7 @@
 						end
 					end
 					function onDoubleClick(x,y)
-						if not window.attacks.automateAmmo() then return action(); end
+						if not window.attacks.automateAmmo() then window.isloaded.setValue(0); return action(); end
 					end
 				</script>
 			</number_charweaponattacktotal>
