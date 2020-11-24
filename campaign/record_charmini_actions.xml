@@ -48,7 +48,7 @@
 						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
 						if window.isloaded.hasLoadAction() and bNotLoaded then
 							local rActor = ActorManager.getActor("", nodeAttack.getChild('...'));
-							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
+							local sWeaponName = string.lower(DB.getValue(nodeAttack, 'name', 'ranged weapon'));
 							
 							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), nil, rActor);
 							DB.setValue(nodeAttack, 'isloaded', 'number', 0);
