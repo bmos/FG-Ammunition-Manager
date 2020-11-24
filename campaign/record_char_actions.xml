@@ -22,6 +22,36 @@
 			<number_charweaponfullattack name="attacks">
 				<anchored to="attackicons" position="over" />
 				<script>
+					function action(draginfo)
+						local nValue = getValue();
+						local nodeWeapon = window.getDatabaseNode();
+						local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
+						
+						local rRolls = {};
+						local sAttack, aAttackDice, nAttackMod;
+						for i = 1, getValue() do
+							rAttack.modifier = DB.getValue(nodeWeapon, "attack" .. i, 0);
+							rAttack.order = i;
+							
+							local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+							local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
+							if not (nMaxAmmo > 0) or (i &lt;= nMaxAttacks) then	
+								table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack));
+							elseif (nMaxAmmo > 0) then
+								ChatManager.Message(Interface.getString('char_actions_noammo'), nil, rActor);
+							end
+						end
+						
+						if not OptionsManager.isOption("RMMT", "off") and #rRolls > 1 then
+							for _,v in ipairs(rRolls) do
+								v.sDesc = v.sDesc .. " [FULL]";
+							end
+						end
+						
+						ActionsManager.performMultiAction(draginfo, rActor, "attack", rRolls);
+						
+						return true;
+					end
 					function automateAmmo()
 						local nodeAttack = getDatabaseNode().getParent();
 						
@@ -31,13 +61,12 @@
 							local sWeaponName = DB.getValue(nodeAttack, 'name', 'ranged weapon');
 							
 							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), nil, rActor);
+							DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+							return true;
 						end
-						
-						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
 					end
 					function onDoubleClick(x,y)
-						automateAmmo()
-						return action();
+						if not automateAmmo() then return action(); end
 					end
 				</script>
 			</number_charweaponfullattack>		
@@ -47,10 +76,21 @@
 				<name>Attack 1</name>
 				<source><name>attack1modifier</name><op>+</op></source>
 				<script>
-					function onDoubleClick(x,y)
-						window.attacks.automateAmmo()
+					function action(draginfo)
+						local rActor, rAttack = CharManager.getWeaponAttackRollStructures(window.getDatabaseNode());
+						rAttack.modifier = getValue();
+						rAttack.order = tonumber(string.sub(getName(), 7)) or 1;
 						
-						return action();
+						local nodeWeapon = window.getDatabaseNode();
+						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
+						if not (nMaxAmmo > 0) or (nMaxAttacks &gt;= 1) then	
+							ActionAttack.performRoll(draginfo, rActor, rAttack);
+							return true;
+						end
+					end
+					function onDoubleClick(x,y)
+						if not window.attacks.automateAmmo() then return action(); end
 					end
 				</script>
 			</number_charweaponattacktotal>
@@ -60,10 +100,21 @@
 				<name>Attack 2</name>
 				<source><name>attack2modifier</name><op>+</op></source>
 				<script>
-					function onDoubleClick(x,y)
-						window.attacks.automateAmmo()
+					function action(draginfo)
+						local rActor, rAttack = CharManager.getWeaponAttackRollStructures(window.getDatabaseNode());
+						rAttack.modifier = getValue();
+						rAttack.order = tonumber(string.sub(getName(), 7)) or 1;
 						
-						return action();
+						local nodeWeapon = window.getDatabaseNode();
+						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
+						if not (nMaxAmmo > 0) or (nMaxAttacks &gt;= 1) then	
+							ActionAttack.performRoll(draginfo, rActor, rAttack);
+							return true;
+						end
+					end
+					function onDoubleClick(x,y)
+						if not window.attacks.automateAmmo() then return action(); end
 					end
 				</script>
 			</number_charweaponattacktotal>
@@ -73,10 +124,21 @@
 				<name>Attack 3</name>
 				<source><name>attack3modifier</name><op>+</op></source>
 				<script>
-					function onDoubleClick(x,y)
-						window.attacks.automateAmmo()
+					function action(draginfo)
+						local rActor, rAttack = CharManager.getWeaponAttackRollStructures(window.getDatabaseNode());
+						rAttack.modifier = getValue();
+						rAttack.order = tonumber(string.sub(getName(), 7)) or 1;
 						
-						return action();
+						local nodeWeapon = window.getDatabaseNode();
+						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
+						if not (nMaxAmmo > 0) or (nMaxAttacks &gt;= 1) then	
+							ActionAttack.performRoll(draginfo, rActor, rAttack);
+							return true;
+						end
+					end
+					function onDoubleClick(x,y)
+						if not window.attacks.automateAmmo() then return action(); end
 					end
 				</script>
 			</number_charweaponattacktotal>
@@ -86,10 +148,21 @@
 				<name>Attack 4</name>
 				<source><name>attack4modifier</name><op>+</op></source>
 				<script>
-					function onDoubleClick(x,y)
-						window.attacks.automateAmmo()
+					function action(draginfo)
+						local rActor, rAttack = CharManager.getWeaponAttackRollStructures(window.getDatabaseNode());
+						rAttack.modifier = getValue();
+						rAttack.order = tonumber(string.sub(getName(), 7)) or 1;
 						
-						return action();
+						local nodeWeapon = window.getDatabaseNode();
+						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
+						if not (nMaxAmmo > 0) or (nMaxAttacks &gt;= 1) then	
+							ActionAttack.performRoll(draginfo, rActor, rAttack);
+							return true;
+						end
+					end
+					function onDoubleClick(x,y)
+						if not window.attacks.automateAmmo() then return action(); end
 					end
 				</script>
 			</number_charweaponattacktotal>
@@ -124,10 +197,15 @@
 						if hasLoadAction() then setVisible(true); else setVisible(false); end
 					end
 					function onButtonPress()
-						local rActor = ActorManager.getActor("", getDatabaseNode().getChild('....'));
-						local sWeaponName = DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon');
+						local nodeActor = getDatabaseNode().getChild('....');
+						local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
 
-						if (getValue() == 1) then ChatManager.Message(string.format(Interface.getString('char_actions_load'), string.lower(sWeaponName)), nil, rActor); end
+						local nodeWeapon = window.getDatabaseNode();
+						local sWeaponName = DB.getValue(nodeWeapon, 'name', 'ranged weapon');
+
+						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
+						if (getValue() == 1) and nMaxAttacks >= 1 then ChatManager.Message(string.format(Interface.getString('char_actions_load'), sActorName, sWeaponName)); end
 					end
 				</script>
 			</buttonfield>

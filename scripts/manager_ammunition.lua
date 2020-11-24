@@ -314,8 +314,6 @@ function onAttack_new(rSource, rTarget, rRoll)
 					if nAmmoUsed == nMaxAmmo then
 						ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
 						DB.setValue(v, 'ammo', 'number', nAmmoUsed);
-					elseif nAmmoUsed > nMaxAmmo then
-						ChatManager.Message(string.format(Interface.getString('char_actions_noammo'), sWeaponName), true, rSource);
 					else
 						DB.setValue(v, 'ammo', 'number', nAmmoUsed);
 					end
