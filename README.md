@@ -15,7 +15,7 @@ An "INFAMMO" effect negates the counting of used ammo and missed shots (as per r
 
 # Compatibility and Instructions
 This extension requires Kelrugem's [Full OverlayPackage](https://www.fantasygrounds.com/forums/showthread.php?50143-Save-overlay-extension-(idea-from-Ken-L)) extension.
-This extension has been tested with [FantasyGrounds Classic](https://www.fantasygrounds.com/home/FantasyGroundsClassic.php) 3.3.12 and [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.0.1 (2020-11-11).
+This extension has been tested with [FantasyGrounds Classic](https://www.fantasygrounds.com/home/FantasyGroundsClassic.php) 3.3.12 and [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.0.3 (2020-11-25).
 
 # Video Demonstration (click for video)
 [<img src="https://i.ytimg.com/vi_webp/svmaG5UvHlI/hqdefault.webp">](https://www.youtube.com/watch?v=svmaG5UvHlI)
