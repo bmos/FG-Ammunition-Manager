@@ -297,7 +297,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 	-- END
 
 	-- bmos adding automatic ammunition ticker and chat messaging
-	if not rRoll.sDesc:match('%[CONFIRM%]') and (rRoll.sDesc:match('%[ATTACK %(R%)%]') or rRoll.sDesc:match('%[ATTACK #%d+ %(R%)%]')) then
+	if bIsSourcePC and not rRoll.sDesc:match('%[CONFIRM%]') and (rRoll.sDesc:match('%[ATTACK %(R%)%]') or rRoll.sDesc:match('%[ATTACK #%d+ %(R%)%]')) then
 		local sWeaponName = rRoll.sDesc;
 		sWeaponName = sWeaponName:gsub('%[ATTACK %(R%)%]', '');
 		sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(R%)%]', '');
