@@ -140,9 +140,11 @@ function onAttack_new(rSource, rTarget, rRoll)
 				rAction.sResult = "hit";
 				rAction.bCritThreat = true;
 				table.insert(rAction.aMessages, "[AUTOMATIC HIT]");
+				if nDefenseVal and (rAction.nTotal - nDefenseVal) > 0 then table.insert(rAction.aMessages, "[EXCEED DEF BY " .. rAction.nTotal - nDefenseVal .. "]") end
 			else
 				rAction.sResult = "crit";
 				table.insert(rAction.aMessages, "[CRITICAL HIT]");
+				if nDefenseVal and (rAction.nTotal - nDefenseVal) > 0 then table.insert(rAction.aMessages, "[EXCEED DEF BY " .. rAction.nTotal - nDefenseVal .. "]") end
 			end
 		else
 			rAction.sResult = "hit";
@@ -174,6 +176,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 				rAction.sResult = "hit";
 				table.insert(rAction.aMessages, "[HIT]");
 			end
+			if nDefenseVal and (rAction.nTotal - nDefenseVal) > 0 then table.insert(rAction.aMessages, "[EXCEED DEF BY " .. rAction.nTotal - nDefenseVal .. "]") end
 		else
 			rAction.sResult = "miss";
 			if rRoll.sType == "critconfirm" then
