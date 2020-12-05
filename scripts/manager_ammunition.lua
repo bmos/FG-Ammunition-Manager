@@ -118,12 +118,16 @@ function onAttack_new(rSource, rTarget, rRoll)
 		end
 	end
 	
-	-- Check for Always a Chance (Ex) special ability (bmos)
-	local bNoFumble = false
+	-- start section of bmos additions
+	local bNoFumble = false -- bmos checking for Always a Chance (Ex)
 	if MythicAbilties and rSource then
 		bNoFumble = hasSpecialAbility(rSource, 'Always a Chance')
 	end
-	-- end bmos addition
+	local nHitMargin = nil -- bmos adding hit margin tracking
+	if nDefenseVal and (rAction.nTotal - nDefenseVal) > 0 then nHitMargin = rAction.nTotal - nDefenseVal end
+	if nHitMargin then nHitMargin = math.floor(nHitMargin / 5); nHitMargin = nHitMargin * 5 end
+	if nHitMargin and nHitMargin <= 0 then nHitMargin = nil end
+	-- end section of bmos additions
 	
 	rAction.nFirstDie = 0;
 	if #(rRoll.aDice) > 0 then
@@ -140,11 +144,11 @@ function onAttack_new(rSource, rTarget, rRoll)
 				rAction.sResult = "hit";
 				rAction.bCritThreat = true;
 				table.insert(rAction.aMessages, "[AUTOMATIC HIT]");
-				if nDefenseVal and (rAction.nTotal - nDefenseVal) > 0 then table.insert(rAction.aMessages, "[EXCEED DEF BY " .. rAction.nTotal - nDefenseVal .. "]") end
+				if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end -- bmos adding hit margin tracking
 			else
 				rAction.sResult = "crit";
 				table.insert(rAction.aMessages, "[CRITICAL HIT]");
-				if nDefenseVal and (rAction.nTotal - nDefenseVal) > 0 then table.insert(rAction.aMessages, "[EXCEED DEF BY " .. rAction.nTotal - nDefenseVal .. "]") end
+				if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end -- bmos adding hit margin tracking
 			end
 		else
 			rAction.sResult = "hit";
@@ -176,7 +180,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 				rAction.sResult = "hit";
 				table.insert(rAction.aMessages, "[HIT]");
 			end
-			if nDefenseVal and (rAction.nTotal - nDefenseVal) > 0 then table.insert(rAction.aMessages, "[EXCEED DEF BY " .. rAction.nTotal - nDefenseVal .. "]") end
+			if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end -- bmos adding hit margin tracking
 		else
 			rAction.sResult = "miss";
 			if rRoll.sType == "critconfirm" then
