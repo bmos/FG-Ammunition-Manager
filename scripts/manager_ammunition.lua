@@ -431,7 +431,10 @@ function onMissChance_new(rSource, rTarget, rRoll)
 	local bHit = false;
 	-- END
 	if nTotal <= nMissChance and hasSpecialAbility(rSource, "Blind-Fight", true, false, false, true) then -- bmos adding blind-fight
-		if string.match(rMessage.text, "%[BLIND%-FIGHT%]") then
+		if string.match(rMessage.text, "%[BLIND%-FIGHT%]") or
+			string.match(rMessage.text, "%[ATTACK.*%((%w+)%)%]") ~= 'M' or
+			(EffectManager35E.hasEffect(rTarget, "Incorporeal") and not string.match(rMessage.text, "%[INCORPOREAL%]")) then
+			
 			rMessage.text = rMessage.text .. " [MISS]";
 			removeVar = true;
 			if rTarget then
