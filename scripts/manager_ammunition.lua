@@ -377,7 +377,7 @@ function onMissChance_new(rSource, rTarget, rRoll)
 	-- KEL Mirror image handler variable
 	local bHit = false;
 	-- END
-	if nTotal <= nMissChance and EffectManager35E.hasEffectCondition(rSource, 'Blind-Fight') then
+	if nTotal <= nMissChance and EffectManager35E.hasEffectCondition(rSource, 'Blind-Fight') then -- bmos adding blind-fight
 		if string.match(rMessage.text, "%[BLIND%-FIGHT%]") then
 			rMessage.text = rMessage.text .. " [MISS]";
 			removeVar = true;
@@ -406,7 +406,7 @@ function onMissChance_new(rSource, rTarget, rRoll)
 			else
 				rMessage.icon = "roll_attack";
 			end
-		end
+		end -- end bmos adding blind-fight
 	elseif nTotal <= nMissChance then
 		rMessage.text = rMessage.text .. " [MISS]";
 		removeVar = true;
