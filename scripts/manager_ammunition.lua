@@ -35,6 +35,59 @@ function onClose()
 	ActionsManager.registerResultHandler("attack", ActionAttack.onAttack);
 end
 
+---	This function checks NPCs and PCs for special abilities.
+local function hasSpecialAbility(rActor, sSearchString, bFeat, bTrait, bSpecialAbility, bEffect)
+	if not rActor or not sSearchString then
+		return false
+	end
+	local nodeActor = rActor.sCreatureNode;
+
+	if bEffect and EffectManager35E.hasEffectCondition(rActor, sSearchString) then
+		return true
+	end
+
+	local sSearchString = string.lower(sSearchString);
+	local sSearchString = string.gsub(sSearchString, '%-', '%%%-');
+	if ActorManager.isPC(nodeActor) then
+		if bFeat then
+			for _,vNode in pairs(DB.getChildren(nodeActor .. '.featlist')) do
+				local sFeatName = StringManager.trim(DB.getValue(vNode, 'name', ''):lower());
+				if sFeatName and string.match(sFeatName, sSearchString .. ' %d+', 1) or string.match(sFeatName, sSearchString, 1) then
+					return true
+				end
+			end
+		end
+		if bTrait then
+			for _,vNode in pairs(DB.getChildren(nodeActor .. '.traitlist')) do
+				local sTraitName = StringManager.trim(DB.getValue(vNode, 'name', ''):lower());
+				if sTraitName and string.match(sTraitName, sSearchString .. ' %d+', 1) or string.match(sTraitName, sSearchString, 1) then
+					return true
+				end
+			end
+		end
+		if bSpecialAbility then
+			for _,vNode in pairs(DB.getChildren(nodeActor .. '.specialabilitylist')) do
+				local sSpecialAbilityName = StringManager.trim(DB.getValue(vNode, 'name', ''):lower());
+				if sSpecialAbilityName and string.match(sSpecialAbilityName, sSearchString .. ' %d+', 1) or string.match(sSpecialAbilityName, sSearchString, 1) then
+					return true
+				end
+			end
+		end
+	else
+		local sSpecialQualities = string.lower(DB.getValue(nodeActor .. '.specialqualities', ''));
+		local sSpecAtks = string.lower(DB.getValue(nodeActor .. '.specialattacks', ''));
+		local sFeats = string.lower(DB.getValue(nodeActor .. '.feats', ''));
+
+		if bFeat and string.find(sFeats, sSearchString) then
+			return true
+		elseif bSpecialAbility and (string.find(sSpecAtks, sSearchString) or string.find(sSpecialQualities, sSearchString)) then
+			return true
+		end
+	end
+	
+	return false
+end
+
 function onAttack_new(rSource, rTarget, rRoll)
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
@@ -126,7 +179,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 	-- start section of bmos additions
 	local bNoFumble = false -- bmos checking for Always a Chance (Ex)
 	if MythicAbilties and rSource then
-		bNoFumble = hasSpecialAbility(rSource, 'Always a Chance')
+		bNoFumble = hasSpecialAbility(rSource, 'Always a Chance', true, true, true);
 	end
 	local nHitMargin = nil -- bmos adding hit margin tracking
 	if nDefenseVal and (rAction.nTotal - nDefenseVal) > 0 then nHitMargin = rAction.nTotal - nDefenseVal end
@@ -377,7 +430,7 @@ function onMissChance_new(rSource, rTarget, rRoll)
 	-- KEL Mirror image handler variable
 	local bHit = false;
 	-- END
-	if nTotal <= nMissChance and EffectManager35E.hasEffectCondition(rSource, 'Blind-Fight') then -- bmos adding blind-fight
+	if nTotal <= nMissChance and hasSpecialAbility(rSource, "Blind-Fight", true, false, false, true) then -- bmos adding blind-fight
 		if string.match(rMessage.text, "%[BLIND%-FIGHT%]") then
 			rMessage.text = rMessage.text .. " [MISS]";
 			removeVar = true;
