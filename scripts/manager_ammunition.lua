@@ -3,20 +3,25 @@
 --
 
 local onAttack_old = nil
+local onMissChance_old = nil
 
 -- Function Overrides
 function onInit()
 	-- back-up original copies
 	onAttack_old = ActionAttack.onAttack;
+	onMissChance_old = ActionAttack.onMissChance;
 
 	-- replace functions with new ones
 	ActionAttack.onAttack = onAttack_new;
+	ActionAttack.onMissChance = onMissChance_new;
 	
 	-- remove original result handlers
 	ActionsManager.unregisterResultHandler("attack");
+	ActionsManager.unregisterResultHandler("misschance");
 
 	-- register new result handlers
 	ActionsManager.registerResultHandler("attack", onAttack_new);
+	ActionsManager.registerResultHandler("misschance", onMissChance_new);
 end
 
 function onClose()
@@ -360,4 +365,101 @@ function onAttack_new(rSource, rTarget, rRoll)
 	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
 		ActionAttack.notifyApplyHRFC("Critical Hit");
 	end
+end
+
+function onMissChance_new(rSource, rTarget, rRoll)
+	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
+	-- KEL adding variable for automated targeting removal
+	local removeVar = false;
+	--END
+	local nTotal = ActionsManager.total(rRoll);
+	local nMissChance = tonumber(string.match(rMessage.text, "%[MISS CHANCE (%d+)%%%]")) or 0;
+	-- KEL Mirror image handler variable
+	local bHit = false;
+	-- END
+	if nTotal <= nMissChance and EffectManager35E.hasEffectCondition(rSource, 'Blind-Fight') then
+		if string.match(rMessage.text, "%[BLIND%-FIGHT%]") then
+			rMessage.text = rMessage.text .. " [MISS]";
+			removeVar = true;
+			if rTarget then
+				rMessage.icon = "roll_attack_miss";
+				ActionAttack.clearCritState(rSource, rTarget);
+				-- KEL Adding Save Overlay
+				if rRoll.actionStuffForOverlay == "true" then
+					TokenManager2.setSaveOverlay(ActorManager.getCTNode(rTarget), -3);
+				end
+				-- END
+			else
+				rMessage.icon = "roll_attack";
+			end
+		else
+			rMessage.text = rMessage.text .. " [MISS]";
+			removeVar = true;
+			if nMissChance > 0 then
+				local aMissChanceDice = { "d100" };
+				if not UtilityManager.isClientFGU() then
+					table.insert(aMissChanceDice, "d10");
+				end
+				local rMissChanceRoll = { sType = "misschance", sDesc = string.gsub(rMessage.text, " %[MISS%]", "") .. " [BLIND-FIGHT]", aDice = aMissChanceDice, nMod = 0, fullattack = rRoll.fullattack, actionStuffForOverlay = rRoll.actionStuffForOverlay };
+				ActionsManager.roll(rSource, rTarget, rMissChanceRoll);
+				-- KEL compatibility test with mirror image handler
+			else
+				rMessage.icon = "roll_attack";
+			end
+		end
+	elseif nTotal <= nMissChance then
+		rMessage.text = rMessage.text .. " [MISS]";
+		removeVar = true;
+		if rTarget then
+			rMessage.icon = "roll_attack_miss";
+			ActionAttack.clearCritState(rSource, rTarget);
+			-- KEL Adding Save Overlay
+			if rRoll.actionStuffForOverlay == "true" then
+				TokenManager2.setSaveOverlay(ActorManager.getCTNode(rTarget), -3);
+			end
+			-- END
+		else
+			rMessage.icon = "roll_attack";
+		end
+	else
+		bHit = true;
+		rMessage.text = rMessage.text .. " [HIT]";
+		removeVar = false;
+		if rTarget then
+			rMessage.icon = "roll_attack_hit";
+			-- KEL Adding Save Overlay
+			if rRoll.actionStuffForOverlay == "true" then
+				TokenManager2.setSaveOverlay(ActorManager.getCTNode(rTarget), -1);
+			end
+			-- END
+		else
+			rMessage.icon = "roll_attack";
+		end
+	end
+	-- KEL Compatibility to mirror image handler
+	if MirrorImageHandler and bHit then
+		local nMirrorImageCount = MirrorImageHandler.getMirrorImageCount(rTarget);
+		if nMirrorImageCount > 0 then
+			local rMirrorImageRoll = MirrorImageHandler.getMirrorImageRoll(nMirrorImageCount, rRoll.sDesc);
+			ActionsManager.roll(rSource, rTarget, rMirrorImageRoll);
+		end
+	end
+	-- KEL Remove TARGET
+	if rTarget and rRoll.fullattack == "false" then		
+		-- REMOVE TARGET ON MISS OPTION
+		if removeVar then
+			local bRemoveTarget = false;
+			if OptionsManager.isOption("RMMT", "on") then
+				bRemoveTarget = true;
+			elseif rRoll.bRemoveOnMiss then
+				bRemoveTarget = true;
+			end
+			
+			if bRemoveTarget then
+				TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget));
+			end
+		end
+	end
+	
+	Comm.deliverChatMessage(rMessage);
 end
