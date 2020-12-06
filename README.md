@@ -14,7 +14,8 @@ Double-clicking on this percentage will add those arrows back to the quiver.
 An "INFAMMO" effect negates the counting of used ammo and missed shots (as per rules for Abundant Ammunition).
 
 Any attack success/failure messages (range, melee, cmb, etc) for attack rolls that exceed the defensive stat (ac, cmd, etc) will now also include by how much it is exceeded (for bull rush and such where there are tiers of success for each 5 that you exceed the defensive stat).
-Miss chance rolls will be re-rolled on miss for characters with blind-fight.
+
+Miss chance rolls will be re-rolled automatically for characters with blind-fight.
 
 # Compatibility and Instructions
 This extension requires Kelrugem's [Full OverlayPackage](https://www.fantasygrounds.com/forums/showthread.php?50143-Save-overlay-extension-(idea-from-Ken-L)) extension.
