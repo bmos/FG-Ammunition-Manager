@@ -103,7 +103,8 @@ function onAttack_new(rSource, rTarget, rRoll)
 	rAction.aMessages = {};
 	
 	-- If we have a target, then calculate the defense we need to exceed
-	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance;
+	-- KEL Add nAdditionalDefenseForCC
+	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance, nAdditionalDefenseForCC;
 	if rRoll.sType == "critconfirm" then
 		local sDefenseVal = string.match(rRoll.sDesc, " %[AC ([%-%+]?%d+)%]");
 		if sDefenseVal then
@@ -319,7 +320,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 	local FullAttack = "";
 	local ActionStuffForOverlay = "";
 	if string.match(rRoll.sDesc, "%[FULL%]") then
-		FulLAttack = "true";
+		FullAttack = "true";
 	else
 		FullAttack = "false";
 	end
@@ -390,7 +391,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 			end
 		end
 	end
-	-- end bmos adding automatic ammunition ticker
+	-- end bmos adding automatic ammunition ticker and chat messaging
 
 	if rTarget then
 		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
