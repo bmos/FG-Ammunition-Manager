@@ -295,7 +295,7 @@
 				<static textres="weapon_label_missedshots" />
 				<!-- <script>
 					function onInit()
-						if not User.isHost() then
+						if not Session.IsHost then
 							window.header_ammo.setVisible(false)
 							window.missedshots.setVisible(false)
 							window.label_missedshots.setVisible(false)

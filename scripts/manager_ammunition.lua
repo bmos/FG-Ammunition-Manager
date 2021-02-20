@@ -91,7 +91,7 @@ end
 function onAttack_new(rSource, rTarget, rRoll)
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
-	local bIsSourcePC = (rSource and rSource.sType == "pc");
+	local bIsSourcePC = (rSource and ActorManager.isPC(rSource));
 	local bAllowCC = OptionsManager.isOption("HRCC", "on") or (not bIsSourcePC and OptionsManager.isOption("HRCC", "npc"));
 
 	if rRoll.sDesc:match("%[CMB") then
@@ -128,7 +128,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 			rMessage.text = string.gsub(rMessage.text, sAtkEffectsClear, "");
 		end
 	else
-		nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance, nAdditionalDefenseForCC = ActorManager2.getDefenseValue(rSource, rTarget, rRoll);
+		nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance, nAdditionalDefenseForCC = ActorManager35E.getDefenseValue(rSource, rTarget, rRoll);
 		-- KEL CONC on Attacker
 		-- DETERMINE ATTACK TYPE AND DEFENSE
 		local AttackType = "M";
