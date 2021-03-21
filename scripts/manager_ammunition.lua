@@ -2,39 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
-local onAttack_old = nil
-local onMissChance_old = nil
-
--- Function Overrides
-function onInit()
-	-- back-up original copies
-	onAttack_old = ActionAttack.onAttack;
-	onMissChance_old = ActionAttack.onMissChance;
-
-	-- replace functions with new ones
-	ActionAttack.onAttack = onAttack_new;
-	ActionAttack.onMissChance = onMissChance_new;
-
-	-- remove original result handlers
-	ActionsManager.unregisterResultHandler("attack");
-	ActionsManager.unregisterResultHandler("misschance");
-
-	-- register new result handlers
-	ActionsManager.registerResultHandler("attack", onAttack_new);
-	ActionsManager.registerResultHandler("misschance", onMissChance_new);
-end
-
-function onClose()
-	-- restore original functions
-	ActionAttack.onAttack = onAttack_old;
-
-	-- remove result handlers
-	ActionsManager.unregisterResultHandler("attack");
-
-	-- re-register original result handlers
-	ActionsManager.registerResultHandler("attack", ActionAttack.onAttack);
-end
-
 ---	This function checks NPCs and PCs for special abilities.
 local function hasSpecialAbility(rActor, sSearchString, bFeat, bTrait, bSpecialAbility, bEffect)
 	if not rActor or not sSearchString then
@@ -133,7 +100,7 @@ function calculateHitMargin(nDefenseVal, nTotal)
 	end
 end
 
-function onAttack_new(rSource, rTarget, rRoll)
+local function onAttack_new(rSource, rTarget, rRoll)
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
 	local bIsSourcePC = ActorManager.isPC(rSource);
@@ -371,7 +338,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 	end
 end
 
-function onMissChance_new(rSource, rTarget, rRoll)
+local function onMissChance_new(rSource, rTarget, rRoll)
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 	-- KEL adding variable for automated targeting removal
 	local removeVar = false;
@@ -469,4 +436,19 @@ function onMissChance_new(rSource, rTarget, rRoll)
 	end
 
 	Comm.deliverChatMessage(rMessage);
+end
+
+-- Function Overrides
+function onInit()
+	-- replace functions with new ones
+	ActionAttack.onAttack = onAttack_new;
+	ActionAttack.onMissChance = onMissChance_new;
+
+	-- remove original result handlers
+	ActionsManager.unregisterResultHandler("attack");
+	ActionsManager.unregisterResultHandler("misschance");
+
+	-- register new result handlers
+	ActionsManager.registerResultHandler("attack", onAttack_new);
+	ActionsManager.registerResultHandler("misschance", onMissChance_new);
 end
