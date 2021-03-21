@@ -290,7 +290,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 			rCritConfirmRoll.nMod = rRoll.nMod + nCCMod;
 			-- KEL ACCC stuff
 			local nNewDefenseVal = 0;
-			if nAdditionalDefenseForCC ~= 0 and nDefenseVal then
+			if nAdditionalDefenseForCC and nAdditionalDefenseForCC ~= 0 and nDefenseVal then
 				nNewDefenseVal = nAdditionalDefenseForCC;
 				rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. " [CC DEF EFFECTS " .. nAdditionalDefenseForCC .. "]";
 			end
