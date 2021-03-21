@@ -88,6 +88,51 @@ local function hasSpecialAbility(rActor, sSearchString, bFeat, bTrait, bSpecialA
 	return false
 end
 
+--	tick off used ammunition, count misses, post 'out of ammo' chat message
+function ammoTracker(rSource, bIsSourcePC, sDesc, sResult)
+	if bIsSourcePC and not sDesc:match('%[CONFIRM%]') and (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) then
+		local sWeaponName = sDesc:gsub('%[ATTACK %(R%)%]', '');
+		sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(R%)%]', '');
+		sWeaponName = sWeaponName:gsub('%[.+%]', '');
+		sWeaponName = StringManager.trim(sWeaponName);
+
+		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
+		for _,nodeWeapon in pairs(nodeWeaponList.getChildren()) do
+			if StringManager.trim(DB.getValue(nodeWeapon, 'name', '')) == sWeaponName then
+				local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
+				local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
+
+				if nMaxAmmo ~= 0 and not EffectManager35E.hasEffectCondition(rSource, 'INFAMMO') then
+					if nAmmoUsed == nMaxAmmo then
+						ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+						DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
+					else
+						DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
+					end
+
+					if sResult == 'miss' or sResult == 'fumble' then -- counting misses
+						DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
+					end
+				end
+			end
+		end
+	end
+end
+
+--	calculate how much attacks hit/miss by
+function calculateHitMargin(nDefenseVal, nTotal)
+	if nDefenseVal then
+		if (rAction.nTotal - nDefenseVal) > 0 then
+			nHitMargin = rAction.nTotal - nDefenseVal
+		elseif (rAction.nTotal - nDefenseVal) < 0 then
+			nHitMargin = nDefenseVal - rAction.nTotal
+		end
+		nHitMargin = math.floor(nHitMargin / 5) * 5
+		
+		if nHitMargin > 0 then return nHitMargin; end
+	end
+end
+
 function onAttack_new(rSource, rTarget, rRoll)
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
@@ -177,18 +222,6 @@ function onAttack_new(rSource, rTarget, rRoll)
 		end
 	end
 
-	-- start section of bmos additions
-	local nHitMargin = nil -- bmos adding hit margin tracking
-	if nDefenseVal then
-		if (rAction.nTotal - nDefenseVal) > 0 then
-			nHitMargin = rAction.nTotal - nDefenseVal
-		elseif (rAction.nTotal - nDefenseVal) < 0 then
-			nHitMargin = nDefenseVal - rAction.nTotal
-		end
-		nHitMargin = math.floor(nHitMargin / 5) * 5
-	end
-	-- end section of bmos additions
-
 	rAction.nFirstDie = 0;
 	if #(rRoll.aDice) > 0 then
 		rAction.nFirstDie = rRoll.aDice[1].result or 0;
@@ -256,7 +289,8 @@ function onAttack_new(rSource, rTarget, rRoll)
 	end
 
 	-- bmos adding hit margin tracking
-	if nHitMargin and nHitMargin > 0 then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
+	local nHitMargin = calculateHitMargin(nDefenseVal, rAction.nTotal)
+	if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
 	-- end bmos adding hit margin tracking
 
 	Comm.deliverChatMessage(rMessage);
@@ -353,34 +387,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 	-- END
 
 	-- bmos adding automatic ammunition ticker and chat messaging
-	if bIsSourcePC and not rRoll.sDesc:match('%[CONFIRM%]') and (rRoll.sDesc:match('%[ATTACK %(R%)%]') or rRoll.sDesc:match('%[ATTACK #%d+ %(R%)%]')) then
-		local sWeaponName = rRoll.sDesc;
-		sWeaponName = sWeaponName:gsub('%[ATTACK %(R%)%]', '');
-		sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(R%)%]', '');
-		sWeaponName = sWeaponName:gsub('%[.+%]', '');
-		sWeaponName = StringManager.trim(sWeaponName);
-
-		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
-		for _,v in pairs(nodeWeaponList.getChildren()) do
-			if StringManager.trim(DB.getValue(v, 'name', '')) == sWeaponName then
-				local nMaxAmmo = DB.getValue(v, 'maxammo', 0);
-				local nAmmoUsed = DB.getValue(v, 'ammo', 0) + 1;
-
-				if nMaxAmmo ~= 0 and not EffectManager35E.hasEffectCondition(rSource, 'INFAMMO') then
-					if nAmmoUsed == nMaxAmmo then
-						ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
-						DB.setValue(v, 'ammo', 'number', nAmmoUsed);
-					else
-						DB.setValue(v, 'ammo', 'number', nAmmoUsed);
-					end
-
-					if rAction.sResult == 'miss' or rAction.sResult == 'fumble' then -- bmos adding arrow recovery automation
-						DB.setValue(v, 'missedshots', 'number', DB.getValue(v, 'missedshots', 0) + 1);
-					end
-				end
-			end
-		end
-	end
+	ammoTracker(rSource, bIsSourcePC, rRoll.sDesc, rAction.sResult)
 	-- end bmos adding automatic ammunition ticker and chat messaging
 
 	if rTarget then
