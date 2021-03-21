@@ -179,9 +179,14 @@ function onAttack_new(rSource, rTarget, rRoll)
 
 	-- start section of bmos additions
 	local nHitMargin = nil -- bmos adding hit margin tracking
-	if nDefenseVal and (rAction.nTotal - nDefenseVal) > 0 then nHitMargin = rAction.nTotal - nDefenseVal end
-	if nHitMargin then nHitMargin = math.floor(nHitMargin / 5); nHitMargin = nHitMargin * 5 end
-	if nHitMargin and nHitMargin <= 0 then nHitMargin = nil end
+	if nDefenseVal then
+		if (rAction.nTotal - nDefenseVal) > 0 then
+			nHitMargin = rAction.nTotal - nDefenseVal
+		elseif (rAction.nTotal - nDefenseVal) < 0 then
+			nHitMargin = nDefenseVal - rAction.nTotal
+		end
+		nHitMargin = math.floor(nHitMargin / 5) * 5
+	end
 	-- end section of bmos additions
 
 	rAction.nFirstDie = 0;
@@ -199,11 +204,9 @@ function onAttack_new(rSource, rTarget, rRoll)
 				rAction.sResult = "hit";
 				rAction.bCritThreat = true;
 				table.insert(rAction.aMessages, "[AUTOMATIC HIT]");
-				if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end -- bmos adding hit margin tracking
 			else
 				rAction.sResult = "crit";
 				table.insert(rAction.aMessages, "[CRITICAL HIT]");
-				if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end -- bmos adding hit margin tracking
 			end
 		else
 			rAction.sResult = "hit";
@@ -227,7 +230,6 @@ function onAttack_new(rSource, rTarget, rRoll)
 				rAction.sResult = "hit";
 				table.insert(rAction.aMessages, "[HIT]");
 			end
-			if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end -- bmos adding hit margin tracking
 		else
 			rAction.sResult = "miss";
 			if rRoll.sType == "critconfirm" then
@@ -252,6 +254,10 @@ function onAttack_new(rSource, rTarget, rRoll)
 	if ((rRoll.sType == "critconfirm") or not rAction.bCritThreat) and (nMissChance > 0) then
 		table.insert(rAction.aMessages, "[MISS CHANCE " .. nMissChance .. "%]");
 	end
+
+	-- bmos adding hit margin tracking
+	if nHitMargin and nHitMargin > 0 then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
+	-- end bmos adding hit margin tracking
 
 	Comm.deliverChatMessage(rMessage);
 
