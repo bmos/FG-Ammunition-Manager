@@ -148,18 +148,16 @@ function onAttack_new(rSource, rTarget, rRoll)
 	rAction.aMessages = {};
 
 	-- If we have a target, then calculate the defense we need to exceed
-	-- KEL Add nAdditionalDefenseForCC
-	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance, nAdditionalDefenseForCC;
+	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance;
 	if rRoll.sType == "critconfirm" then
-		local sDefenseVal = string.match(rRoll.sDesc, " %[AC ([%-%+]?%d+)%]");
+		local sDefenseVal = string.match(rRoll.sDesc, " %[AC (%d+)%]");
 		if sDefenseVal then
 			nDefenseVal = tonumber(sDefenseVal);
-			-- Debug.console(nDefenseVal);
 		end
 		nMissChance = tonumber(string.match(rRoll.sDesc, "%[MISS CHANCE (%d+)%%%]")) or 0;
-		rMessage.text = string.gsub(rMessage.text, " %[AC ([%-%+]?%d+)%]", "");
+		rMessage.text = string.gsub(rMessage.text, " %[AC %d+%]", "");
 		rMessage.text = string.gsub(rMessage.text, " %[MISS CHANCE %d+%%%]", "");
-
+		
 		local sAtkEffectsMatch = " %[" .. Interface.getString("effects_tag") .. " ([+-]?%d+)%]";
 		local sAtkEffectsBonus = string.match(rRoll.sDesc, sAtkEffectsMatch);
 		if sAtkEffectsBonus then
@@ -173,33 +171,7 @@ function onAttack_new(rSource, rTarget, rRoll)
 			rMessage.text = string.gsub(rMessage.text, sAtkEffectsClear, "");
 		end
 	else
-		nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance, nAdditionalDefenseForCC = ActorManager35E.getDefenseValue(rSource, rTarget, rRoll);
-		-- KEL CONC on Attacker
-		-- DETERMINE ATTACK TYPE AND DEFENSE
-		local AttackType = "M";
-		if rRoll.sType == "attack" then
-			AttackType = string.match(rRoll.sDesc, "%[ATTACK.*%((%w+)%)%]");
-		end
-		local Opportunity = string.match(rRoll.sDesc, "%[OPPORTUNITY%]");
-		-- BUILD ATTACK FILTER
-		local AttackFilter = {};
-		if AttackType == "M" then
-			table.insert(AttackFilter, "melee");
-		elseif AttackType == "R" then
-			table.insert(AttackFilter, "ranged");
-		end
-		if Opportunity then
-			table.insert(AttackFilter, "opportunity");
-		end
-		local aVConcealEffect, aVConcealCount = EffectManager35E.getEffectsBonusByType(rSource, "TVCONC", true, AttackFilter, rTarget, false, rRoll.tags);
-
-		if aVConcealCount > 0 then
-			rMessage.text = rMessage.text .. " [VCONC]";
-			for _,v in  pairs(aVConcealEffect) do
-				nMissChance = math.max(v.mod,nMissChance);
-			end
-		end
-		-- END
+		nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance = ActorManager35E.getDefenseValue(rSource, rTarget, rRoll);
 		if nAtkEffectsBonus ~= 0 then
 			rAction.nTotal = rAction.nTotal + nAtkEffectsBonus;
 			local sFormat = "[" .. Interface.getString("effects_tag") .. " %+d]";
@@ -244,6 +216,14 @@ function onAttack_new(rSource, rTarget, rRoll)
 		else
 			rAction.sResult = "hit";
 			table.insert(rAction.aMessages, "[AUTOMATIC HIT]");
+		end
+	elseif rAction.nFirstDie == 1 then
+		if rRoll.sType == "critconfirm" then
+			table.insert(rAction.aMessages, "[CRIT NOT CONFIRMED]");
+			rAction.sResult = "miss";
+		else
+			table.insert(rAction.aMessages, "[AUTOMATIC MISS]");
+			rAction.sResult = "fumble";
 		end
 	elseif nDefenseVal then
 		if rAction.nTotal >= nDefenseVal then
@@ -305,8 +285,8 @@ function onAttack_new(rSource, rTarget, rRoll)
 	else
 		if rAction.bCritThreat then
 			local rCritConfirmRoll = { sType = "critconfirm", aDice = {"d20"}, bTower = rRoll.bTower, bSecret = rRoll.bSecret };
-
-			local nCCMod = EffectManager35E.getEffectsBonus(rSource, {"CC"}, true, nil, rTarget, false, rRoll.tags);
+				
+			local nCCMod = EffectManager35E.getEffectsBonus(rSource, {"CC"}, true, nil, rTarget);
 			if nCCMod ~= 0 then
 				rCritConfirmRoll.sDesc = string.format("%s [CONFIRM %+d]", rRoll.sDesc, nCCMod);
 			else
@@ -316,18 +296,9 @@ function onAttack_new(rSource, rTarget, rRoll)
 				rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. " [MISS CHANCE " .. nMissChance .. "%]";
 			end
 			rCritConfirmRoll.nMod = rRoll.nMod + nCCMod;
-			-- KEL ACCC stuff
-			local nNewDefenseVal = 0;
-			if nAdditionalDefenseForCC and nAdditionalDefenseForCC ~= 0 and nDefenseVal then
-				nNewDefenseVal = nAdditionalDefenseForCC;
-				rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. " [CC DEF EFFECTS " .. nAdditionalDefenseForCC .. "]";
-			end
-			-- END
+
 			if nDefenseVal then
-				--KEL
-				nNewDefenseVal = nNewDefenseVal + nDefenseVal;
-				rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. " [AC " .. nNewDefenseVal .. "]";
-				--END
+				rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. " [AC " .. nDefenseVal .. "]";
 			end
 
 			if nAtkEffectsBonus and nAtkEffectsBonus ~= 0 then
@@ -344,16 +315,6 @@ function onAttack_new(rSource, rTarget, rRoll)
 			nMissChance = 0;
 		end
 	end
-	-- KEL Adding informations about Full attack to avoid loosing target on misschance, similar for action type
-	local bFullAttack = false;
-	local bActionStuffForOverlay = false;
-	if string.match(rRoll.sDesc, "%[FULL%]") then
-		bFullAttack = true;
-	end
-	if string.match(rRoll.sDesc, "%[ACTION%]") then
-		bActionStuffForOverlay = true;
-	end
-	-- END
 	if bRollMissChance and (nMissChance > 0) then
 		local aMissChanceDice = { "d100" };
 		if not UtilityManager.isClientFGU() then
@@ -362,9 +323,9 @@ function onAttack_new(rSource, rTarget, rRoll)
 		local sMissChanceText;
 		sMissChanceText = string.gsub(rMessage.text, " %[CRIT %d+%]", "");
 		sMissChanceText = string.gsub(sMissChanceText, " %[CONFIRM%]", "");
-		local rMissChanceRoll = { sType = "misschance", sDesc = sMissChanceText .. " [MISS CHANCE " .. nMissChance .. "%]", aDice = aMissChanceDice, nMod = 0, fullattack = bFullAttack, actionStuffForOverlay = bActionStuffForOverlay };
+		local rMissChanceRoll = { sType = "misschance", sDesc = sMissChanceText .. " [MISS CHANCE " .. nMissChance .. "%]", aDice = aMissChanceDice, nMod = 0 };
 		ActionsManager.roll(rSource, rTarget, rMissChanceRoll);
-		-- KEL compatibility test with mirror image handler
+	-- KEL compatibility test with mirror image handler
 	elseif MirrorImageHandler and bRollMissChance then
 		local nMirrorImageCount = MirrorImageHandler.getMirrorImageCount(rTarget);
 		if nMirrorImageCount > 0 then
@@ -377,14 +338,6 @@ function onAttack_new(rSource, rTarget, rRoll)
 			end
 		end
 	end
-
-	-- KEL Save overlay
-	if (rAction.sResult == "miss" or rAction.sResult == "fumble") and string.match(rRoll.sDesc, "%[ACTION%]") and rRoll.sType ~= "critconfirm" then
-			TokenManager2.setSaveOverlay(ActorManager.getCTNode(rTarget), -3);
-	elseif (rAction.sResult == "hit" or rAction.sResult == "crit") and string.match(rRoll.sDesc, "%[ACTION%]") and rRoll.sType ~= "critconfirm" then
-		TokenManager2.setSaveOverlay(ActorManager.getCTNode(rTarget), -1);
-	end
-	-- END
 
 	-- bmos adding automatic ammunition ticker and chat messaging
 	ammoTracker(rSource, bIsSourcePC, rRoll.sDesc, rAction.sResult)
