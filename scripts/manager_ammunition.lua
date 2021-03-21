@@ -36,10 +36,10 @@ end
 --	calculate how much attacks hit/miss by
 function calculateHitMargin(nDefenseVal, nTotal)
 	if nDefenseVal then
-		if (rAction.nTotal - nDefenseVal) > 0 then
-			nHitMargin = rAction.nTotal - nDefenseVal
-		elseif (rAction.nTotal - nDefenseVal) < 0 then
-			nHitMargin = nDefenseVal - rAction.nTotal
+		if (nTotal - nDefenseVal) > 0 then
+			nHitMargin = nTotal - nDefenseVal
+		elseif (nTotal - nDefenseVal) < 0 then
+			nHitMargin = nDefenseVal - nTotal
 		end
 		nHitMargin = math.floor(nHitMargin / 5) * 5
 		
