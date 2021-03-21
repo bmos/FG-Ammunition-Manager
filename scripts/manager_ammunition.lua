@@ -178,10 +178,6 @@ function onAttack_new(rSource, rTarget, rRoll)
 	end
 
 	-- start section of bmos additions
-	local bNoFumble = false -- bmos checking for Always a Chance (Ex)
-	if MythicAbilties and rSource then
-		bNoFumble = hasSpecialAbility(rSource, 'Always a Chance', true, true, true);
-	end
 	local nHitMargin = nil -- bmos adding hit margin tracking
 	if nDefenseVal and (rAction.nTotal - nDefenseVal) > 0 then nHitMargin = rAction.nTotal - nDefenseVal end
 	if nHitMargin then nHitMargin = math.floor(nHitMargin / 5); nHitMargin = nHitMargin * 5 end
@@ -212,14 +208,6 @@ function onAttack_new(rSource, rTarget, rRoll)
 		else
 			rAction.sResult = "hit";
 			table.insert(rAction.aMessages, "[AUTOMATIC HIT]");
-		end
-	elseif not bNoFumble and rAction.nFirstDie == 1 then -- bmos added "not bNoFumble and"
-		if rRoll.sType == "critconfirm" then
-			table.insert(rAction.aMessages, "[CRIT NOT CONFIRMED]");
-			rAction.sResult = "miss";
-		else
-			table.insert(rAction.aMessages, "[AUTOMATIC MISS]");
-			rAction.sResult = "fumble";
 		end
 	elseif nDefenseVal then
 		if rAction.nTotal >= nDefenseVal then
