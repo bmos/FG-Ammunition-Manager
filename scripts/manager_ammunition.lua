@@ -182,10 +182,13 @@ local function onAttack_new(rSource, rTarget, rRoll)
 		table.insert(rAction.aMessages, "[MISS CHANCE " .. nMissChance .. "%]");
 	end
 
-	-- bmos adding hit margin tracking
-	local nHitMargin = calculateHitMargin(nDefenseVal, rAction.nTotal)
-	if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
-	-- end bmos adding hit margin tracking
+	--	bmos adding hit margin tracking
+	--	for compatibility with ammunition tracker, add this here in your onAttack function
+	if AmmunitionManager then
+		local nHitMargin = AmmunitionManager.calculateHitMargin(nDefenseVal, rAction.nTotal)
+		if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
+	end
+	--	end bmos adding hit margin tracking
 
 	Comm.deliverChatMessage(rMessage);
 
@@ -253,9 +256,10 @@ local function onAttack_new(rSource, rTarget, rRoll)
 		end
 	end
 
-	-- bmos adding automatic ammunition ticker and chat messaging
-	ammoTracker(rSource, bIsSourcePC, rRoll.sDesc, rAction.sResult)
-	-- end bmos adding automatic ammunition ticker and chat messaging
+	--	bmos adding automatic ammunition ticker and chat messaging
+	--	for compatibility with ammunition tracker, add this here in your onAttack function
+	if AmmunitionManager then AmmunitionManager.ammoTracker(rSource, bIsSourcePC, rRoll.sDesc, rAction.sResult) end
+	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if rTarget then
 		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
