@@ -91,7 +91,7 @@ end
 function onAttack_new(rSource, rTarget, rRoll)
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
-	local bIsSourcePC = (rSource and ActorManager.isPC(rSource));
+	local bIsSourcePC = ActorManager.isPC(rSource);
 	local bAllowCC = OptionsManager.isOption("HRCC", "on") or (not bIsSourcePC and OptionsManager.isOption("HRCC", "npc"));
 
 	if rRoll.sDesc:match("%[CMB") then
