@@ -51,21 +51,19 @@
 						
 						return true;
 					end
-					function automateAmmo()
-						local nodeAttack = getDatabaseNode().getParent();
-						
-						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
-						DB.setValue(nodeAttack, 'isloaded', 'number', 0);
+					function automateAmmo(nodeWeapon)
+						local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
+						DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
 						if window.isloaded.hasLoadAction() and bNotLoaded then
-							local rActor = ActorManager.resolveActor(nodeAttack.getChild('...'));
-							local sWeaponName = string.lower(DB.getValue(nodeAttack, 'name', 'ranged weapon'));
+							local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
+							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 							
 							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), nil, rActor);
 							return true;
 						end
 					end
 					function onDoubleClick(x,y)
-						if not automateAmmo() then return action(); end
+						if not automateAmmo(window.getDatabaseNode()) then return action(); end
 					end
 				</script>
 			</number_charweaponfullattack>		
@@ -89,7 +87,7 @@
 						end
 					end
 					function onDoubleClick(x,y)
-						if not window.attacks.automateAmmo() then return action(); end
+						if not window.attacks.automateAmmo(window.getDatabaseNode()) then return action(); end
 					end
 				</script>
 			</number_charweaponattacktotal>
@@ -113,7 +111,7 @@
 						end
 					end
 					function onDoubleClick(x,y)
-						if not window.attacks.automateAmmo() then return action(); end
+						if not window.attacks.automateAmmo(window.getDatabaseNode()) then return action(); end
 					end
 				</script>
 			</number_charweaponattacktotal>
@@ -137,7 +135,7 @@
 						end
 					end
 					function onDoubleClick(x,y)
-						if not window.attacks.automateAmmo() then return action(); end
+						if not window.attacks.automateAmmo(window.getDatabaseNode()) then return action(); end
 					end
 				</script>
 			</number_charweaponattacktotal>
@@ -161,7 +159,7 @@
 						end
 					end
 					function onDoubleClick(x,y)
-						if not window.attacks.automateAmmo() then return action(); end
+						if not window.attacks.automateAmmo(window.getDatabaseNode()) then return action(); end
 					end
 				</script>
 			</number_charweaponattacktotal>
