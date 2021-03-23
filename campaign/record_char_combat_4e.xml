@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- 
+  Please see the LICENSE.md file included with this distribution for 
+  attribution and copyright information.
+-->
+
+<root>
+	<windowclass name="char_weapon" merge="join">
+		<sheetdata>
+			<state_charweapontype name="type">
+				<script>
+					function onValueChanged()
+						if super and super.onValueChanged then
+							super.onValueChanged();
+						end
+						window.isloaded.onDataChanged();
+					end
+				</script>
+			</state_charweapontype>
+			
+			<stringu name="name">
+				<script>
+					function onValueChanged()
+						if super and super.onValueChanged then
+							super.onValueChanged();
+						end
+						window.isloaded.onDataChanged();
+					end
+				</script>
+			</stringu>
+			
+			<genericcontrol name="attackicon">
+				<script>
+					function action(draginfo)
+						local rActor, rAction, rFocus = CharManager.getAdvancedRollStructures("attack", nil, window.getDatabaseNode());
+
+						local nodeWeapon = window.getDatabaseNode();
+						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
+						if not (nMaxAmmo > 0) or (1 &lt;= nMaxAttacks) then	
+							ActionAttack.performRoll(draginfo, rActor, rAction, rFocus);
+						elseif nMaxAmmo > 0 then
+							ChatManager.Message(Interface.getString('char_actions_noammo'), nil, rActor);
+						end
+
+						return true;
+					end
+					local function automateAmmo(nodeWeapon)
+						local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
+						DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
+						if window.isloaded.hasLoadAction() and bNotLoaded then
+							local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
+							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
+							
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), nil, rActor);
+							return true;
+						end
+					end
+					function onDoubleClick(x,y)
+						if not automateAmmo(window.getDatabaseNode()) then return action(); end
+					end
+					function onDragStart(button, x, y, draginfo)
+						if not automateAmmo(window.getDatabaseNode()) then return action(draginfo); end
+					end
+				</script>
+			</genericcontrol>
+			
+			<buttonfield name="isloaded">
+				<anchored width="12" height="12">
+					<top parent="ammo_label" anchor="top" relation="relative" offset="4" />
+					<right parent="ammo_label" anchor="left" relation="relative" offset="0" />
+				</anchored>
+				<state icon="button_checkoff" tooltipres="tooltip_actions_unloaded" />
+				<state icon="button_checkon" tooltipres="tooltip_actions_loaded" />
+				<default>0</default>
+				<script>
+					function onInit()
+						local sNode = getDatabaseNode().getParent().getNodeName();
+						DB.addHandler(sNode, "onChildUpdate", onDataChanged);
+						onDataChanged();
+					end
+					function hasLoadAction()
+						local bRanged = (window.type.getValue() == 1);
+						local sWeaponName = string.lower(DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon'));
+						local bHasLoadAction = false
+						local tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
+						for _,v in ipairs(tLoadWeapons) do
+							if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
+						end
+						
+						return (bRanged and bHasLoadAction)
+					end
+					function onDataChanged()
+						setVisible(hasLoadAction())
+					end
+					function onButtonPress()
+						local nodeActor = getDatabaseNode().getChild('....');
+						local rActor = ActorManager.resolveActor(nodeActor);
+						local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
+
+						local nodeWeapon = window.getDatabaseNode();
+						local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
+						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
+						if (getValue() == 1) and nMaxAttacks >= 1 then
+							ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), nil, rActor);
+						end
+					end
+				</script>
+			</buttonfield>
+		</sheetdata>
+	</windowclass>
+</root>
