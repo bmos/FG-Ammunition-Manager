@@ -16,7 +16,12 @@ function ammoTracker(rSource, bIsSourcePC, sDesc, sResult)
 				local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
 				local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
 
-				if nMaxAmmo ~= 0 and not EffectManager35E.hasEffectCondition(rSource, 'INFAMMO') then
+				local bInfiniteAmmo
+				if sRuleset == "PFRPG" or sRuleset == "3.5E" then
+					bInfiniteAmmo = EffectManager35E.hasEffectCondition(rSource, 'INFAMMO')
+				end
+
+				if nMaxAmmo ~= 0 and not bInfiniteAmmo then
 					if nAmmoUsed == nMaxAmmo then
 						ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
 						DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
