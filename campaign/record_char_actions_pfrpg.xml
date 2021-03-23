@@ -274,7 +274,7 @@
 			</basicnumber>
 			<label_fieldtop name="label_recoverypercentage">
 				<anchored to="recoverypercentage" />
-				<static textres="weapon_label_recoverypercentage" />
+				<tooltip textres="weapon_tooltip_recoverypercentage" />
 			</label_fieldtop>
 			<label name="label_ammopercentof">
 				<anchored to="recoverypercentage" position="righthigh" offset="5,0" width="35" />
@@ -290,18 +290,6 @@
 			<label_fieldtop name="label_missedshots">
 				<anchored to="missedshots" />
 				<static textres="weapon_label_missedshots" />
-				<!-- <script>
-					function onInit()
-						if not Session.IsHost then
-							window.header_ammo.setVisible(false)
-							window.missedshots.setVisible(false)
-							window.label_missedshots.setVisible(false)
-							window.label_ammopercentof.setVisible(false)
-							window.recoverypercentage.setVisible(false)
-							window.label_recoverypercentage.setVisible(false)
-						end
-					end
-				</script> -->
 			</label_fieldtop>
 			<stringu name="label_ammotutorial">
 				<anchored to="missedshots" position="righthigh" offset="5,0" width="250" />
