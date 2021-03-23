@@ -3,8 +3,8 @@
 --
 
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
-function ammoTracker(rSource, bIsSourcePC, sDesc, sResult)
-	if bIsSourcePC and not sDesc:match('%[CONFIRM%]') and (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) then
+function ammoTracker(rSource, sDesc, sResult)
+	if not sDesc:match('%[CONFIRM%]') and (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) then
 		local sWeaponName = sDesc:gsub('%[ATTACK %(R%)%]', '');
 		sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(R%)%]', '');
 		sWeaponName = sWeaponName:gsub('%[.+%]', '');
@@ -263,7 +263,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager then AmmunitionManager.ammoTracker(rSource, bIsSourcePC, rRoll.sDesc, rAction.sResult) end
+	if AmmunitionManager and bIsSourcePC then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if rTarget then
