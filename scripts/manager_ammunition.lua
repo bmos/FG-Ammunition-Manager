@@ -8,6 +8,7 @@ function ammoTracker(rSource, sDesc, sResult)
 		local sWeaponName = sDesc:gsub('%[ATTACK %(R%)%]', '');
 		sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(R%)%]', '');
 		sWeaponName = sWeaponName:gsub('%[.+%]', '');
+		sWeaponName = sWeaponName:gsub(' %(vs%. .+%)', '');
 		sWeaponName = StringManager.trim(sWeaponName);
 
 		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
@@ -19,6 +20,8 @@ function ammoTracker(rSource, sDesc, sResult)
 				local bInfiniteAmmo
 				if sRuleset == "PFRPG" or sRuleset == "3.5E" then
 					bInfiniteAmmo = EffectManager35E.hasEffectCondition(rSource, 'INFAMMO')
+				elseif sRuleset == "4E" then
+					bInfiniteAmmo = EffectManager4E.hasEffectCondition(rSource, 'INFAMMO')
 				end
 
 				if nMaxAmmo ~= 0 and not bInfiniteAmmo then
@@ -294,11 +297,135 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	end
 end
 
+local function onAttack_4e(rSource, rTarget, rRoll)
+	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
+
+	local rAction = {};
+	rAction.nTotal = ActionsManager.total(rRoll);
+	rAction.aMessages = {};
+	
+	-- If we have a target, then calculate the defense we need to exceed
+	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus = ActorManager4E.getDefenseValue(rSource, rTarget, rRoll);
+	if nAtkEffectsBonus ~= 0 then
+		rAction.nTotal = rAction.nTotal + nAtkEffectsBonus;
+		local sFormat = "[" .. Interface.getString("effects_tag") .. " %+d]"
+		table.insert(rAction.aMessages, string.format(sFormat, nAtkEffectsBonus));
+	end
+	if nDefEffectsBonus ~= 0 then
+		nDefenseVal = nDefenseVal + nDefEffectsBonus;
+		local sFormat = "[" .. Interface.getString("effects_def_tag") .. " %+d]"
+		table.insert(rAction.aMessages, string.format(sFormat, nDefEffectsBonus));
+	end
+
+	-- Get the crit threshold
+	rAction.nCrit = 20;	
+	local sAltCritRange = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
+	if sAltCritRange then
+		rAction.nCrit = tonumber(sAltCritRange) or 20;
+		if (rAction.nCrit <= 1) or (rAction.nCrit > 20) then
+			rAction.nCrit = 20;
+		end
+	end
+	
+	rAction.nFirstDie = 0;
+	if #(rRoll.aDice) > 0 then
+		rAction.nFirstDie = rRoll.aDice[1].result or 0;
+	end
+	if rAction.nFirstDie >= 20 then
+		rAction.bSpecial = true;
+		if nDefenseVal then
+			if rAction.nTotal >= nDefenseVal then
+				rAction.sResult = "crit";
+				table.insert(rAction.aMessages, "[CRITICAL HIT]");
+			else
+				rAction.sResult = "hit";
+				table.insert(rAction.aMessages, "[AUTOMATIC HIT]");
+			end
+		else
+			table.insert(rAction.aMessages, "[AUTOMATIC HIT, CHECK FOR CRITICAL]");
+		end
+	elseif rAction.nFirstDie == 1 then
+		rAction.sResult = "fumble";
+		table.insert(rAction.aMessages, "[AUTOMATIC MISS]");
+	elseif nDefenseVal then
+		if rAction.nTotal >= nDefenseVal then
+			if rAction.nFirstDie >= rAction.nCrit then
+				rAction.sResult = "crit";
+				table.insert(rAction.aMessages, "[CRITICAL HIT]");
+			else
+				rAction.sResult = "hit";
+				table.insert(rAction.aMessages, "[HIT]");
+			end
+		else
+			rAction.sResult = "miss";
+			table.insert(rAction.aMessages, "[MISS]");
+		end
+	elseif rAction.nFirstDie >= rAction.nCrit then
+		rAction.sResult = "crit";
+		table.insert(rAction.aMessages, "[CHECK FOR CRITICAL]");
+	end
+
+	--	bmos adding hit margin tracking
+	--	for compatibility with ammunition tracker, add this here in your onAttack function
+	if AmmunitionManager then
+		local nHitMargin = AmmunitionManager.calculateHitMargin(nDefenseVal, rAction.nTotal)
+		if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
+	end
+	--	end bmos adding hit margin tracking
+
+	Comm.deliverChatMessage(rMessage);
+	
+	--	bmos adding automatic ammunition ticker and chat messaging
+	--	for compatibility with ammunition tracker, add this here in your onAttack function
+	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
+	--	end bmos adding automatic ammunition ticker and chat messaging
+
+	if rTarget then
+		notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
+	end
+		
+	-- TRACK CRITICAL STATE
+	if rAction.sResult == "crit" then
+		setCritState(rSource, rTarget);
+	end
+		
+	-- REMOVE TARGET ON MISS OPTION
+	if rTarget then
+		if (rAction.sResult == "miss") or (rAction.sResult == "fumble") then
+			local bRemoveTarget = false;
+			if OptionsManager.isOption("RMMT", "on") then
+				bRemoveTarget = true;
+			elseif string.match(rRoll.sDesc, "%[RM%]") then
+				bRemoveTarget = true;
+			end
+			
+			if bRemoveTarget then
+				TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget));
+			end
+		end
+	end
+	
+	-- HANDLE FUMBLE/CRIT HOUSE RULES
+	local sOptionHRFC = OptionsManager.getOption("HRFC");
+	if rAction.sResult == "fumble" and ((sOptionHRFC == "both") or (sOptionHRFC == "fumble")) then
+		notifyApplyHRFC("Fumble");
+	end
+	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
+		notifyApplyHRFC("Critical Hit");
+	end
+	
+end
+
 -- Function Overrides
 function onInit()
 	-- remove original result handlers
 	ActionsManager.unregisterResultHandler("attack");
 
 	-- register new result handlers
-	ActionsManager.registerResultHandler("attack", onAttack_pfrpg);
+	local sRuleset = User.getRulesetName()
+	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
+		ActionsManager.registerResultHandler("attack", onAttack_pfrpg);
+	elseif sRuleset == "4E" then
+		ActionsManager.registerResultHandler("attack", onAttack_4e);
+	end
 end
