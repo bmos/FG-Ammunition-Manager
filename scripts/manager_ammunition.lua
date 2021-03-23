@@ -47,7 +47,7 @@ function calculateHitMargin(nDefenseVal, nTotal)
 	end
 end
 
-local function onAttack_new(rSource, rTarget, rRoll)
+local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
 	local bIsSourcePC = ActorManager.isPC(rSource);
@@ -291,12 +291,9 @@ end
 
 -- Function Overrides
 function onInit()
-	-- replace functions with new ones
-	ActionAttack.onAttack = onAttack_new;
-
 	-- remove original result handlers
 	ActionsManager.unregisterResultHandler("attack");
 
 	-- register new result handlers
-	ActionsManager.registerResultHandler("attack", onAttack_new);
+	ActionsManager.registerResultHandler("attack", onAttack_pfrpg);
 end
