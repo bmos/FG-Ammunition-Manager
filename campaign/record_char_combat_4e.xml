@@ -15,6 +15,9 @@
 							super.onValueChanged();
 						end
 						window.isloaded.onDataChanged();
+						window.recoverypercentage.setVisible(getValue() == 1)
+						window.label_ammopercentof.setVisible(getValue() == 1)
+						window.missedshots.setVisible(getValue() == 1)
 					end
 				</script>
 			</state_charweapontype>
@@ -109,6 +112,45 @@
 					end
 				</script>
 			</buttonfield>
+			<basicnumber name="recoverypercentage">
+				<anchored width="30" height="20">
+					<top parent="ammocounter" anchor="top" relation="relative" offset="0" />
+					<left parent="ammocounter" anchor="right" relation="relative" offset="15" />
+				</anchored>
+				<default>50</default>
+				<tooltip textres="weapon_tooltip_recoverypercentage" />
+				<script>
+					function onDoubleClick(x,y)
+						local nMisses = window.missedshots.getValue() or 0
+						if nMisses >= 1 then
+							local nPercent = 0.01 * (getValue() or 50)
+							local nAmmoRecovered = math.floor(nMisses * nPercent)
+							
+							local nodeActor = getDatabaseNode().getChild('....');
+							local rActor = ActorManager.resolveActor(nodeActor);
+							
+							ChatManager.Message(string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered), nil, rActor)
+
+							local nAmmoUsed = DB.getValue(window.getDatabaseNode(), 'ammo', 0) - nAmmoRecovered
+							if nAmmoUsed and nAmmoUsed &lt; 0 then ChatManager.Message(string.format(Interface.getString('char_actions_excessammunition'), -1 * nAmmoUsed), nil, rActor) end
+							DB.setValue(window.getDatabaseNode(), 'ammo', 'number', math.max(nAmmoUsed, 0))
+
+							window.missedshots.setValue(0)
+						end
+					end
+				</script>
+			</basicnumber>
+			<label name="label_ammopercentof">
+				<anchored to="recoverypercentage" position="righthigh" offset="5,0" width="32" />
+				<static>% of </static>
+				<center />
+			</label>
+			<basicnumber name="missedshots">
+				<anchored to="label_ammopercentof" position="righthigh" offset="5,0" width="30" height="20" />
+				<default>0</default>
+				<hideonvalue>0</hideonvalue>
+				<tooltip textres="weapon_tooltip_missedshots" />
+			</basicnumber>
 		</sheetdata>
 	</windowclass>
 </root>
