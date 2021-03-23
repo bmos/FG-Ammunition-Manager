@@ -16,7 +16,6 @@
 						window.isloaded.onDataChanged();
 					end
 				</script>
-				<delaykeyupdate />
 			</stringu>
 			
 			<number_charweaponfullattack name="attacks">
