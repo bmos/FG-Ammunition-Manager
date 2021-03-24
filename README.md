@@ -19,7 +19,8 @@ Double-clicking on this percentage will add those arrows back to the quiver.
 
 # Compatibility and Instructions
 This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.0.10 (2021-02-04).
-It works with the 3.5E, PFRPG, and 4E rulesets.
+
+This extension works with the 3.5E, PFRPG, and 4E rulesets.
 
 # Video Demonstration (click for video)
 [<img src="https://i.ytimg.com/vi_webp/svmaG5UvHlI/hqdefault.webp">](https://www.youtube.com/watch?v=svmaG5UvHlI)
