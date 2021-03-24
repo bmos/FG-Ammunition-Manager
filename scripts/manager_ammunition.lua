@@ -42,16 +42,17 @@ function ammoTracker(rSource, sDesc, sResult)
 end
 
 --	calculate how much attacks hit/miss by
-function calculateHitMargin(nDefenseVal, nTotal)
-	if nDefenseVal then
-		if (nTotal - nDefenseVal) > 0 then
-			nHitMargin = nTotal - nDefenseVal
-		elseif (nTotal - nDefenseVal) < 0 then
-			nHitMargin = nDefenseVal - nTotal
+function calculateMargin(nDC, nTotal)
+	if nDC and nTotal then
+		local nMargin = 0
+		if (nTotal - nDC) > 0 then
+			nMargin = nTotal - nDC
+		elseif (nTotal - nDC) < 0 then
+			nMargin = nDC - nTotal
 		end
-		nHitMargin = math.floor(nHitMargin / 5) * 5
+		nMargin = math.floor(nMargin / 5) * 5
 		
-		if nHitMargin > 0 then return nHitMargin; end
+		if nMargin > 0 then return nMargin; end
 	end
 end
 
@@ -193,7 +194,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager then
-		local nHitMargin = AmmunitionManager.calculateHitMargin(nDefenseVal, rAction.nTotal)
+		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rAction.nTotal)
 		if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
 	end
 	--	end bmos adding hit margin tracking
@@ -368,7 +369,7 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager then
-		local nHitMargin = AmmunitionManager.calculateHitMargin(nDefenseVal, rAction.nTotal)
+		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rAction.nTotal)
 		if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
 	end
 	--	end bmos adding hit margin tracking
