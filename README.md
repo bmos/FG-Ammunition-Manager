@@ -18,7 +18,8 @@ Double-clicking on this percentage will add those arrows back to the quiver.
 * Attack success/failure messages (range, melee, cmb, etc) for attack rolls will now also include a [BY 5+, 10+, etc] tag (for bull rush and such where there are tiers of success for each 5 that you exceed/fail the defensive stat).
 
 # Compatibility and Instructions
-This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.0.10 (2021-02-04). It works with the 3.5E, PFRPG, and 4E rulesets.
+This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.0.10 (2021-02-04).
+It works with the 3.5E, PFRPG, and 4E rulesets.
 
 # Video Demonstration (click for video)
 [<img src="https://i.ytimg.com/vi_webp/svmaG5UvHlI/hqdefault.webp">](https://www.youtube.com/watch?v=svmaG5UvHlI)
