@@ -381,12 +381,12 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if rTarget then
-		notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
+		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
 	end
 		
 	-- TRACK CRITICAL STATE
 	if rAction.sResult == "crit" then
-		setCritState(rSource, rTarget);
+		ActionAttack.setCritState(rSource, rTarget);
 	end
 		
 	-- REMOVE TARGET ON MISS OPTION
@@ -408,10 +408,10 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	-- HANDLE FUMBLE/CRIT HOUSE RULES
 	local sOptionHRFC = OptionsManager.getOption("HRFC");
 	if rAction.sResult == "fumble" and ((sOptionHRFC == "both") or (sOptionHRFC == "fumble")) then
-		notifyApplyHRFC("Fumble");
+		ActionAttack.notifyApplyHRFC("Fumble");
 	end
 	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
-		notifyApplyHRFC("Critical Hit");
+		ActionAttack.notifyApplyHRFC("Critical Hit");
 	end
 	
 end
