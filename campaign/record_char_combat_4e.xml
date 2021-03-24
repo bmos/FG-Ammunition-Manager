@@ -10,6 +10,12 @@
 		<sheetdata>
 			<state_charweapontype name="type">
 				<script>
+					function onInit()
+						if super and super.onInit then
+							super.onInit();
+						end
+						onValueChanged();
+					end
 					function onValueChanged()
 						if super and super.onValueChanged then
 							super.onValueChanged();
