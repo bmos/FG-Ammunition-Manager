@@ -8,9 +8,15 @@
 		<version>1.11</version>
 		<author>bmos (Wil Thieme)</author>
 		<description>This extension aids in tracking whether ranged weapons are loaded</description>
-		<ruleset name="PFRPG" />
-		<ruleset name="3.5E" />
-		<ruleset name="4E" />
+		<ruleset>
+			<name>3.5E</name>
+		</ruleset>
+		<ruleset>
+			<name>PFRPG</name>
+		</ruleset>
+		<ruleset>
+			<name>4E</name>
+		</ruleset>
 	</properties>
 
 	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v1.11:\nThis extension aids in tracking whether ranged weapons are loaded." font="emotefont" />
