@@ -106,7 +106,17 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 			table.insert(rAction.aMessages, string.format(sFormat, nDefEffectsBonus));
 		end
 	end
-
+	
+	-- for compatibility with mirror image handler, add this here in your onAttack function
+	-- Get the misfire threshold
+	if MirrorImageHandler then
+		local sMisfireRange = string.match(rRoll.sDesc, "%[MISFIRE (%d+)%]");
+		if sMisfireRange then
+			rAction.nMisfire = tonumber(sMisfireRange) or 0;
+		end
+	end
+	-- end compatibility with mirror image handler
+	
 	-- Get the crit threshold
 	rAction.nCrit = 20;
 	local sAltCritRange = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
@@ -145,9 +155,25 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 			table.insert(rAction.aMessages, "[CRIT NOT CONFIRMED]");
 			rAction.sResult = "miss";
 		else
-			table.insert(rAction.aMessages, "[AUTOMATIC MISS]");
-			rAction.sResult = "fumble";
+
+			-- for compatibility with mirror image handler, add this here in your onAttack function
+			if MirrorImageHandler and rAction.nMisfire and rRoll.sType == "attack" then
+				table.insert(rAction.aMessages, "[MISFIRE]");
+				rAction.sResult = "miss";
+			else
+			-- end compatibility with mirror image handler
+
+				table.insert(rAction.aMessages, "[AUTOMATIC MISS]");
+				rAction.sResult = "fumble";
+			end
 		end
+
+	-- for compatibility with mirror image handler, add this here in your onAttack function
+	elseif MirrorImageHandler and rAction.nMisfire and rAction.nFirstDie <= rAction.nMisfire and rRoll.sType == "attack" then
+		table.insert(rAction.aMessages, "[MISFIRE]");
+		rAction.sResult = "miss";
+	-- end compatibility with mirror image handler
+
 	elseif nDefenseVal then
 		if rAction.nTotal >= nDefenseVal then
 			if rRoll.sType == "critconfirm" then
@@ -235,10 +261,13 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 			ActionsManager.roll(rSource, { rTarget }, rCritConfirmRoll, true);
 		elseif (rAction.sResult ~= "miss") and (rAction.sResult ~= "fumble") then
 			bRollMissChance = true;
-		-- KEL compatibility test with mirror image handler
+
+		-- for compatibility with mirror image handler, add this here in your onAttack function 
 		elseif MirrorImageHandler and (rAction.sResult == "miss") and (nDefenseVal - rAction.nTotal <= 5) then
 			bRollMissChance = true;
 			nMissChance = 0;
+		-- end compatibility with mirror image handler
+
 		end
 	end
 	if bRollMissChance and (nMissChance > 0) then
@@ -251,11 +280,12 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 		sMissChanceText = string.gsub(sMissChanceText, " %[CONFIRM%]", "");
 		local rMissChanceRoll = { sType = "misschance", sDesc = sMissChanceText .. " [MISS CHANCE " .. nMissChance .. "%]", aDice = aMissChanceDice, nMod = 0 };
 		ActionsManager.roll(rSource, rTarget, rMissChanceRoll);
-	-- KEL compatibility test with mirror image handler
+
+	-- for compatibility with mirror image handler, add this here in your onAttack function
 	elseif MirrorImageHandler and bRollMissChance then
 		local nMirrorImageCount = MirrorImageHandler.getMirrorImageCount(rTarget);
 		if nMirrorImageCount > 0 then
-			if rAction.sResult == "hit" or rAction.sResult == "crit" or rRoll.sType == "critconfirm" then
+			if rAction.sResult == "hit" or rAction.sResult == "crit" then
 				local rMirrorImageRoll = MirrorImageHandler.getMirrorImageRoll(nMirrorImageCount, rRoll.sDesc);
 				ActionsManager.roll(rSource, rTarget, rMirrorImageRoll);
 			elseif rRoll.sType ~= "critconfirm" then
@@ -263,6 +293,8 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 				table.insert(rAction.aMessages, "[MIRROR IMAGE REMOVED BY NEAR MISS]");
 			end
 		end
+	-- end compatibility with mirror image handler
+
 	end
 
 	--	bmos adding automatic ammunition ticker and chat messaging
