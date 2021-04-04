@@ -2,6 +2,8 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
+tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
+
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
 function ammoTracker(rSource, sDesc, sResult)
 	if not sDesc:match('%[CONFIRM%]') and (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) then

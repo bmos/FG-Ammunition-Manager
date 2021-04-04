@@ -1,13 +1,45 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
 <!-- 
-  Please see the license.html file included with this distribution for 
+  Please see the LICENSE.md file included with this distribution for 
   attribution and copyright information.
 -->
 
 <root>
 	<windowclass name="charmini_weapon" merge="join">
 		<sheetdata>
+			<state_charweapontype name="type">
+				<script>
+					function onInit()
+						if super and super.onInit then
+							super.onInit();
+						end
+
+						DB.addHandler(getDatabaseNode().getChild('..name').getNodeName(), "onUpdate", onValueChanged);
+						DB.addHandler(getDatabaseNode().getChild('..type').getNodeName(), "onUpdate", onValueChanged);
+
+						onValueChanged();
+					end
+					function hasLoadAction()
+						local bHasLoadAction
+						local bRanged = (window.type.getValue() == 1);
+						local sWeaponName = string.lower(DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon'));
+						for _,v in pairs(AmmunitionManager.tLoadWeapons) do
+							if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
+						end
+
+						return (bRanged and bHasLoadAction)
+					end
+					function onValueChanged()
+						if super and super.onValueChanged then
+							super.onValueChanged();
+						end
+
+						window.isloaded.setVisible(hasLoadAction());
+					end
+				</script>
+			</state_charweapontype>
+			
 			<number_charweaponfullattack name="attacks">
 				<anchored to="attackicons" position="over" />
 				<readonly />
@@ -16,13 +48,13 @@
 						local nValue = getValue();
 						local nodeWeapon = window.getDatabaseNode();
 						local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
-						
+
 						local rRolls = {};
 						local sAttack, aAttackDice, nAttackMod;
 						for i = 1, getValue() do
 							rAttack.modifier = DB.getValue(nodeWeapon, "attack" .. i, 0);
 							rAttack.order = i;
-							
+
 							local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
 							local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
 							if not (nMaxAmmo > 0) or (i &lt;= nMaxAttacks) then	
@@ -31,25 +63,25 @@
 								ChatManager.Message(Interface.getString('char_actions_noammo'), nil, rActor);
 							end
 						end
-						
+
 						if not OptionsManager.isOption("RMMT", "off") and #rRolls > 1 then
 							for _,v in ipairs(rRolls) do
 								v.sDesc = v.sDesc .. " [FULL]";
 							end
 						end
-						
+
 						ActionsManager.performMultiAction(draginfo, rActor, "attack", rRolls);
-						
+
 						return true;
 					end
 					function automateAmmo()
 						local nodeAttack = getDatabaseNode().getParent();
-						
+
 						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
-						if window.isloaded.hasLoadAction() and bNotLoaded then
+						if window.type.hasLoadAction() and bNotLoaded then
 							local rActor = ActorManager.resolveActor(nodeAttack.getChild('...'));
 							local sWeaponName = string.lower(DB.getValue(nodeAttack, 'name', 'ranged weapon'));
-							
+
 							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), nil, rActor);
 							DB.setValue(nodeAttack, 'isloaded', 'number', 0);
 							return true;
@@ -71,7 +103,7 @@
 						local rActor, rAttack = CharManager.getWeaponAttackRollStructures(window.getDatabaseNode());
 						rAttack.modifier = getValue();
 						rAttack.order = tonumber(string.sub(getName(), 7)) or 1;
-						
+
 						local nodeWeapon = window.getDatabaseNode();
 						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
 						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
@@ -95,36 +127,16 @@
 				<state icon="button_checkon" tooltipres="tooltip_actions_loaded" />
 				<default>0</default>
 				<script>
-					function onInit()
-						local sNode = getDatabaseNode().getParent().getNodeName();
-						DB.addHandler(sNode, "onChildUpdate", onDataChanged);
-						onDataChanged();
-					end
-					function hasLoadAction()
-						local bRanged = (window.type.getValue() == 1);
-						local sWeaponName = string.lower(DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon'));
-						local bHasLoadAction = false
-						local tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
-						for _,v in pairs(tLoadWeapons) do
-							if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
-						end
-						
-						if bRanged and bHasLoadAction then return true; end
-					end
-					function onDataChanged()
-						if hasLoadAction() then setVisible(true); else setVisible(false); end
-					end
 					function onButtonPress()
-						local nodeActor = getDatabaseNode().getChild('....');
-						local rActor = ActorManager.resolveActor(nodeActor);
-						local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
-
+						local rActor = ActorManager.resolveActor(getDatabaseNode().getChild('....'));
 						local nodeWeapon = window.getDatabaseNode();
 						local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
-
 						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
 						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
-						if (getValue() == 1) and nMaxAttacks >= 1 then ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), nil, rActor); end
+
+						if (getValue() == 1) and nMaxAttacks >= 0 then
+							ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), nil, rActor)
+						end
 					end
 				</script>
 			</buttonfield>
