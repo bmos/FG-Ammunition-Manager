@@ -75,26 +75,13 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	-- If we have a target, then calculate the defense we need to exceed
 	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance;
 	if rRoll.sType == "critconfirm" then
-		local sDefenseVal = string.match(rRoll.sDesc, " %[AC (%d+)%]");
+		local sDefenseVal = rRoll.sDesc:match(" %[AC (%d+)%]");
 		if sDefenseVal then
 			nDefenseVal = tonumber(sDefenseVal);
 		end
-		nMissChance = tonumber(string.match(rRoll.sDesc, "%[MISS CHANCE (%d+)%%%]")) or 0;
-		rMessage.text = string.gsub(rMessage.text, " %[AC %d+%]", "");
-		rMessage.text = string.gsub(rMessage.text, " %[MISS CHANCE %d+%%%]", "");
-		
-		local sAtkEffectsMatch = " %[" .. Interface.getString("effects_tag") .. " ([+-]?%d+)%]";
-		local sAtkEffectsBonus = string.match(rRoll.sDesc, sAtkEffectsMatch);
-		if sAtkEffectsBonus then
-			nAtkEffectsBonus = (tonumber(sAtkEffectsBonus) or 0);
-			if nAtkEffectsBonus ~= 0 then
-				rAction.nTotal = rAction.nTotal + (tonumber(sAtkEffectsBonus) or 0);
-				local sFormat = "[" .. Interface.getString("effects_tag") .. " %+d]";
-				table.insert(rAction.aMessages, string.format(sFormat, nAtkEffectsBonus));
-			end
-			local sAtkEffectsClear = " %[" .. Interface.getString("effects_tag") .. " [+-]?%d+%]";
-			rMessage.text = string.gsub(rMessage.text, sAtkEffectsClear, "");
-		end
+		nMissChance = tonumber(rRoll.sDesc:match("%[MISS CHANCE (%d+)%%%]")) or 0;
+		rMessage.text = rMessage.text:gsub(" %[AC %d+%]", "");
+		rMessage.text = rMessage.text:gsub(" %[MISS CHANCE %d+%%%]", "");
 	else
 		nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance = ActorManager35E.getDefenseValue(rSource, rTarget, rRoll);
 		if nAtkEffectsBonus ~= 0 then
