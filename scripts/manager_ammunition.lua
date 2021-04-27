@@ -5,37 +5,61 @@
 tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
 
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
-function ammoTracker(rSource, sDesc, sResult)
-	if not sDesc:match('%[CONFIRM%]') and (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) then
-		local sWeaponName = sDesc:gsub('%[ATTACK %(R%)%]', '');
-		sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(R%)%]', '');
-		sWeaponName = sWeaponName:gsub('%[.+%]', '');
-		sWeaponName = sWeaponName:gsub(' %(vs%. .+%)', '');
-		sWeaponName = StringManager.trim(sWeaponName);
+local function breakWeapon(rSource, sDesc, sWeaponName, nodeWeapon)
+	local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower()
+	local bIsFraile = sWeaponProperties:find('fragile')
+	local bIsMasterwork = sWeaponProperties:find('masterwork')
+	local bIsMagic = DB.getValue(nodeWeapon, 'bonus', 0) >= 5
+	if bIsFraile and not bIsMasterwork and not bIsMagic then
+		local sWeaponName = DB.getValue(nodeWeapon, 'name', '')
+		if not sWeaponName:find('%[BROKEN%]') then
+			DB.setValue(nodeWeapon, 'name', 'string', '[BROKEN] ' .. sWeaponName)
+			if ItemDurabilityBroken then ItemDurabilityBroken.handleBrokenItem(nodeItem) end
+			ChatManager.Message(string.format(Interface.getString('char_actions_weapon_broken'), sWeaponName), true, rSource);
+		else
+			sWeaponName = sWeaponName:gsub('%[BROKEN%] ', '')
+			DB.setValue(nodeWeapon, 'name', 'string', '[DESTROYED] ' .. sWeaponName)
+			ChatManager.Message(string.format(Interface.getString('char_actions_weapon_destroyed'), sWeaponName), true, rSource);
+		end
+	end
+end
 
+--	tick off used ammunition, count misses, post 'out of ammo' chat message
+function ammoTracker(rSource, sDesc, sResult)
+	local sWeaponName = sDesc:gsub('%[ATTACK %(%u%)%]', '');
+	sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(%u%)%]', '');
+	sWeaponName = sWeaponName:gsub('%[.+%]', '');
+	sWeaponName = sWeaponName:gsub(' %(vs%. .+%)', '');
+	sWeaponName = StringManager.trim(sWeaponName);
+	if not sDesc:match('%[CONFIRM%]') and sWeaponName ~= '' then
 		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
 		for _,nodeWeapon in pairs(nodeWeaponList.getChildren()) do
 			if StringManager.trim(DB.getValue(nodeWeapon, 'name', '')) == sWeaponName then
-				local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
-				local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
-
-				local bInfiniteAmmo
-				if sRuleset == "PFRPG" or sRuleset == "3.5E" then
-					bInfiniteAmmo = EffectManager35E.hasEffectCondition(rSource, 'INFAMMO')
-				elseif sRuleset == "4E" then
-					bInfiniteAmmo = EffectManager4E.hasEffectCondition(rSource, 'INFAMMO')
+				if sResult == "fumble" then
+					breakWeapon(rSource, sDesc, sWeaponName, nodeWeapon)
 				end
+				if sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]') then
+					local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
+					local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
 
-				if nMaxAmmo ~= 0 and not bInfiniteAmmo then
-					if nAmmoUsed == nMaxAmmo then
-						ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
-						DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
-					else
-						DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
+					local bInfiniteAmmo
+					if sRuleset == "PFRPG" or sRuleset == "3.5E" then
+						bInfiniteAmmo = EffectManager35E.hasEffectCondition(rSource, 'INFAMMO')
+					elseif sRuleset == "4E" then
+						bInfiniteAmmo = EffectManager4E.hasEffectCondition(rSource, 'INFAMMO')
 					end
 
-					if sResult == 'miss' or sResult == 'fumble' then -- counting misses
-						DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
+					if nMaxAmmo ~= 0 and not bInfiniteAmmo then
+						if nAmmoUsed == nMaxAmmo then
+							ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
+						else
+							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
+						end
+
+						if sResult == 'miss' or sResult == 'fumble' then -- counting misses
+							DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
+						end
 					end
 				end
 			end
