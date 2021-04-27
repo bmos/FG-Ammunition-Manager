@@ -5,19 +5,24 @@
 tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
 
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
-local function breakWeapon(rSource, sDesc, sWeaponName, nodeWeapon)
-	local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower()
-	local bIsFraile = sWeaponProperties:find('fragile')
-	local bIsMasterwork = sWeaponProperties:find('masterwork')
-	local bIsMagic = DB.getValue(nodeWeapon, 'bonus', 0) >= 5
-	if bIsFraile and not bIsMasterwork and not bIsMagic then
-		local sWeaponName = DB.getValue(nodeWeapon, 'name', '')
-		if not sWeaponName:find('%[BROKEN%]') then
-			DB.setValue(nodeWeapon, 'name', 'string', '[BROKEN] ' .. sWeaponName)
-			if ItemDurabilityBroken then ItemDurabilityBroken.handleBrokenItem(nodeItem) end
-		else
-			sWeaponName = sWeaponName:gsub('%[BROKEN%] ', '')
-			DB.setValue(nodeWeapon, 'name', 'string', '[DESTROYED] ' .. sWeaponName)
+local function breakWeapon(rSource, sDesc, nodeWeapon)
+	--Debug.chat(nodeWeapon)
+	if nodeWeapon then
+		local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower()
+		local bIsFraile = (sWeaponProperties:find('fragile') or 0) > 0
+		local bIsMasterwork = sWeaponProperties:find('masterwork') or false
+		local bIsMagic = DB.getValue(nodeWeapon, 'bonus', 0) > 0
+		if bIsFraile and not bIsMasterwork and not bIsMagic then
+			local nBroken = DB.getValue(nodeWeapon, 'broken', 0)
+			local nItemHitpoints = DB.getValue(nodeWeapon, 'hitpoints', 0)
+			local nItemDamage = DB.getValue(nodeWeapon, 'itemdamage', 0)
+			if nBroken == 0 then
+				DB.setValue(nodeWeapon, 'broken', 'number', 1)
+				DB.setValue(nodeWeapon, 'itemdamage', 'number', math.floor(nItemHitpoints / 2) + math.max(nItemDamage, 1))
+			elseif nBroken == 1 then
+				DB.setValue(nodeWeapon, 'broken', 'number', 2)
+				DB.setValue(nodeWeapon, 'itemdamage', 'number', nItemHitpoints + math.max(nItemDamage, 1))
+			end
 		end
 	end
 end
@@ -34,7 +39,9 @@ function ammoTracker(rSource, sDesc, sResult)
 		for _,nodeWeapon in pairs(nodeWeaponList.getChildren()) do
 			if StringManager.trim(DB.getValue(nodeWeapon, 'name', '')) == sWeaponName then
 				if sResult == "fumble" then
-					breakWeapon(rSource, sDesc, sWeaponName, nodeWeapon)
+					local _,sWeaponNode = DB.getValue(nodeWeapon, 'shortcut', '')
+					local nodeWeaponLink = DB.findNode(sWeaponNode)
+					breakWeapon(rSource, sDesc, nodeWeaponLink)
 				end
 				if sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]') then
 					local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
