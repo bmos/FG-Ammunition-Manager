@@ -15,8 +15,6 @@
 	<string name="char_actions_usedallammo">Used their %s's last piece of ammunition.</string>
 	<string name="char_actions_recoveredammunition">Recovered %d pieces of ammunition.</string>
 	<string name="char_actions_excessammunition">%d pieces of ammunition should be added to inventory manually.</string>
-	<string name="char_actions_weapon_broken">Broke their %s.</string>
-	<string name="char_actions_weapon_destroyed">Destroyed their %s.</string>
 	<!-- Headers -->
 	<string name="weapon_header_ammo">AMMUNITION</string>
 	<!-- Fields -->

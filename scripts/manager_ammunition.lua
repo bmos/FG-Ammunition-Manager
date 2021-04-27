@@ -15,11 +15,9 @@ local function breakWeapon(rSource, sDesc, sWeaponName, nodeWeapon)
 		if not sWeaponName:find('%[BROKEN%]') then
 			DB.setValue(nodeWeapon, 'name', 'string', '[BROKEN] ' .. sWeaponName)
 			if ItemDurabilityBroken then ItemDurabilityBroken.handleBrokenItem(nodeItem) end
-			ChatManager.Message(string.format(Interface.getString('char_actions_weapon_broken'), sWeaponName), true, rSource);
 		else
 			sWeaponName = sWeaponName:gsub('%[BROKEN%] ', '')
 			DB.setValue(nodeWeapon, 'name', 'string', '[DESTROYED] ' .. sWeaponName)
-			ChatManager.Message(string.format(Interface.getString('char_actions_weapon_destroyed'), sWeaponName), true, rSource);
 		end
 	end
 end
