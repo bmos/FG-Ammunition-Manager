@@ -53,7 +53,7 @@ function calculateMargin(nDC, nTotal)
 			nMargin = nDC - nTotal
 		end
 		nMargin = math.floor(nMargin / 5) * 5
-		
+
 		if nMargin > 0 then return nMargin; end
 	end
 end
