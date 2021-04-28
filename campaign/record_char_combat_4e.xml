@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- 
-  Please see the LICENSE.md file included with this distribution for 
-  attribution and copyright information.
--->
+<!-- Please see the LICENSE.md file included with this distribution for attribution and copyright information. -->
 
 <root>
 	<windowclass name="char_weapon" merge="join">
@@ -54,7 +51,7 @@
 						if not (nMaxAmmo > 0) or (1 &lt;= nMaxAttacks) then	
 							ActionAttack.performRoll(draginfo, rActor, rAction, rFocus);
 						elseif nMaxAmmo > 0 then
-							ChatManager.Message(Interface.getString('char_actions_noammo'), nil, rActor);
+							ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
 						end
 
 						return true;
@@ -66,7 +63,7 @@
 							local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), nil, rActor);
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), true, rActor);
 							return true;
 						end
 					end
@@ -96,7 +93,7 @@
 						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
 
 						if (getValue() == 1) and nMaxAttacks >= 0 then
-							ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), nil, rActor)
+							ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), true, rActor)
 						end
 					end
 				</script>
@@ -118,7 +115,7 @@
 							local nodeActor = getDatabaseNode().getChild('....');
 							local rActor = ActorManager.resolveActor(nodeActor);
 
-							ChatManager.Message(string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered), nil, rActor)
+							ChatManager.Message(string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered), true, rActor)
 
 							local nAmmoUsed = DB.getValue(window.getDatabaseNode(), 'ammo', 0) - nAmmoRecovered
 							if nAmmoUsed and nAmmoUsed &lt; 0 then ChatManager.Message(string.format(Interface.getString('char_actions_excessammunition'), -1 * nAmmoUsed), nil, rActor) end

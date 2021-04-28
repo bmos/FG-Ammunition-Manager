@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- 
-  Please see the LICENSE.md file included with this distribution for 
-  attribution and copyright information.
--->
+<!-- Please see the LICENSE.md file included with this distribution for attribution and copyright information. -->
 
 <root>
 	<windowclass name="charmini_weapon" merge="join">
@@ -60,7 +57,7 @@
 							if not (nMaxAmmo > 0) or (i &lt;= nMaxAttacks) then	
 								table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack));
 							elseif (nMaxAmmo > 0) then
-								ChatManager.Message(Interface.getString('char_actions_noammo'), nil, rActor);
+								ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
 							end
 						end
 
@@ -82,7 +79,7 @@
 							local rActor = ActorManager.resolveActor(nodeAttack.getChild('...'));
 							local sWeaponName = string.lower(DB.getValue(nodeAttack, 'name', 'ranged weapon'));
 
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), nil, rActor);
+							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), true, rActor);
 							DB.setValue(nodeAttack, 'isloaded', 'number', 0);
 							return true;
 						end
@@ -135,7 +132,7 @@
 						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
 
 						if (getValue() == 1) and nMaxAttacks >= 0 then
-							ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), nil, rActor)
+							ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), true, rActor)
 						end
 					end
 				</script>
