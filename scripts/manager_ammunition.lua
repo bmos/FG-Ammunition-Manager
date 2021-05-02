@@ -38,7 +38,7 @@ function ammoTracker(rSource, sDesc, sResult)
 		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
 		for _,nodeWeapon in pairs(nodeWeaponList.getChildren()) do
 			if StringManager.trim(DB.getValue(nodeWeapon, 'name', '')) == sWeaponName then
-				if sResult == "fumble" then
+				if sResult == "fumble" then -- break fragile weapon on natural 1
 					local _,sWeaponNode = DB.getValue(nodeWeapon, 'shortcut', '')
 					local nodeWeaponLink = DB.findNode(sWeaponNode)
 					breakWeapon(rSource, sDesc, nodeWeaponLink)
