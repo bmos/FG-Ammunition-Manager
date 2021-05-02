@@ -10,11 +10,11 @@
 	<string name="weapon_tooltip_recoverypercentage">Recovery Percentage</string>
 	<!-- Chat Messages -->
 	<string name="char_actions_load">Loading their %s.</string>
-	<string name="char_actions_notloaded">Attacking with their unloaded %s.</string>
-	<string name="char_actions_noammo">Attacking without the required ammunition.</string>
+	<string name="char_actions_notloaded">Attacks with an unloaded %s.</string>
+	<string name="char_actions_noammo">Attacks without the required ammunition.</string>
 	<string name="char_actions_usedallammo">Used their %s's last piece of ammunition.</string>
 	<string name="char_actions_recoveredammunition">Recovered %d pieces of ammunition.</string>
-	<string name="char_actions_excessammunition">%d pieces of ammunition should be added to inventory manually.</string>
+	<string name="char_actions_excessammunition">Excess ammunition recovered. %d pieces of ammunition should be added manually.</string>
 	<!-- Headers -->
 	<string name="weapon_header_ammo">AMMUNITION</string>
 	<!-- Fields -->
