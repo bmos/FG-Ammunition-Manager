@@ -4,6 +4,8 @@
 
 tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
 
+local function isFragile(nodeWeapon)
+end
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
 local function breakWeapon(rSource, sDesc, nodeWeapon)
 	--Debug.chat(nodeWeapon)
