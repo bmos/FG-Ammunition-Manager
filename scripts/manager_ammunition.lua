@@ -35,13 +35,18 @@ end
 function ammoTracker(rSource, sDesc, sResult)
 	local sWeaponName = sDesc:gsub('%[ATTACK %(%u%)%]', '');
 	sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(%u%)%]', '');
+	sWeaponName = sWeaponName:gsub('%[%u+%]', '');
 	sWeaponName = sWeaponName:gsub('%[.+%]', '');
 	sWeaponName = sWeaponName:gsub(' %(vs%. .+%)', '');
 	sWeaponName = StringManager.trim(sWeaponName);
 	if not sDesc:match('%[CONFIRM%]') and sWeaponName ~= '' then
 		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
 		for _,nodeWeapon in pairs(nodeWeaponList.getChildren()) do
-			if StringManager.trim(DB.getValue(nodeWeapon, 'name', '')) == sWeaponName then
+			local sWeaponNameFromNode = DB.getValue(nodeWeapon, 'name', '')
+			sWeaponNameFromNode = sWeaponNameFromNode:gsub('%[%u+%]', '');
+			sWeaponNameFromNode = sWeaponNameFromNode:gsub('%[.+%]', '');
+			sWeaponNameFromNode = StringManager.trim(sWeaponNameFromNode)
+			if sWeaponNameFromNode == sWeaponName then
 				if sResult == "fumble" then -- break fragile weapon on natural 1
 					local _,sWeaponNode = DB.getValue(nodeWeapon, 'shortcut', '')
 					local nodeWeaponLink = DB.findNode(sWeaponNode)
