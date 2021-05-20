@@ -14,7 +14,7 @@ local function isFragile(nodeWeapon)
 end
 
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
-local function breakWeapon(rSource, nodeWeapon)
+local function breakWeapon(rSource, nodeWeapon, sWeaponName)
 	if nodeWeapon and isFragile(nodeWeapon) then
 		local nBroken = DB.getValue(nodeWeapon, 'broken', 0)
 		local nItemHitpoints = DB.getValue(nodeWeapon, 'hitpoints', 0)
@@ -22,9 +22,11 @@ local function breakWeapon(rSource, nodeWeapon)
 		if nBroken == 0 then
 			DB.setValue(nodeWeapon, 'broken', 'number', 1)
 			DB.setValue(nodeWeapon, 'itemdamage', 'number', math.floor(nItemHitpoints / 2) + math.max(nItemDamage, 1))
+			ChatManager.Message(string.format(Interface.getString('char_actions_fragile_broken'), sWeaponName), true, rSource);
 		elseif nBroken == 1 then
 			DB.setValue(nodeWeapon, 'broken', 'number', 2)
 			DB.setValue(nodeWeapon, 'itemdamage', 'number', nItemHitpoints + math.max(nItemDamage, 1))
+			ChatManager.Message(string.format(Interface.getString('char_actions_fragile_destroyed'), sWeaponName), true, rSource);
 		end
 	end
 end
@@ -43,7 +45,7 @@ function ammoTracker(rSource, sDesc, sResult)
 				if sResult == "fumble" then -- break fragile weapon on natural 1
 					local _,sWeaponNode = DB.getValue(nodeWeapon, 'shortcut', '')
 					local nodeWeaponLink = DB.findNode(sWeaponNode)
-					breakWeapon(rSource, nodeWeaponLink)
+					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
 				end
 				if sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]') then
 					local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
