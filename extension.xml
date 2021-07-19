@@ -4,7 +4,7 @@
 
 <root version='3.3' release='3'>
 	<properties>
-		<name>Ammunition Manager</name>
+		<name>Feature: Ammunition Manager</name>
 		<version>1.16</version>
 		<author>bmos (Wil Thieme)</author>
 		<description>This extension aids in tracking whether ranged weapons are loaded</description>
