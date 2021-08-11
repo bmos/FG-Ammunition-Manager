@@ -4,90 +4,12 @@
 
 <root>
 	<windowclass name="charmini_weapon" merge="join">
+		<script file="campaign/scripts/ammo_weapon.lua" />
 		<sheetdata>
-			<state_charweapontype name="type">
-				<script>
-					function onInit()
-						if super and super.onInit then
-							super.onInit();
-						end
-
-						DB.addHandler(getDatabaseNode().getChild('..name').getNodeName(), "onUpdate", onValueChanged);
-						DB.addHandler(getDatabaseNode().getChild('..type').getNodeName(), "onUpdate", onValueChanged);
-
-						onValueChanged();
-					end
-					function hasLoadAction()
-						local bHasLoadAction
-						local bRanged = (window.type.getValue() == 1);
-						local sWeaponName = string.lower(DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon'));
-						for _,v in pairs(AmmunitionManager.tLoadWeapons) do
-							if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
-						end
-
-						return (bRanged and bHasLoadAction)
-					end
-					function onValueChanged()
-						if super and super.onValueChanged then
-							super.onValueChanged();
-						end
-
-						window.isloaded.setVisible(hasLoadAction());
-					end
-				</script>
-			</state_charweapontype>
-			
 			<number_charweaponfullattack name="attacks">
 				<anchored to="attackicons" position="over" />
 				<readonly />
-				<script>
-					function action(draginfo)
-						local nValue = getValue();
-						local nodeWeapon = window.getDatabaseNode();
-						local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
-
-						local rRolls = {};
-						local sAttack, aAttackDice, nAttackMod;
-						for i = 1, getValue() do
-							rAttack.modifier = DB.getValue(nodeWeapon, "attack" .. i, 0);
-							rAttack.order = i;
-
-							local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-							local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
-							if not (nMaxAmmo > 0) or (i &lt;= nMaxAttacks) then	
-								table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack));
-							elseif (nMaxAmmo > 0) then
-								ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
-							end
-						end
-
-						if not OptionsManager.isOption("RMMT", "off") and #rRolls > 1 then
-							for _,v in ipairs(rRolls) do
-								v.sDesc = v.sDesc .. " [FULL]";
-							end
-						end
-
-						ActionsManager.performMultiAction(draginfo, rActor, "attack", rRolls);
-
-						return true;
-					end
-					function automateAmmo()
-						local nodeAttack = getDatabaseNode().getParent();
-
-						local bNotLoaded = (DB.getValue(nodeAttack, 'isloaded') == 0);
-						if window.type.hasLoadAction() and bNotLoaded then
-							local rActor = ActorManager.resolveActor(nodeAttack.getChild('...'));
-							local sWeaponName = string.lower(DB.getValue(nodeAttack, 'name', 'ranged weapon'));
-
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), true, rActor);
-							DB.setValue(nodeAttack, 'isloaded', 'number', 0);
-							return true;
-						end
-					end
-					function onDoubleClick(x,y)
-						if not automateAmmo() then window.isloaded.setValue(0); return action(); end
-					end
-				</script>
+				<script file="campaign/scripts/ammo_attacks.lua" />
 			</number_charweaponfullattack>
 			<number_charweaponattacktotal name="attack1">
 				<anchored position="insidetopright" offset="117,5" width="30" height="20" />
@@ -95,24 +17,7 @@
 				<modifier>0</modifier>
 				<name>Attack 1</name>
 				<source><name>attack1modifier</name><op>+</op></source>
-				<script>
-					function action(draginfo)
-						local rActor, rAttack = CharManager.getWeaponAttackRollStructures(window.getDatabaseNode());
-						rAttack.modifier = getValue();
-						rAttack.order = tonumber(string.sub(getName(), 7)) or 1;
-
-						local nodeWeapon = window.getDatabaseNode();
-						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
-						if not (nMaxAmmo > 0) or (nMaxAttacks &gt;= 1) then	
-							ActionAttack.performRoll(draginfo, rActor, rAttack);
-							return true;
-						end
-					end
-					function onDoubleClick(x,y)
-						if not window.attacks.automateAmmo() then window.isloaded.setValue(0); return action(); end
-					end
-				</script>
+				<script file="campaign/scripts/ammo_attack.lua" />
 			</number_charweaponattacktotal>
 			
 			<buttonfield name="isloaded">
