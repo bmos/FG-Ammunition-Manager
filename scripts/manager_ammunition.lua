@@ -68,8 +68,15 @@ function ammoTracker(rSource, sDesc, sResult)
 					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
 				end
 				if sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]') then
-					local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
-					local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
+					local nMaxAmmo, nAmmo
+					local nodeAmmo = AmmunitionManager.isAmmoPicker(nodeWeapon, rSource)
+					if not nodeAmmo then
+						nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
+						nAmmo = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
+					else
+						nMaxAmmo = DB.getValue(nodeAmmo, 'count', 0)
+						nAmmo = DB.getValue(nodeAmmo, 'count', 0) - 1;
+					end
 
 					local bInfiniteAmmo
 					if sRuleset == "PFRPG" or sRuleset == "3.5E" then
@@ -79,11 +86,20 @@ function ammoTracker(rSource, sDesc, sResult)
 					end
 
 					if nMaxAmmo ~= 0 and not bInfiniteAmmo then
-						if nAmmoUsed == nMaxAmmo then
-							ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
-							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
+						if not nodeAmmo then
+							if nAmmo == nMaxAmmo then
+								ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+								DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
+							else
+								DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
+							end
 						else
-							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
+							if nAmmo <= 0 then
+								ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+								DB.setValue(nodeAmmo, 'count', 'number', nAmmo);
+							else
+								DB.setValue(nodeAmmo, 'count', 'number', nAmmo);
+							end
 						end
 
 						if sResult == 'miss' or sResult == 'fumble' then -- counting misses
