@@ -243,6 +243,7 @@
 			<close_recordsheet />
 		</sheetdata>
 	</windowclass>
+
 	<windowclass name="char_weapon_editor_main" merge="join">
 		<sheetdata>
 			<!-- Ammo -->
@@ -293,12 +294,6 @@
 				<anchored to="missedshots" />
 				<static textres="weapon_label_missedshots" />
 			</label_fieldtop>
-			<stringu name="label_ammotutorial">
-				<anchored to="missedshots" position="righthigh" offset="5,0" width="250" />
-				<static textres="tutorial_recoverammo" />
-				<readonly />
-			</stringu>
 		</sheetdata>
 	</windowclass>
-
 </root>
