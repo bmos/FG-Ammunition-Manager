@@ -252,10 +252,19 @@
 				<static textres="weapon_header_ammo" />
 				<center />
 			</header_column>
-			<basicnumber name="recoverypercentage">
-				<anchored width="40" height="20">
+			<basicstring name="ammopicker">
+				<anchored width="175">
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
 					<left offset="5" />
+				</anchored>
+				<multilinespacing>20</multilinespacing>
+				<tabtarget next="recoverypercentage" />
+				<script file="campaign/scripts/ammo_ammopicker.lua" />
+			</basicstring>
+			<basicnumber name="recoverypercentage">
+				<anchored to="ammopicker" width="40" height="20">
+					<top anchor="top" offset="0" />
+					<left anchor="right" offset="15" />
 				</anchored>
 				<default>50</default>
 				<script>
@@ -274,6 +283,7 @@
 						end
 					end
 				</script>
+				<tabtarget prev="ammopicker" next="missedshots" />
 			</basicnumber>
 			<label_fieldtop name="label_recoverypercentage">
 				<anchored to="recoverypercentage" />
