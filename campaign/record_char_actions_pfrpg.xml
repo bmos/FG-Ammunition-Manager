@@ -288,6 +288,8 @@
 			<label_fieldtop name="label_recoverypercentage">
 				<anchored to="recoverypercentage" />
 				<tooltip textres="weapon_tooltip_recoverypercentage" />
+				<static textres="weapon_label_recovery" />
+				<readonly />
 			</label_fieldtop>
 			<label name="label_ammopercentof">
 				<anchored to="recoverypercentage" position="righthigh" offset="5,0" width="35" />
@@ -298,11 +300,11 @@
 				<anchored to="label_ammopercentof" position="righthigh" offset="5,0" width="40" height="20" />
 				<default>0</default>
 				<hideonvalue>0</hideonvalue>
-				<!-- <readonly /> -->
 			</basicnumber>
 			<label_fieldtop name="label_missedshots">
 				<anchored to="missedshots" />
 				<static textres="weapon_label_missedshots" />
+				<readonly />
 			</label_fieldtop>
 		</sheetdata>
 	</windowclass>
