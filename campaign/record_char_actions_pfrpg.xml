@@ -20,6 +20,14 @@
 
 						onValueChanged();
 					end
+					function onClose()
+						if super and super.onClose then
+							super.onClose();
+						end
+
+						DB.removeHandler(getDatabaseNode().getChild('..name').getNodeName(), "onUpdate", onValueChanged);
+						DB.removeHandler(getDatabaseNode().getChild('..type').getNodeName(), "onUpdate", onValueChanged);
+					end
 					function hasLoadAction()
 						local bHasLoadAction
 						local bRanged = (window.type.getValue() == 1);
