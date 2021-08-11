@@ -4,6 +4,22 @@
 
 tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
 
+function isAmmoPicker(nodeWeapon, rActor)
+	local bAmmoPicker = false;
+	local sAmmo = DB.getValue(nodeWeapon, "ammopicker", "");
+	if sAmmo ~= "" then
+		local nodeChar = ActorManager.getCreatureNode(rActor);
+		if nodeChar then
+			for _,v in pairs(nodeChar.getChild("inventorylist").getChildren()) do
+				if DB.getValue(v, "name", "") == sAmmo then
+					return v;
+				end
+			end
+		end
+	end
+end
+
+-- examine weapon properties to check if fragile
 local function isFragile(nodeWeapon)
 	local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower()
 	local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0
@@ -13,7 +29,7 @@ local function isFragile(nodeWeapon)
 	return (bIsFragile and not bIsMagic and (not bIsMasterwork or bIsBone))
 end
 
---	tick off used ammunition, count misses, post 'out of ammo' chat message
+--	if weapon is fragile, set as broken or destroyed and post chat message.
 local function breakWeapon(rSource, nodeWeapon, sWeaponName)
 	if nodeWeapon and isFragile(nodeWeapon) then
 		local nBroken = DB.getValue(nodeWeapon, 'broken', 0)
@@ -53,8 +69,15 @@ function ammoTracker(rSource, sDesc, sResult)
 					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
 				end
 				if sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]') then
-					local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
-					local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
+					local nMaxAmmo, nAmmo
+					local nodeAmmo = AmmunitionManager.isAmmoPicker(nodeWeapon, rSource)
+					if not nodeAmmo then
+						nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
+						nAmmo = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
+					else
+						nMaxAmmo = DB.getValue(nodeAmmo, 'count', 0)
+						nAmmo = DB.getValue(nodeAmmo, 'count', 0) - 1;
+					end
 
 					local bInfiniteAmmo
 					if sRuleset == "PFRPG" or sRuleset == "3.5E" then
@@ -64,11 +87,20 @@ function ammoTracker(rSource, sDesc, sResult)
 					end
 
 					if nMaxAmmo ~= 0 and not bInfiniteAmmo then
-						if nAmmoUsed == nMaxAmmo then
-							ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
-							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
+						if not nodeAmmo then
+							if nAmmo == nMaxAmmo then
+								ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+								DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
+							else
+								DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
+							end
 						else
-							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmoUsed);
+							if nAmmo <= 0 then
+								ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+								DB.setValue(nodeAmmo, 'count', 'number', nAmmo);
+							else
+								DB.setValue(nodeAmmo, 'count', 'number', nAmmo);
+							end
 						end
 
 						if sResult == 'miss' or sResult == 'fumble' then -- counting misses
