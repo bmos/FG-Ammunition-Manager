@@ -15,7 +15,7 @@ function action(draginfo)
 		nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
 		nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
 	else
-		nMaxAmmo = DB.getValue(nodeAmmo, 'count', 0)
+		nMaxAmmo = DB.getValue(nodeAmmo, 'count', 0) + 1
 		nMaxAttacks = DB.getValue(nodeAmmo, 'count', 0)
 	end
 
