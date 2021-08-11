@@ -7,109 +7,11 @@
 
 <root>
 	<windowclass name="char_weapon" merge="join">
-		<script>
-			function onInit()
-				registerMenuItem(Interface.getString("menu_deleteweapon"), "delete", 4);
-				registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 4, 3);
-				
-				local sNode = getDatabaseNode().getPath();
-				DB.addHandler(sNode, "onChildUpdate", onDataChanged);
-				onDataChanged();
-			end
-			function onClose()
-				local sNode = getDatabaseNode().getPath();
-				DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
-			end
-			function hasLoadAction(nodeWeapon)
-				local bHasLoadAction
-				local bRanged = (type.getValue() == 1);
-				local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
-				for _,v in pairs(AmmunitionManager.tLoadWeapons) do
-					if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
-				end
-
-				return (bRanged and bHasLoadAction)
-			end
-			function automateAmmo(nodeWeapon)
-				local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
-				DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
-				if hasLoadAction(nodeWeapon) and bNotLoaded then
-					local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-					local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
-
-					ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), true, rActor);
-					return true;
-				end
-			end
-			function onDataChanged()
-				onLinkChanged();
-				onDamageChanged();
-				
-				local nodeWeapon = getDatabaseNode();
-				local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-
-				local bRanged = (type.getValue() == 1);
-				label_range.setVisible(bRanged);
-				rangeincrement.setVisible(bRanged);
-				isloaded.setVisible(hasLoadAction(nodeWeapon));
-
-				if not AmmunitionManager.isAmmoPicker(nodeWeapon, rActor) then
-					label_ammo.setVisible(bRanged);
-					maxammo.setVisible(bRanged);
-					ammocounter.setVisible(bRanged);
-				else
-					label_ammo.setVisible(false);
-					maxammo.setVisible(false);
-					ammocounter.setVisible(false);
-				end
-			end
-		</script>
+		<script file="campaign/scripts/ammo_weapon.lua" />
 		<sheetdata>
 			<number_charweaponfullattack name="attacks">
 				<anchored to="attackicons" position="over" />
-				<script>
-					function action(draginfo)
-						local nValue = getValue();
-						local nodeWeapon = window.getDatabaseNode();
-						local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
-
-						local rRolls = {};
-						local sAttack, aAttackDice, nAttackMod;
-						for i = 1, getValue() do
-							rAttack.modifier = DB.getValue(nodeWeapon, "attack" .. i, 0);
-							rAttack.order = i;
-
-							local nMaxAmmo, nMaxAttacks
-							local nodeAmmo = AmmunitionManager.isAmmoPicker(nodeWeapon, rActor)
-							if not nodeAmmo then
-								nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-								nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
-							else
-								nMaxAmmo = DB.getValue(nodeAmmo, 'count', 0)
-								nMaxAttacks = DB.getValue(nodeAmmo, 'count', 0)
-							end
-
-							if not (nMaxAmmo > 0) or (i &lt;= nMaxAttacks) then	
-								table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack));
-							elseif (nMaxAmmo > 0) then
-								ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
-							end
-						end
-
-						if not OptionsManager.isOption("RMMT", "off") and #rRolls > 1 then
-							for _,v in ipairs(rRolls) do
-								v.sDesc = v.sDesc .. " [FULL]";
-							end
-						end
-
-						ActionsManager.performMultiAction(draginfo, rActor, "attack", rRolls);
-
-						return true;
-					end
-					function onDoubleClick(x,y)
-						if not window.automateAmmo(window.getDatabaseNode()) then return action(); end
-					end
-				</script>
+				<script file="campaign/scripts/ammo_attacks.lua" />
 			</number_charweaponfullattack>		
 			<number_charweaponattacktotal name="attack1">
 				<anchored to="attackframe" position="insidetopleft" offset="3,0" width="27" height="20" />
