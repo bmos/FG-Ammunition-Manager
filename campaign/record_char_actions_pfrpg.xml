@@ -8,47 +8,6 @@
 <root>
 	<windowclass name="char_weapon" merge="join">
 		<sheetdata>
-			<state_charweapontype name="type">
-				<script>
-					function onInit()
-						if super and super.onInit then
-							super.onInit();
-						end
-
-						DB.addHandler(getDatabaseNode().getChild('..name').getNodeName(), "onUpdate", onValueChanged);
-						DB.addHandler(getDatabaseNode().getChild('..type').getNodeName(), "onUpdate", onValueChanged);
-
-						onValueChanged();
-					end
-					function onClose()
-						if super and super.onClose then
-							super.onClose();
-						end
-
-						DB.removeHandler(getDatabaseNode().getChild('..name').getNodeName(), "onUpdate", onValueChanged);
-						DB.removeHandler(getDatabaseNode().getChild('..type').getNodeName(), "onUpdate", onValueChanged);
-					end
-					function hasLoadAction(nodeWeapon)
-						local bHasLoadAction
-						local bRanged = (window.type.getValue() == 1);
-						local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
-						for _,v in pairs(AmmunitionManager.tLoadWeapons) do
-							if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
-						end
-
-						return (bRanged and bHasLoadAction)
-					end
-					function onValueChanged()
-						if super and super.onValueChanged then
-							super.onValueChanged();
-						end
-
-						local nodeWeapon = window.getDatabaseNode();
-						window.isloaded.setVisible(hasLoadAction(nodeWeapon));
-					end
-				</script>
-			</state_charweapontype>
-
 			<number_charweaponfullattack name="attacks">
 				<anchored to="attackicons" position="over" />
 				<script>
@@ -90,19 +49,8 @@
 
 						return true;
 					end
-					function automateAmmo(nodeWeapon)
-						local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
-						DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
-						if window.type.hasLoadAction(nodeWeapon) and bNotLoaded then
-							local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
-
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), true, rActor);
-							return true;
-						end
-					end
 					function onDoubleClick(x,y)
-						if not automateAmmo(window.getDatabaseNode()) then return action(); end
+						if not window.automateAmmo(window.getDatabaseNode()) then return action(); end
 					end
 				</script>
 			</number_charweaponfullattack>		
