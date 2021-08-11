@@ -19,6 +19,7 @@ function isAmmoPicker(nodeWeapon, rActor)
 	end
 end
 
+-- examine weapon properties to check if fragile
 local function isFragile(nodeWeapon)
 	local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower()
 	local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0
@@ -28,7 +29,7 @@ local function isFragile(nodeWeapon)
 	return (bIsFragile and not bIsMagic and (not bIsMasterwork or bIsBone))
 end
 
---	tick off used ammunition, count misses, post 'out of ammo' chat message
+--	if weapon is fragile, set as broken or destroyed and post chat message.
 local function breakWeapon(rSource, nodeWeapon, sWeaponName)
 	if nodeWeapon and isFragile(nodeWeapon) then
 		local nBroken = DB.getValue(nodeWeapon, 'broken', 0)
