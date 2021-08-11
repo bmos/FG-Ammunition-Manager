@@ -283,9 +283,18 @@
 							local nAmmoRecovered = math.floor(nMisses * nPercent)
 							ChatManager.SystemMessage(string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered))
 
-							local nAmmoUsed = DB.getValue(window.getDatabaseNode(), 'ammo', 0) - nAmmoRecovered
-							if nAmmoUsed and nAmmoUsed &lt; 0 then ChatManager.SystemMessage(string.format(Interface.getString('char_actions_excessammunition'), -1 * nAmmoUsed)) end
-							DB.setValue(window.getDatabaseNode(), 'ammo', 'number', math.max(nAmmoUsed, 0))
+							local nodeWeapon = window.getDatabaseNode();
+							local nMaxAmmo, nMaxAttacks
+							local nodeAmmo = AmmunitionManager.isAmmoPicker(nodeWeapon, ActorManager.resolveActor(getDatabaseNode().getChild('....')))
+							if not nodeAmmo then
+								local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0) - nAmmoRecovered
+								if nAmmoUsed and nAmmoUsed &lt; 0 then ChatManager.SystemMessage(string.format(Interface.getString('char_actions_excessammunition'), -1 * nAmmoUsed)) end
+								DB.setValue(nodeWeapon, 'ammo', 'number', math.max(nAmmoUsed, 0))
+							else
+								nCount = DB.getValue(nodeAmmo, 'count', 0)
+								nCount = nCount + nAmmoRecovered
+								DB.setValue(nodeAmmo, 'count', 'number', nCount)
+							end
 
 							window.missedshots.setValue(0)
 						end
