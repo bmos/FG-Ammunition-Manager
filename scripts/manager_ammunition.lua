@@ -133,7 +133,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 			table.insert(rAction.aMessages, string.format(sFormat, nDefEffectsBonus));
 		end
 	end
-	
+
 	-- for compatibility with mirror image handler, add this here in your onAttack function
 	-- Get the misfire threshold
 	if MirrorImageHandler then
@@ -143,7 +143,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 		end
 	end
 	-- end compatibility with mirror image handler
-	
+
 	-- Get the crit threshold
 	rAction.nCrit = 20;
 	local sAltCritRange = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
@@ -363,7 +363,7 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	local rAction = {};
 	rAction.nTotal = ActionsManager.total(rRoll);
 	rAction.aMessages = {};
-	
+
 	-- If we have a target, then calculate the defense we need to exceed
 	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus = ActorManager4E.getDefenseValue(rSource, rTarget, rRoll);
 	if nAtkEffectsBonus ~= 0 then
@@ -386,7 +386,7 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 			rAction.nCrit = 20;
 		end
 	end
-	
+
 	rAction.nFirstDie = 0;
 	if #(rRoll.aDice) > 0 then
 		rAction.nFirstDie = rRoll.aDice[1].result or 0;
@@ -434,7 +434,7 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	--	end bmos adding hit margin tracking
 
 	Comm.deliverChatMessage(rMessage);
-	
+
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
@@ -443,12 +443,12 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	if rTarget then
 		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
 	end
-		
+
 	-- TRACK CRITICAL STATE
 	if rAction.sResult == "crit" then
 		ActionAttack.setCritState(rSource, rTarget);
 	end
-		
+
 	-- REMOVE TARGET ON MISS OPTION
 	if rTarget then
 		if (rAction.sResult == "miss") or (rAction.sResult == "fumble") then
@@ -464,7 +464,7 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 			end
 		end
 	end
-	
+
 	-- HANDLE FUMBLE/CRIT HOUSE RULES
 	local sOptionHRFC = OptionsManager.getOption("HRFC");
 	if rAction.sResult == "fumble" and ((sOptionHRFC == "both") or (sOptionHRFC == "fumble")) then
@@ -473,7 +473,6 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
 		ActionAttack.notifyApplyHRFC("Critical Hit");
 	end
-	
 end
 
 -- Function Overrides
