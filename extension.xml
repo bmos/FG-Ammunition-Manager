@@ -5,9 +5,9 @@
 <root version='3.3' release='3'>
 	<properties>
 		<name>Feature: Ammunition Manager</name>
-		<version>1.16</version>
+		<version>2.0</version>
 		<author>bmos (Wil Thieme)</author>
-		<description>This extension aids in tracking whether ranged weapons are loaded</description>
+		<description>This extension aids in tracking ammunition and whether ranged weapons are loaded.</description>
 		<ruleset>
 			<name>3.5E</name>
 		</ruleset>
@@ -19,7 +19,7 @@
 		</ruleset>
 	</properties>
 
-	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v1.16:\nThis extension aids in tracking whether ranged weapons are loaded." font="emotefont" />
+	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v2.0:\nThis extension aids in tracking ammunition and whether ranged weapons are loaded." font="emotefont" />
 
 	<base>
 		<!-- Campaign Records -->
