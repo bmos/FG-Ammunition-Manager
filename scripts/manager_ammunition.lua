@@ -4,6 +4,21 @@
 
 tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
 
+function isAmmoPicker(nodeWeapon, rActor)
+	local bAmmoPicker = false;
+	local sAmmo = DB.getValue(nodeWeapon, "ammopicker", "");
+	if sAmmo ~= "" then
+		local nodeChar = ActorManager.getCreatureNode(rActor);
+		if nodeChar then
+			for _,v in pairs(nodeChar.getChild("inventorylist").getChildren()) do
+				if DB.getValue(v, "name", "") == sAmmo then
+					return v;
+				end
+			end
+		end
+	end
+end
+
 local function isFragile(nodeWeapon)
 	local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower()
 	local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0
