@@ -28,10 +28,10 @@
 						DB.removeHandler(getDatabaseNode().getChild('..name').getNodeName(), "onUpdate", onValueChanged);
 						DB.removeHandler(getDatabaseNode().getChild('..type').getNodeName(), "onUpdate", onValueChanged);
 					end
-					function hasLoadAction()
+					function hasLoadAction(nodeWeapon)
 						local bHasLoadAction
 						local bRanged = (window.type.getValue() == 1);
-						local sWeaponName = string.lower(DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon'));
+						local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 						for _,v in pairs(AmmunitionManager.tLoadWeapons) do
 							if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
 						end
@@ -43,7 +43,8 @@
 							super.onValueChanged();
 						end
 
-						window.isloaded.setVisible(hasLoadAction());
+						local nodeWeapon = window.getDatabaseNode();
+						window.isloaded.setVisible(hasLoadAction(nodeWeapon));
 					end
 				</script>
 			</state_charweapontype>
@@ -92,7 +93,7 @@
 					function automateAmmo(nodeWeapon)
 						local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
 						DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
-						if window.type.hasLoadAction() and bNotLoaded then
+						if window.type.hasLoadAction(nodeWeapon) and bNotLoaded then
 							local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 
