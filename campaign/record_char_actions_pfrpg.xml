@@ -51,6 +51,20 @@
 			<number_charweaponfullattack name="attacks">
 				<anchored to="attackicons" position="over" />
 				<script>
+					function isAmmoPicker(nodeWeapon, rActor)
+						local bAmmoPicker = false;
+						local sAmmo = DB.getValue(nodeWeapon, "ammopicker", "");
+						if sAmmo ~= "" then
+							local nodeChar = ActorManager.getCreatureNode(rActor);
+							if nodeChar then
+								for _,v in pairs(nodeChar.getChild("inventorylist").getChildren()) do
+									if DB.getValue(v, "name", "") == sAmmo then
+										return v;
+									end
+								end
+							end
+						end
+					end
 					function action(draginfo)
 						local nValue = getValue();
 						local nodeWeapon = window.getDatabaseNode();
