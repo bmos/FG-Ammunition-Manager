@@ -20,7 +20,7 @@ Double-clicking on this percentage will add those arrows back to the quiver.
 * If used with my [Item Durability](https://github.com/bmos/FG-PFRPG-Item-Durability) extension, natural 1s rolled with a weapon with "fragile" in the properties field will be broken automatically. If the weapon is already broken, the weapon will be destroyed instead.
 
 # Compatibility and Instructions
-This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.0.10 (2021-02-04).
+This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.1.4 (2021-06-08).
 
 This extension works with the 3.5E, PFRPG, and 4E rulesets.
 
