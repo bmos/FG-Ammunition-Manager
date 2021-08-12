@@ -105,6 +105,12 @@
 				<tabtarget next="recoverypercentage" />
 				<script file="campaign/scripts/ammo_ammopicker.lua" />
 			</basicstring>
+			<label_fieldtop name="label_ammopicker">
+				<anchored to="ammopicker" />
+				<static textres="weapon_label_ammopicker" />
+				<readonly />
+				<center />
+			</label_fieldtop>
 			<basicnumber name="recoverypercentage">
 				<anchored to="ammopicker" width="40" height="20">
 					<top anchor="top" offset="0" />
@@ -136,13 +142,13 @@
 						end
 					end
 				</script>
+				<tooltip textres="weapon_tooltip_recoverypercentage" />
 				<tabtarget prev="ammopicker" next="missedshots" />
 			</basicnumber>
 			<label_fieldtop name="label_recoverypercentage">
 				<anchored to="recoverypercentage" />
-				<tooltip textres="weapon_tooltip_recoverypercentage" />
-				<static textres="weapon_label_recovery" />
 				<readonly />
+				<center />
 			</label_fieldtop>
 			<label name="label_ammopercentof">
 				<anchored to="recoverypercentage" position="righthigh" offset="5,0" width="35" />
@@ -158,6 +164,7 @@
 				<anchored to="missedshots" />
 				<static textres="weapon_label_missedshots" />
 				<readonly />
+				<center />
 			</label_fieldtop>
 		</sheetdata>
 	</windowclass>

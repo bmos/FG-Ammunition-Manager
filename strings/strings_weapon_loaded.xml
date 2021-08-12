@@ -7,7 +7,7 @@
 	<string name="tooltip_actions_loaded">Loaded</string>
 	<string name="tooltip_actions_unloaded">Not Loaded</string>
 	<string name="weapon_tooltip_missedshots">Misses</string>
-	<string name="weapon_tooltip_recoverypercentage">Recovery Percentage</string>
+	<string name="weapon_tooltip_recoverypercentage">Double-click to recover ammo</string>
 	<!-- Chat Messages -->
 	<string name="char_actions_load">Loading their %s.</string>
 	<string name="char_actions_notloaded">Attacks with an unloaded %s.</string>
@@ -20,6 +20,7 @@
 	<!-- Headers -->
 	<string name="weapon_header_ammo">AMMUNITION</string>
 	<!-- Fields -->
+	<string name="weapon_label_ammopicker">Ammo Item Search</string>
 	<string name="weapon_label_missedshots">Misses</string>
-	<string name="weapon_label_recovery">Recover</string>
+	<string name="weapon_label_recoverypercentage">Recover</string>
 </root>
