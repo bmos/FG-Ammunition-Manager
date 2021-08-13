@@ -20,7 +20,7 @@
 	<!-- Headers -->
 	<string name="weapon_header_ammo">AMMUNITION</string>
 	<!-- Fields -->
-	<string name="weapon_label_ammopicker">Ammo Item Search</string>
+	<string name="weapon_label_ammopicker">Ammunition</string>
 	<string name="weapon_label_missedshots">Misses</string>
 	<string name="weapon_label_recoverypercentage">Recover</string>
 </root>

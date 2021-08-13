@@ -96,15 +96,42 @@
 				<static textres="weapon_header_ammo" />
 				<center />
 			</header_column>
-			<basicstring name="ammopicker">
+			<combobox name="ammopicker">
+				<frame>
+					<hidereadonly />
+				</frame>
+				<center />
+				<listdirection>up</listdirection>
+				<listmaxsize>15</listmaxsize>
+				<nodrag />
+				<nodrop />
+				<noreset />
 				<anchored width="175">
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
 					<left offset="5" />
 				</anchored>
-				<multilinespacing>20</multilinespacing>
-				<tabtarget next="recoverypercentage" />
-				<script file="campaign/scripts/ammo_ammopicker.lua" />
-			</basicstring>
+				<default textres="none" />
+				<script>
+					function onInit()
+						if super and super.onInit then
+							super.onInit();
+						end
+
+						local aAutoFill = {};
+						table.insert(aAutoFill, Interface.getString("none"));
+						for _,v in pairs(window.getDatabaseNode().getChild('...inventorylist').getChildren()) do
+							local sName = DB.getValue(v, "name", "");
+							local bAmmo = DB.getValue(v, "subtype", ""):lower():match("ammunition") or DB.getValue(v, "subtype", ""):lower():match("ammo");
+							if bAmmo then
+								if sName ~= "" then
+									table.insert(aAutoFill, sName);
+								end
+							end
+						end
+						addItems(aAutoFill)
+					end
+				</script>
+			</combobox>
 			<label_fieldtop name="label_ammopicker">
 				<anchored to="ammopicker" />
 				<static textres="weapon_label_ammopicker" />
