@@ -50,7 +50,7 @@ function onDataChanged()
 	local bRanged = (type.getValue() == 1);
 	label_range.setVisible(bRanged);
 	rangeincrement.setVisible(bRanged);
-	isloaded.setVisible(hasLoadAction(nodeWeapon));
+	isloaded.setVisible(bRanged and hasLoadAction(nodeWeapon));
 
 	if not AmmunitionManager.isAmmoPicker(nodeWeapon, rActor) then
 		label_ammo.setVisible(bRanged);
