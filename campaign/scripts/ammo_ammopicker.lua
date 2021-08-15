@@ -22,17 +22,11 @@ function onInit()
 	end
 	addItems(aAutoFill)
 end
-function setListValue(sValue)
-	if super and super.setListValue then
-		super.setListValue();
-	end
-	for _,v in pairs(getDatabaseNode().getChild('....inventorylist').getChildren()) do
-		local sName = DB.getValue(v, "name", "");
-		if sName == sValue then
-			DB.setValue(window.getDatabaseNode(), 'ammopickernode', 'string', v.getNodeName());
-		end
-	end
-end
+
+--
+-- Change visibility when ammopicker is changed
+--
+
 function onValueChanged()
 	if super and super.onValueChanged then
 		super.onValueChanged();
