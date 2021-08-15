@@ -106,7 +106,7 @@
 				<nodrag />
 				<nodrop />
 				<noreset />
-				<anchored width="175">
+				<anchored width="175" height="20">
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
 					<left offset="5" />
 				</anchored>
