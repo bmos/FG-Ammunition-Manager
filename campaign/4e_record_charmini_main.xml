@@ -44,14 +44,15 @@
 				ammocounter.setVisible(bRanged);
 				
 				isloaded.setVisible(hasLoadAction(bRanged));
-				switchAmmo(bRanged)
+				switchAmmo(bRanged);
 			end
 			function switchAmmo(bRanged)
-				local bAmmoPickerIsEmpty = (ammopicker.getValue() == "")
-				local bMaxAmmoIsZero = (maxammo.getValue() == 0)
-				ammopicker.setComboBoxVisible(bRanged and bMaxAmmoIsZero)
-				maxammo.setVisible(bRanged and bAmmoPickerIsEmpty)
-				ammocounter.setVisible(bRanged and bAmmoPickerIsEmpty);
+				local bAmmoPickerIsEmpty = (ammopicker.getValue() == "");
+				local bMaxAmmoIsZero = (maxammo.getValue() == 0);
+				Debug.chat(bRanged, bAmmoPickerIsEmpty, bMaxAmmoIsZero);
+				ammopicker.setComboBoxVisible(bRanged and (bMaxAmmoIsZero or not bAmmoPickerIsEmpty));
+				maxammo.setVisible(bRanged and (bAmmoPickerIsEmpty or not bMaxAmmoIsZero));
+				ammocounter.setVisible(bRanged and (bAmmoPickerIsEmpty or not bMaxAmmoIsZero));
 			end
 		</script>
 		<sheetdata>
@@ -138,6 +139,16 @@
 					end
 				</script>
 			</buttonfield>
+			<basicnumber name="maxammo">
+				<script>
+					function onValueChanged()
+						if super and super.onValueChanged then
+							super.onValueChanged();
+						end
+						window.switchAmmo(window.type.getValue() == 1)
+					end
+				</script>
+			</basicnumber>
 			<combobox name="ammopicker">
 				<frame>
 					<hidereadonly />

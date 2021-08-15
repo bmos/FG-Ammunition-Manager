@@ -25,13 +25,13 @@
 				toggleDetail();
 			end
 			function hasLoadAction(bRanged)
-				local bHasLoadAction
+				local bHasLoadAction;
 				local sWeaponName = string.lower(DB.getValue(getDatabaseNode(), 'name', 'ranged weapon'));
 				for _,v in pairs(AmmunitionManager.tLoadWeapons) do
 					if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
 				end
 
-				return (bRanged and bHasLoadAction)
+				return (bRanged and bHasLoadAction);
 			end
 			function toggleDetail()
 				if super and super.toggleDetail then
@@ -44,17 +44,18 @@
 				ammocounter.setVisible(bRanged);
 				
 				isloaded.setVisible(hasLoadAction(bRanged));
-				recoverypercentage.setVisible(bRanged)
-				label_ammopercentof.setVisible(bRanged)
-				missedshots.setVisible(bRanged)
-				switchAmmo(bRanged)
+				recoverypercentage.setVisible(bRanged);
+				label_ammopercentof.setVisible(bRanged);
+				missedshots.setVisible(bRanged);
+				switchAmmo(bRanged);
 			end
 			function switchAmmo(bRanged)
-				local bAmmoPickerIsEmpty = (ammopicker.getValue() == "")
-				local bMaxAmmoIsZero = (maxammo.getValue() == 0)
-				ammopicker.setComboBoxVisible(bRanged and bMaxAmmoIsZero)
-				maxammo.setVisible(bRanged and bAmmoPickerIsEmpty)
-				ammocounter.setVisible(bRanged and bAmmoPickerIsEmpty);
+				local bAmmoPickerIsEmpty = (ammopicker.getValue() == "");
+				local bMaxAmmoIsZero = (maxammo.getValue() == 0);
+				Debug.chat(bRanged, bAmmoPickerIsEmpty, bMaxAmmoIsZero);
+				ammopicker.setComboBoxVisible(bRanged and (bMaxAmmoIsZero or not bAmmoPickerIsEmpty));
+				maxammo.setVisible(bRanged and (bAmmoPickerIsEmpty or not bMaxAmmoIsZero));
+				ammocounter.setVisible(bRanged and (bAmmoPickerIsEmpty or not bMaxAmmoIsZero));
 			end
 		</script>
 		<sheetdata>
