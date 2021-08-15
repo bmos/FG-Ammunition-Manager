@@ -49,7 +49,6 @@
 			function switchAmmo(bRanged)
 				local bAmmoPickerIsEmpty = (ammopicker.getValue() == "");
 				local bMaxAmmoIsZero = (maxammo.getValue() == 0);
-				Debug.chat(bRanged, bAmmoPickerIsEmpty, bMaxAmmoIsZero);
 				ammopicker.setComboBoxVisible(bRanged and (bMaxAmmoIsZero or not bAmmoPickerIsEmpty));
 				maxammo.setVisible(bRanged and (bAmmoPickerIsEmpty or not bMaxAmmoIsZero));
 				ammocounter.setVisible(bRanged and (bAmmoPickerIsEmpty or not bMaxAmmoIsZero));
@@ -109,35 +108,7 @@
 				<state icon="button_checkoff" tooltipres="tooltip_actions_unloaded" />
 				<state icon="button_checkon" tooltipres="tooltip_actions_loaded" />
 				<default>0</default>
-				<script>
-					function onInit()
-						local sNode = getDatabaseNode().getParent().getNodeName();
-						DB.addHandler(sNode, "onChildUpdate", onDataChanged);
-						onDataChanged();
-					end
-					function onClose()
-						local sNode = getDatabaseNode().getParent().getNodeName();
-						DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
-						onDataChanged();
-					end
-					function onDataChanged()
-						local bRanged = (window.type.getValue() == 1);
-						setVisible(window.hasLoadAction(bRanged))
-					end
-					function onButtonPress()
-						local nodeActor = getDatabaseNode().getChild('....');
-						local rActor = ActorManager.resolveActor(nodeActor);
-						local sActorName = DB.getValue(nodeActor, 'name', 'Someone');
-
-						local nodeWeapon = window.getDatabaseNode();
-						local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
-						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
-						if (getValue() == 1) and nMaxAttacks >= 1 then
-							ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), true, rActor);
-						end
-					end
-				</script>
+				<script file="campaign/scripts/ammo_isloaded.lua" />
 			</buttonfield>
 			<basicnumber name="maxammo">
 				<script>
@@ -164,33 +135,8 @@
 					<right parent="damageview" anchor="right" offset="0" />
 				</anchored>
 				<default textres="none" />
-				<script>
-					function onInit()
-						if super and super.onInit then
-							super.onInit();
-						end
-
-						local aAutoFill = {};
-						table.insert(aAutoFill, Interface.getString("none"));
-						for _,v in pairs(window.getDatabaseNode().getChild('...inventorylist').getChildren()) do
-							local sName = DB.getValue(v, "name", "");
-							local sClass = DB.getValue(v, "class", ""):lower()
-							local bAmmo = sClass:match("ammunition") or sClass:match("ammo");
-							if bAmmo then
-								if sName ~= "" then
-									table.insert(aAutoFill, sName);
-								end
-							end
-						end
-						addItems(aAutoFill)
-					end
-					function onValueChanged()
-						if super and super.onValueChanged then
-							super.onValueChanged();
-						end
-						window.switchAmmo(window.type.getValue() == 1)
-					end
-				</script>
+				<itemsheetname>class</itemsheetname>
+				<script file="campaign/scripts/ammo_ammopicker.lua" />
 			</combobox>
 		</sheetdata>
 	</windowclass>

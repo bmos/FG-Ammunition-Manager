@@ -111,26 +111,8 @@
 					<left offset="5" />
 				</anchored>
 				<default textres="none" />
-				<script>
-					function onInit()
-						if super and super.onInit then
-							super.onInit();
-						end
-
-						local aAutoFill = {};
-						table.insert(aAutoFill, Interface.getString("none"));
-						for _,v in pairs(window.getDatabaseNode().getChild('...inventorylist').getChildren()) do
-							local sName = DB.getValue(v, "name", "");
-							local bAmmo = DB.getValue(v, "subtype", ""):lower():match("ammunition") or DB.getValue(v, "subtype", ""):lower():match("ammo");
-							if bAmmo then
-								if sName ~= "" then
-									table.insert(aAutoFill, sName);
-								end
-							end
-						end
-						addItems(aAutoFill)
-					end
-				</script>
+				<itemsheetname>subtype</itemsheetname>
+				<script file="campaign/scripts/ammo_ammopicker.lua" />
 			</combobox>
 			<label_fieldtop name="label_ammopicker">
 				<anchored to="ammopicker" />
@@ -144,31 +126,7 @@
 					<left anchor="right" offset="15" />
 				</anchored>
 				<default>50</default>
-				<script>
-					function onDoubleClick(x,y)
-						local nMisses = window.missedshots.getValue() or 0
-						if nMisses >= 1 then
-							local nPercent = 0.01 * (getValue() or 50)
-							local nAmmoRecovered = math.floor(nMisses * nPercent)
-							ChatManager.SystemMessage(string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered))
-
-							local nodeWeapon = window.getDatabaseNode();
-							local nMaxAmmo, nMaxAttacks
-							local nodeAmmo = AmmunitionManager.isAmmoPicker(nodeWeapon, ActorManager.resolveActor(getDatabaseNode().getChild('....')))
-							if not nodeAmmo then
-								local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0) - nAmmoRecovered
-								if nAmmoUsed and nAmmoUsed &lt; 0 then ChatManager.SystemMessage(string.format(Interface.getString('char_actions_excessammunition'), -1 * nAmmoUsed)) end
-								DB.setValue(nodeWeapon, 'ammo', 'number', math.max(nAmmoUsed, 0))
-							else
-								nCount = DB.getValue(nodeAmmo, 'count', 0)
-								nCount = nCount + nAmmoRecovered
-								DB.setValue(nodeAmmo, 'count', 'number', nCount)
-							end
-
-							window.missedshots.setValue(0)
-						end
-					end
-				</script>
+				<script file="campaign/scripts/ammo_recoverypercentage.lua" />
 				<tooltip textres="weapon_tooltip_recoverypercentage" />
 				<tabtarget prev="ammopicker" next="missedshots" />
 			</basicnumber>
