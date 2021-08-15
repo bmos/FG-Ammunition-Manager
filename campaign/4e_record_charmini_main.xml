@@ -4,17 +4,57 @@
 
 <root>
 	<windowclass name="charmini_weapon" merge="join">
+		<script>
+			function onInit()
+				if super and super.onInit then
+					super.onInit();
+				end
+				DB.addHandler(getDatabaseNode().getChild('name').getNodeName(), "onUpdate", toggleDetail);
+				toggleDetail();
+			end
+			function onClose()
+				if super and super.onClose then
+					super.onClose();
+				end
+				DB.removeHandler(getDatabaseNode().getChild('name').getNodeName(), "onUpdate", toggleDetail);
+			end
+			function onTypeChanged()
+				if super and super.onTypeChanged then
+					super.onTypeChanged();
+				end
+				toggleDetail();
+			end
+			function hasLoadAction(bRanged)
+				local bHasLoadAction
+				local sWeaponName = string.lower(DB.getValue(getDatabaseNode(), 'name', 'ranged weapon'));
+				for _,v in pairs(AmmunitionManager.tLoadWeapons) do
+					if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
+				end
+
+				return (bRanged and bHasLoadAction)
+			end
+			function toggleDetail()
+				if super and super.toggleDetail then
+					super.toggleDetail();
+				end
+				local bRanged = (type.getValue() == 1);
+				
+				maxammo.setVisible(bRanged);
+				ammo_label.setVisible(bRanged);
+				ammocounter.setVisible(bRanged);
+				
+				isloaded.setVisible(hasLoadAction(bRanged));
+				switchAmmo(bRanged)
+			end
+			function switchAmmo(bRanged)
+				local bAmmoPickerIsEmpty = (ammopicker.getValue() == "")
+				local bMaxAmmoIsZero = (maxammo.getValue() == 0)
+				ammopicker.setComboBoxVisible(bRanged and bMaxAmmoIsZero)
+				maxammo.setVisible(bRanged and bAmmoPickerIsEmpty)
+				ammocounter.setVisible(bRanged and bAmmoPickerIsEmpty);
+			end
+		</script>
 		<sheetdata>
-			<state_charweapontype name="type">
-				<script>
-					function onValueChanged()
-						if super and super.onValueChanged then
-							super.onValueChanged();
-						end
-						window.isloaded.onDataChanged();
-					end
-				</script>
-			</state_charweapontype>
 			<genericcontrol name="attackicon">
 				<script>
 					function onHover(bOnControl)
@@ -23,7 +63,8 @@
 					local function automateAmmo(nodeWeapon)
 						local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
 						DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
-						if window.isloaded.hasLoadAction() and bNotLoaded then
+						local bRanged = (window.type.getValue() == 1);
+						if window.hasLoadAction(bRanged) and bNotLoaded then
 							local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 							
@@ -58,17 +99,6 @@
 					end
 				</script>
 			</genericcontrol>
-			
-			<stringu name="name">
-				<script>
-					function onValueChanged()
-						if super and super.onValueChanged then
-							super.onValueChanged();
-						end
-						window.isloaded.onDataChanged();
-					end
-				</script>
-			</stringu>
 
 			<buttonfield name="isloaded">
 				<anchored width="12" height="12">
@@ -84,19 +114,14 @@
 						DB.addHandler(sNode, "onChildUpdate", onDataChanged);
 						onDataChanged();
 					end
-					function hasLoadAction()
-						local bRanged = (window.type.getValue() == 1);
-						local sWeaponName = string.lower(DB.getValue(getDatabaseNode().getParent(), 'name', 'ranged weapon'));
-						local bHasLoadAction = false
-						local tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
-						for _,v in ipairs(tLoadWeapons) do
-							if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
-						end
-						
-						return (bRanged and bHasLoadAction)
+					function onClose()
+						local sNode = getDatabaseNode().getParent().getNodeName();
+						DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
+						onDataChanged();
 					end
 					function onDataChanged()
-						setVisible(hasLoadAction())
+						local bRanged = (window.type.getValue() == 1);
+						setVisible(window.hasLoadAction(bRanged))
 					end
 					function onButtonPress()
 						local nodeActor = getDatabaseNode().getChild('....');
@@ -113,6 +138,49 @@
 					end
 				</script>
 			</buttonfield>
+			<combobox name="ammopicker">
+				<frame>
+					<hidereadonly />
+				</frame>
+				<center />
+				<listdirection>down</listdirection>
+				<listmaxsize>15</listmaxsize>
+				<nodrag />
+				<nodrop />
+				<noreset />
+				<anchored width="80" height="20">
+					<top parent="maxammo" anchor="top" />
+					<right parent="damageview" anchor="right" offset="0" />
+				</anchored>
+				<default textres="none" />
+				<script>
+					function onInit()
+						if super and super.onInit then
+							super.onInit();
+						end
+
+						local aAutoFill = {};
+						table.insert(aAutoFill, Interface.getString("none"));
+						for _,v in pairs(window.getDatabaseNode().getChild('...inventorylist').getChildren()) do
+							local sName = DB.getValue(v, "name", "");
+							local sClass = DB.getValue(v, "class", ""):lower()
+							local bAmmo = sClass:match("ammunition") or sClass:match("ammo");
+							if bAmmo then
+								if sName ~= "" then
+									table.insert(aAutoFill, sName);
+								end
+							end
+						end
+						addItems(aAutoFill)
+					end
+					function onValueChanged()
+						if super and super.onValueChanged then
+							super.onValueChanged();
+						end
+						window.switchAmmo(window.type.getValue() == 1)
+					end
+				</script>
+			</combobox>
 		</sheetdata>
 	</windowclass>
 </root>
