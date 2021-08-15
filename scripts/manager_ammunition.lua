@@ -5,7 +5,6 @@
 tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
 
 function isAmmoPicker(nodeWeapon, rActor)
-	local bAmmoPicker = false;
 	local sAmmo = DB.getValue(nodeWeapon, "ammopicker", "");
 	if sAmmo ~= "" then
 		local nodeChar = ActorManager.getCreatureNode(rActor);
