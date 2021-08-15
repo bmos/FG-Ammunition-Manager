@@ -11,10 +11,12 @@ function onInit()
 	DB.addHandler(sNode, "onChildUpdate", onDataChanged);
 	onDataChanged();
 end
+
 function onClose()
 	local sNode = getDatabaseNode().getPath();
 	DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
 end
+
 function hasLoadAction(nodeWeapon)
 	local bHasLoadAction
 	local bRanged = (type.getValue() == 1);
@@ -25,6 +27,7 @@ function hasLoadAction(nodeWeapon)
 
 	return (bRanged and bHasLoadAction)
 end
+
 function automateAmmo(nodeWeapon)
 	local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
 	DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
@@ -36,6 +39,7 @@ function automateAmmo(nodeWeapon)
 		return true;
 	end
 end
+
 function onDataChanged()
 	onLinkChanged();
 	onDamageChanged();
