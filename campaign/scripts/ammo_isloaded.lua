@@ -6,19 +6,12 @@
 function onButtonPress()
 	local rActor = ActorManager.resolveActor(getDatabaseNode().getChild('....'));
 	local nodeWeapon = window.getDatabaseNode();
-	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 
-	local nMaxAmmo, nMaxAttacks
-	local nodeAmmo = AmmunitionManager.isAmmoPicker(nodeWeapon, rActor)
-	if not nodeAmmo then
-		nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-		nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
-	else
-		nMaxAmmo = DB.getValue(nodeAmmo, 'count', 0) + 1
-		nMaxAttacks = DB.getValue(nodeAmmo, 'count', 0)
-	end
+	local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+	local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
 
 	if (getValue() == 1) and nMaxAttacks >= 0 then
+		local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 		ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), true, rActor)
 	end
 end

@@ -63,15 +63,8 @@
 					function action(draginfo)
 						local rActor, rAction, rFocus = CharManager.getAdvancedRollStructures("attack", nil, window.getDatabaseNode());
 						local nodeWeapon = window.getDatabaseNode();
-						local nMaxAmmo, nMaxAttacks
-						local nodeAmmo = AmmunitionManager.isAmmoPicker(nodeWeapon, rActor)
-						if not nodeAmmo then
-							nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-							nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
-						else
-							nMaxAmmo = DB.getValue(nodeAmmo, 'count', 0) + 1
-							nMaxAttacks = DB.getValue(nodeAmmo, 'count', 0)
-						end
+						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
 
 						if not (nMaxAmmo > 0) or (1 &lt;= nMaxAttacks) then	
 							ActionAttack.performRoll(draginfo, rActor, rAction, rFocus);
@@ -112,14 +105,10 @@
 				<script file="campaign/scripts/ammo_isloaded.lua" />
 			</buttonfield>
 			<basicnumber name="maxammo">
-				<script>
-					function onValueChanged()
-						if super and super.onValueChanged then
-							super.onValueChanged();
-						end
-						window.switchAmmo(window.type.getValue() == 1)
-					end
-				</script>
+				<script file="campaign/scripts/ammo_maxammo.lua" />
+				<maxammo>maxammo</maxammo>
+				<ammo>ammo</ammo>
+				<count>count</count>
 			</basicnumber>
 			<basicnumber name="recoverypercentage">
 				<anchored width="30" height="20">

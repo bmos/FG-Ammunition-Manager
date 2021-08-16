@@ -4,14 +4,14 @@
 
 tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
 
-function isAmmoPicker(nodeWeapon, rActor)
+function getAmmoNode(nodeWeapon, rActor)
 	local sAmmo = DB.getValue(nodeWeapon, "ammopicker", "");
 	if sAmmo ~= "" then
 		local nodeChar = ActorManager.getCreatureNode(rActor);
 		if nodeChar then
-			for _,v in pairs(nodeChar.getChild("inventorylist").getChildren()) do
-				if DB.getValue(v, "name", "") == sAmmo then
-					return v;
+			for _,nodeAmmo in pairs(nodeChar.getChild("inventorylist").getChildren()) do
+				if DB.getValue(nodeAmmo, "name", "") == sAmmo then
+					return nodeAmmo;
 				end
 			end
 		end
@@ -68,15 +68,8 @@ function ammoTracker(rSource, sDesc, sResult)
 					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
 				end
 				if sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]') then
-					local nMaxAmmo, nAmmo
-					local nodeAmmo = AmmunitionManager.isAmmoPicker(nodeWeapon, rSource)
-					if not nodeAmmo then
-						nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
-						nAmmo = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
-					else
-						nMaxAmmo = DB.getValue(nodeAmmo, 'count', 0)
-						nAmmo = DB.getValue(nodeAmmo, 'count', 0) - 1;
-					end
+					local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
+					local nAmmo = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
 
 					local bInfiniteAmmo
 					if sRuleset == "PFRPG" or sRuleset == "3.5E" then

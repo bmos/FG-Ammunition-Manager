@@ -14,15 +14,8 @@ function action(draginfo)
 		rAttack.modifier = DB.getValue(nodeWeapon, "attack" .. i, 0);
 		rAttack.order = i;
 
-		local nMaxAmmo, nMaxAttacks
-		local nodeAmmo = AmmunitionManager.isAmmoPicker(nodeWeapon, rActor)
-		if not nodeAmmo then
-			nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-			nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
-		else
-			nMaxAmmo = DB.getValue(nodeAmmo, 'count', 0) + 1
-			nMaxAttacks = DB.getValue(nodeAmmo, 'count', 0)
-		end
+		local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+		local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
 
 		if not (nMaxAmmo > 0) or (i <= nMaxAttacks) then	
 			table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack));
