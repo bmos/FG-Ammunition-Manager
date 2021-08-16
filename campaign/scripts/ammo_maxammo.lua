@@ -30,9 +30,11 @@ function onDoubleClick(x, y)
 			if nReload > 0 then
 				DB.setValue(nodeWeapon, ammo[1], 'number', 0)
 				DB.setValue(nodeAmmo, count[1], 'number', nReload)
+				ChatManager.Message(Interface.getString("char_actions_reload_full"), true, rActor);
 			else
 				DB.setValue(nodeWeapon, ammo[1], 'number', nAmmo - nCount)
 				DB.setValue(nodeAmmo, count[1], 'number', 0)
+				ChatManager.Message(Interface.getString("char_actions_reload_partial"), true, rActor);
 			end
 		end
 	end
