@@ -5,15 +5,27 @@
 
 function onDoubleClick(x,y)
 	local nMisses = window.missedshots.getValue() or 0
-	if nMisses >= 1 then
-		local nPercent = 0.01 * (getValue() or 50)
+	if nMisses > 0 then
+		local nPercent = (getValue() or 50) / 100
 		local nAmmoRecovered = math.floor(nMisses * nPercent)
 		ChatManager.SystemMessage(string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered))
 
 		local nodeWeapon = window.getDatabaseNode();
-		local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0) - nAmmoRecovered
-		if nAmmoUsed and nAmmoUsed < 0 then ChatManager.SystemMessage(string.format(Interface.getString('char_actions_excessammunition'), -1 * nAmmoUsed)) end
-		DB.setValue(nodeWeapon, 'ammo', 'number', math.max(nAmmoUsed, 0))
+		local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0)
+		local nExcess = nAmmoRecovered - nAmmoUsed
+		DB.setValue(nodeWeapon, 'ammo', 'number', math.max(-1 * nExcess, 0))
+
+		if nExcess > 0 then
+			local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
+			local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor)
+			if nodeAmmo then
+				local nCount = DB.getValue(nodeAmmo, 'count', 0)
+				DB.setValue(nodeAmmo, 'count', 'number', nCount + nExcess)
+				ChatManager.SystemMessage(string.format(Interface.getString('char_actions_excessammunition_auto'), nExcess))
+			else
+				ChatManager.SystemMessage(string.format(Interface.getString('char_actions_excessammunition'), nExcess))
+			end
+		end
 
 		window.missedshots.setValue(0)
 	end
