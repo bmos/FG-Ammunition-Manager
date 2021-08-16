@@ -108,24 +108,6 @@
 				<count>count</count>
 				<tooltip textres="weapon_tooltip_reloadammo" />
 			</basicnumber>
-			<!-- <combobox name="ammopicker">
-				<frame>
-					<hidereadonly />
-				</frame>
-				<center />
-				<listdirection>down</listdirection>
-				<listmaxsize>15</listmaxsize>
-				<nodrag />
-				<nodrop />
-				<noreset />
-				<anchored width="80" height="20">
-					<top parent="maxammo" anchor="top" />
-					<right parent="damageview" anchor="right" offset="0" />
-				</anchored>
-				<default textres="none" />
-				<itemsheetname>class</itemsheetname>
-				<script file="campaign/scripts/ammo_ammopicker.lua" />
-			</combobox> -->
 		</sheetdata>
 	</windowclass>
 </root>
