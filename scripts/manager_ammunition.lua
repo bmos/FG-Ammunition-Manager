@@ -501,14 +501,13 @@ end
 
 -- Function Overrides
 function onInit()
-	-- remove original result handlers
-	ActionsManager.unregisterResultHandler("attack");
-
-	-- register new result handlers
+	-- replace result handlers
 	local sRuleset = User.getRulesetName()
 	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
+		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_pfrpg);
 	elseif sRuleset == "4E" then
+		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_4e);
 	end
 end
