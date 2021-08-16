@@ -7,17 +7,17 @@ local function reduceItemCount(nodeWeapon, rActor, nAmmo)
 	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
 	if nodeAmmo then
 		local nCount = DB.getValue(nodeAmmo, "count", 0)
-
 		if (nAmmo > 0) and (nCount > 0) then
 			local nReload = (nCount - nAmmo)
 			if nReload > 0 then
-				DB.setValue(nodeWeapon, "ammo", 'number', 0)
+				DB.setValue(nodeWeapon, 'ammo', 'number', 0)
+				DB.setValue(nodeAmmo, 'count', 'number', nReload)
 			else
-				DB.setValue(nodeWeapon, "ammo", 'number', nAmmo - nCount)
+				DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo - nCount)
+				DB.setValue(nodeAmmo, 'count', 'number', 0)
 			end
 		end
 	end
-	DB.setValue(nodeAmmo, "count", 'number', 0)
 end
 
 function onReloadAction(draginfo)
