@@ -3,4 +3,91 @@
 <!-- Please see the LICENSE.md file included with this distribution for attribution and copyright information. -->
 
 <root>
+	<windowclass name="char_weapon" merge="join">
+		<script file="campaign/scripts/5e_char_weapon.lua" />
+		<sheetdata>
+			<basicnumber name="maxammo">
+				<script file="campaign/scripts/ammo_maxammo.lua" />
+				<maxammo>maxammo</maxammo>
+				<ammo>ammo</ammo>
+				<count>count</count>
+				<tooltip textres="weapon_tooltip_reloadammo" />
+			</basicnumber>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="char_weapon_editor" merge="join">
+		<placement>
+			<size width="380" height="388" />
+		</placement>
+		<sizelimits>
+			<minimum width="380" height="388" />
+			<dynamic />
+		</sizelimits>
+	</windowclass>
+	<windowclass name="char_weapon_editor_main" merge="join">
+		<sheetdata>
+			<!-- Ammo -->
+			<header_column name="header_ammo">
+				<insertbefore>header_damage</insertbefore>
+				<static textres="weapon_header_ammo" />
+				<center />
+			</header_column>
+			<combobox name="ammopicker">
+				<frame>
+					<hidereadonly />
+				</frame>
+				<center />
+				<listdirection>up</listdirection>
+				<listmaxsize>15</listmaxsize>
+				<nodrag />
+				<nodrop />
+				<noreset />
+				<anchored width="175" height="20">
+					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
+					<left offset="5" />
+				</anchored>
+				<default textres="none" />
+				<itemsheetname>subtype</itemsheetname>
+				<script file="campaign/scripts/ammo_ammopicker.lua" />
+			</combobox>
+			<label_fieldtop name="label_ammopicker">
+				<anchored to="ammopicker" />
+				<static textres="weapon_label_ammopicker" />
+				<readonly />
+				<center />
+			</label_fieldtop>
+			<basicnumber name="recoverypercentage">
+				<anchored to="ammopicker" width="40" height="20">
+					<top anchor="top" offset="0" />
+					<left anchor="right" offset="15" />
+				</anchored>
+				<default>50</default>
+				<script file="campaign/scripts/ammo_recoverypercentage.lua" />
+				<tooltip textres="weapon_tooltip_recoverypercentage" />
+				<tabtarget prev="ammopicker" next="missedshots" />
+			</basicnumber>
+			<label_fieldtop name="label_recoverypercentage">
+				<anchored to="recoverypercentage" />
+				<readonly />
+				<center />
+			</label_fieldtop>
+			<label name="label_ammopercentof">
+				<anchored to="recoverypercentage" position="righthigh" offset="5,0" width="35" />
+				<static>% of </static>
+				<center />
+			</label>
+			<basicnumber name="missedshots">
+				<anchored to="label_ammopercentof" position="righthigh" offset="5,0" width="40" height="20" />
+				<default>0</default>
+				<hideonvalue>0</hideonvalue>
+			</basicnumber>
+			<label_fieldtop name="label_missedshots">
+				<anchored to="missedshots" />
+				<static textres="weapon_label_missedshots" />
+				<readonly />
+				<center />
+			</label_fieldtop>
+		</sheetdata>
+	</windowclass>
 </root>
