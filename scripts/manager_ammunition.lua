@@ -499,6 +499,102 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	end
 end
 
+function onAttack_5e(rSource, rTarget, rRoll)
+	ActionsManager2.decodeAdvantage(rRoll);
+
+	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
+	rMessage.text = string.gsub(rMessage.text, " %[MOD:[^]]*%]", "");
+
+	local rAction = {};
+	rAction.nTotal = ActionsManager.total(rRoll);
+	rAction.aMessages = {};
+	
+	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus = ActorManager5E.getDefenseValue(rSource, rTarget, rRoll);
+	if nAtkEffectsBonus ~= 0 then
+		rAction.nTotal = rAction.nTotal + nAtkEffectsBonus;
+		local sFormat = "[" .. Interface.getString("effects_tag") .. " %+d]"
+		table.insert(rAction.aMessages, string.format(sFormat, nAtkEffectsBonus));
+	end
+	if nDefEffectsBonus ~= 0 then
+		nDefenseVal = nDefenseVal + nDefEffectsBonus;
+		local sFormat = "[" .. Interface.getString("effects_def_tag") .. " %+d]"
+		table.insert(rAction.aMessages, string.format(sFormat, nDefEffectsBonus));
+	end
+	
+	local sCritThreshold = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
+	local nCritThreshold = tonumber(sCritThreshold) or 20;
+	if nCritThreshold < 2 or nCritThreshold > 20 then
+		nCritThreshold = 20;
+	end
+	
+	rAction.nFirstDie = 0;
+	if #(rRoll.aDice) > 0 then
+		rAction.nFirstDie = rRoll.aDice[1].result or 0;
+	end
+	if rAction.nFirstDie >= nCritThreshold then
+		rAction.bSpecial = true;
+		rAction.sResult = "crit";
+		table.insert(rAction.aMessages, "[CRITICAL HIT]");
+	elseif rAction.nFirstDie == 1 then
+		rAction.sResult = "fumble";
+		table.insert(rAction.aMessages, "[AUTOMATIC MISS]");
+	elseif nDefenseVal then
+		if rAction.nTotal >= nDefenseVal then
+			rAction.sResult = "hit";
+			table.insert(rAction.aMessages, "[HIT]");
+		else
+			rAction.sResult = "miss";
+			table.insert(rAction.aMessages, "[MISS]");
+		end
+	end
+	
+	if not rTarget then
+		rMessage.text = rMessage.text .. " " .. table.concat(rAction.aMessages, " ");
+	end
+
+	--	bmos adding hit margin tracking
+	--	for compatibility with ammunition tracker, add this here in your onAttack function
+	if AmmunitionManager then
+		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rAction.nTotal)
+		if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
+	end
+	--	end bmos adding hit margin tracking
+	
+	Comm.deliverChatMessage(rMessage);
+	
+	--	bmos adding automatic ammunition ticker and chat messaging
+	--	for compatibility with ammunition tracker, add this here in your onAttack function
+	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
+	--	end bmos adding automatic ammunition ticker and chat messaging
+
+	if rTarget then
+		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
+	end
+	
+	-- TRACK CRITICAL STATE
+	if rAction.sResult == "crit" then
+		ActionAttack.setCritState(rSource, rTarget);
+	end
+	
+	-- REMOVE TARGET ON MISS OPTION
+	if rTarget then
+		if (rAction.sResult == "miss" or rAction.sResult == "fumble") then
+			if rRoll.bRemoveOnMiss then
+				TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget));
+			end
+		end
+	end
+	
+	-- HANDLE FUMBLE/CRIT HOUSE RULES
+	local sOptionHRFC = OptionsManager.getOption("HRFC");
+	if rAction.sResult == "fumble" and ((sOptionHRFC == "both") or (sOptionHRFC == "fumble")) then
+		ActionAttack.notifyApplyHRFC("Fumble");
+	end
+	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
+		ActionAttack.notifyApplyHRFC("Critical Hit");
+	end
+end
+
 -- Function Overrides
 function onInit()
 	-- replace result handlers
@@ -509,5 +605,8 @@ function onInit()
 	elseif sRuleset == "4E" then
 		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_4e);
+	elseif sRuleset == "5E" then
+		ActionsManager.unregisterResultHandler("attack");
+		ActionsManager.registerResultHandler("attack", onAttack_5e);
 	end
 end

@@ -4,52 +4,8 @@
 
 <root>
 	<windowclass name="char_weapon" merge="join">
-		<script file="campaign/scripts/ammo_weapon.lua" />
+		<script file="campaign/scripts/5e_char_weapon.lua" />
 		<sheetdata>
-			<number_charweaponfullattack name="attacks">
-				<anchored to="attackicons" position="over" />
-				<script file="campaign/scripts/ammo_attacks.lua" />
-			</number_charweaponfullattack>		
-			<number_charweaponattacktotal name="attack1">
-				<anchored to="attackframe" position="insidetopleft" offset="3,0" width="27" height="20" />
-				<modifier>0</modifier>
-				<name>Attack 1</name>
-				<source><name>attack1modifier</name><op>+</op></source>
-				<script file="campaign/scripts/ammo_attack.lua" />
-			</number_charweaponattacktotal>
-			<number_charweaponattacktotal name="attack2">
-				<anchored to="attack1" position="right" offset="5,0" width="27" />
-				<modifier>-5</modifier>
-				<name>Attack 2</name>
-				<source><name>attack2modifier</name><op>+</op></source>
-				<script file="campaign/scripts/ammo_attack.lua" />
-			</number_charweaponattacktotal>
-			<number_charweaponattacktotal name="attack3">
-				<anchored to="attack2" position="right" offset="5,0" width="27" />
-				<modifier>-10</modifier>
-				<name>Attack 3</name>
-				<source><name>attack3modifier</name><op>+</op></source>
-				<script file="campaign/scripts/ammo_attack.lua" />
-			</number_charweaponattacktotal>
-			<number_charweaponattacktotal name="attack4">
-				<anchored to="attack3" position="right" offset="5,0" width="27" />
-				<modifier>-15</modifier>
-				<name>Attack 4</name>
-				<source><name>attack4modifier</name><op>+</op></source>
-				<script file="campaign/scripts/ammo_attack.lua" />
-			</number_charweaponattacktotal>
-			
-			<!-- Ranged specific fields -->
-			<buttonfield name="isloaded">
-				<anchored width="12" height="12">
-					<top parent="label_ammo" anchor="top" relation="relative" offset="4" />
-					<right parent="label_ammo" anchor="left" relation="relative" offset="0" />
-				</anchored>
-				<state icon="button_checkoff" tooltipres="tooltip_actions_unloaded" />
-				<state icon="button_checkon" tooltipres="tooltip_actions_loaded" />
-				<default>0</default>
-				<script file="campaign/scripts/ammo_isloaded.lua" />
-			</buttonfield>
 			<basicnumber name="maxammo">
 				<script file="campaign/scripts/ammo_maxammo.lua" />
 				<maxammo>maxammo</maxammo>
@@ -59,17 +15,16 @@
 			</basicnumber>
 		</sheetdata>
 	</windowclass>
-	
+
 	<windowclass name="char_weapon_editor" merge="join">
 		<placement>
-			<size width="400" height="388" />
+			<size width="380" height="388" />
 		</placement>
 		<sizelimits>
-			<minimum width="400" height="388" />
+			<minimum width="380" height="388" />
 			<dynamic />
 		</sizelimits>
 	</windowclass>
-
 	<windowclass name="char_weapon_editor_main" merge="join">
 		<sheetdata>
 			<!-- Ammo -->
