@@ -35,6 +35,7 @@
 				<maxammo>maxammo</maxammo>
 				<ammo>ammo</ammo>
 				<count>count</count>
+				<tooltip textres="weapon_tooltip_reloadammo" />
 			</basicnumber>
 		</sheetdata>
 	</windowclass>

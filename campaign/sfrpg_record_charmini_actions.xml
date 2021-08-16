@@ -8,5 +8,10 @@
 <root>
 	<windowclass name="charmini_weapon" merge="join">
 		<script file="campaign/scripts/charmini_weapon.lua" />
+		<sheetdata>
+			<basicnumber name="uses">
+				<tooltip textres="weapon_tooltip_reloadammo" />
+			</basicnumber>				
+		</sheetdata>
 	</windowclass>
 </root>

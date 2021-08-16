@@ -8,6 +8,11 @@
 <root>
 	<windowclass name="char_weapon" merge="join">
 		<script file="campaign/scripts/ammo_sfrpg_reload.lua" />
+		<sheetdata>
+			<basicnumber name="uses">
+				<tooltip textres="weapon_tooltip_reloadammo" />
+			</basicnumber>				
+		</sheetdata>
 	</windowclass>
 	
 	<windowclass name="char_weapon_editor" merge="join">

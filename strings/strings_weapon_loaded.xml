@@ -8,6 +8,7 @@
 	<string name="tooltip_actions_unloaded">Not Loaded</string>
 	<string name="weapon_tooltip_missedshots">Misses</string>
 	<string name="weapon_tooltip_recoverypercentage">Double-click to recover ammo</string>
+	<string name="weapon_tooltip_reloadammo">Double-click to reload ammo</string>
 	<!-- Chat Messages -->
 	<string name="char_actions_load">Loading their %s.</string>
 	<string name="char_actions_notloaded">Attacks with an unloaded %s.</string>
