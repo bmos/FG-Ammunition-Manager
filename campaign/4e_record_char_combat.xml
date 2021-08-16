@@ -106,6 +106,9 @@
 			</buttonfield>
 			<basicnumber name="maxammo">
 				<script file="campaign/scripts/ammo_maxammo.lua" />
+				<maxammo>maxammo</maxammo>
+				<ammo>ammo</ammo>
+				<count>count</count>
 			</basicnumber>
 			<basicnumber name="recoverypercentage">
 				<anchored width="30" height="20">
