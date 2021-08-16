@@ -111,14 +111,7 @@
 				<script file="campaign/scripts/ammo_isloaded.lua" />
 			</buttonfield>
 			<basicnumber name="maxammo">
-				<script>
-					function onValueChanged()
-						if super and super.onValueChanged then
-							super.onValueChanged();
-						end
-						window.switchAmmo(window.type.getValue() == 1)
-					end
-				</script>
+				<script file="campaign/scripts/ammo_maxammo.lua" />
 			</basicnumber>
 			<combobox name="ammopicker">
 				<frame>
