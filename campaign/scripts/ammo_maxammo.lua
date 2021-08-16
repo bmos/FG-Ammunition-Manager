@@ -3,15 +3,6 @@
 -- attribution and copyright information.
 --
 
-function onValueChanged()
-	if super and super.onValueChanged then
-		super.onValueChanged();
-	end
-	if window and window.switchAmmo then
-		window.switchAmmo(window.type.getValue() == 1)
-	end
-end
-
 function onDoubleClick(x, y)
 	if super and super.onDoubleClick then
 		super.onDoubleClick(x, y);

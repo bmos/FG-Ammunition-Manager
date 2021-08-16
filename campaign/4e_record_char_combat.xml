@@ -38,23 +38,17 @@
 					super.toggleDetail();
 				end
 				local bRanged = (type.getValue() == 1);
-				
-				maxammo.setVisible(bRanged);
-				ammo_label.setVisible(bRanged);
-				ammocounter.setVisible(bRanged);
-				
 				isloaded.setVisible(hasLoadAction(bRanged));
-				recoverypercentage.setVisible(bRanged);
-				label_ammopercentof.setVisible(bRanged);
-				missedshots.setVisible(bRanged);
-				switchAmmo(bRanged);
-			end
-			function switchAmmo(bRanged)
-				local bAmmoPickerIsEmpty = (ammopicker.getValue() == "");
-				local bMaxAmmoIsZero = (maxammo.getValue() == 0);
-				ammopicker.setComboBoxVisible(bRanged and (bMaxAmmoIsZero or not bAmmoPickerIsEmpty));
-				maxammo.setVisible(bRanged and (bAmmoPickerIsEmpty or not bMaxAmmoIsZero));
-				ammocounter.setVisible(bRanged and (bAmmoPickerIsEmpty or not bMaxAmmoIsZero));
+				maxammo.setVisible(bRanged);
+				ammocounter.setVisible(bRanged);
+				ammo_label.setVisible(bRanged);
+
+				local bShow = (activatedetail.getValue() == 1);
+				ammunition_label.setVisible(bRanged and bShow);
+				recoverypercentage.setVisible(bRanged and bShow);
+				label_ammopercentof.setVisible(bRanged and bShow);
+				missedshots.setVisible(bRanged and bShow);
+				ammopicker.setComboBoxVisible(bRanged and bShow);
 			end
 		</script>
 		<sheetdata>
@@ -94,38 +88,32 @@
 				</script>
 			</genericcontrol>
 			
-			<buttonfield name="isloaded">
-				<anchored width="12" height="12">
-					<top parent="ammo_label" anchor="top" relation="relative" offset="4" />
-					<right parent="ammo_label" anchor="left" relation="relative" offset="0" />
+			<label name="ammunition_label" insertbefore="range_label">
+				<anchored width="80">
+					<top parent="name" anchor="bottom" relation="relative" offset="5" />
+					<left offset="10" />
 				</anchored>
-				<state icon="button_checkoff" tooltipres="tooltip_actions_unloaded" />
-				<state icon="button_checkon" tooltipres="tooltip_actions_loaded" />
-				<default>0</default>
-				<script file="campaign/scripts/ammo_isloaded.lua" />
-			</buttonfield>
-			<basicnumber name="maxammo">
-				<script file="campaign/scripts/ammo_maxammo.lua" />
-				<maxammo>maxammo</maxammo>
-				<ammo>ammo</ammo>
-				<count>count</count>
-			</basicnumber>
+				<static textres="weapon_label_ammopicker" />
+			</label>
 			<basicnumber name="recoverypercentage">
 				<anchored width="30" height="20">
-					<top parent="ammocounter" anchor="top" relation="relative" offset="0" />
-					<left parent="ammocounter" anchor="right" relation="relative" offset="15" />
+					<top parent="ammunition_label" />
+					<left parent="ammunition_label" anchor="right" offset="5" />
 				</anchored>
 				<default>50</default>
 				<tooltip textres="weapon_tooltip_recoverypercentage" />
 				<script file="campaign/scripts/ammo_recoverypercentage.lua" />
 			</basicnumber>
 			<label name="label_ammopercentof">
-				<anchored to="recoverypercentage" position="righthigh" offset="5,0" width="32" />
+				<anchored to="recoverypercentage" position="righthigh" offset="10,0" width="32" />
 				<static>% of </static>
 				<center />
 			</label>
 			<basicnumber name="missedshots">
-				<anchored to="label_ammopercentof" position="righthigh" offset="5,0" width="30" height="20" />
+				<anchored to="recoverypercentage" width="30" height="20">
+					<top anchor="top" />
+					<left anchor="right" offset="52" />
+				</anchored>
 				<default>0</default>
 				<hideonvalue>0</hideonvalue>
 				<tooltip textres="weapon_tooltip_missedshots" />
@@ -140,14 +128,40 @@
 				<nodrag />
 				<nodrop />
 				<noreset />
-				<anchored width="80" height="20">
-					<top parent="missedshots" anchor="top" />
-					<right parent="rightanchor" anchor="left" offset="0" />
+				<anchored to="missedshots" height="20">
+					<top anchor="top" />
+					<left anchor="right" offset="15" />
+					<right parent="properties" anchor="right" offset="0" />
 				</anchored>
 				<default textres="none" />
 				<itemsheetname>class</itemsheetname>
 				<script file="campaign/scripts/ammo_ammopicker.lua" />
 			</combobox>
+			<label name="range_label" insertbefore="ammo_label">
+				<anchored width="70">
+					<top parent="name" anchor="bottom" relation="relative" offset="8" />
+					<left offset="10" />
+				</anchored>
+				<static textres="char_label_weaponrange" />
+			</label>
+
+			<buttonfield name="isloaded">
+				<anchored width="12" height="12">
+					<top parent="ammo_label" anchor="top" relation="relative" offset="4" />
+					<right parent="ammo_label" anchor="left" relation="relative" offset="0" />
+				</anchored>
+				<state icon="button_checkoff" tooltipres="tooltip_actions_unloaded" />
+				<state icon="button_checkon" tooltipres="tooltip_actions_loaded" />
+				<default>0</default>
+				<script file="campaign/scripts/ammo_isloaded.lua" />
+			</buttonfield>
+
+			<basicnumber name="maxammo">
+				<script file="campaign/scripts/ammo_maxammo.lua" />
+				<maxammo>maxammo</maxammo>
+				<ammo>ammo</ammo>
+				<count>count</count>
+			</basicnumber>
 		</sheetdata>
 	</windowclass>
 </root>
