@@ -39,19 +39,10 @@
 				end
 				local bRanged = (type.getValue() == 1);
 				
+				isloaded.setVisible(hasLoadAction(bRanged));
 				maxammo.setVisible(bRanged);
 				ammo_label.setVisible(bRanged);
 				ammocounter.setVisible(bRanged);
-				
-				isloaded.setVisible(hasLoadAction(bRanged));
-				switchAmmo(bRanged);
-			end
-			function switchAmmo(bRanged)
-				local bAmmoPickerIsEmpty = (ammopicker.getValue() == "");
-				local bMaxAmmoIsZero = (maxammo.getValue() == 0);
-				ammopicker.setComboBoxVisible(bRanged and (bMaxAmmoIsZero or not bAmmoPickerIsEmpty));
-				maxammo.setVisible(bRanged and (bAmmoPickerIsEmpty or not bMaxAmmoIsZero));
-				ammocounter.setVisible(bRanged and (bAmmoPickerIsEmpty or not bMaxAmmoIsZero));
 			end
 		</script>
 		<sheetdata>
@@ -116,7 +107,7 @@
 				<ammo>ammo</ammo>
 				<count>count</count>
 			</basicnumber>
-			<combobox name="ammopicker">
+			<!-- <combobox name="ammopicker">
 				<frame>
 					<hidereadonly />
 				</frame>
@@ -133,7 +124,7 @@
 				<default textres="none" />
 				<itemsheetname>class</itemsheetname>
 				<script file="campaign/scripts/ammo_ammopicker.lua" />
-			</combobox>
+			</combobox> -->
 		</sheetdata>
 	</windowclass>
 </root>

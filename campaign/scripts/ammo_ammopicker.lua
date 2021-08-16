@@ -22,16 +22,3 @@ function onInit()
 	end
 	addItems(aAutoFill)
 end
-
---
--- Change visibility when ammopicker is changed
---
-
-function onValueChanged()
-	if super and super.onValueChanged then
-		super.onValueChanged();
-	end
-	if window and window.switchAmmo then
-		window.switchAmmo(window.type.getValue() == 1)
-	end
-end

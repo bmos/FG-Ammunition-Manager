@@ -14,7 +14,10 @@
 	<string name="char_actions_noammo">Attacks without the required ammunition.</string>
 	<string name="char_actions_usedallammo">Used their %s's last piece of ammunition.</string>
 	<string name="char_actions_recoveredammunition">Recovered %d pieces of ammunition.</string>
+	<string name="char_actions_excessammunition_auto">Excess ammunition recovered. %d pieces of ammunition added to inventory.</string>
 	<string name="char_actions_excessammunition">Excess ammunition recovered. %d pieces of ammunition should be added manually.</string>
+	<string name="char_actions_reload_full">Reloaded from their inventory.</string>
+	<string name="char_actions_reload_partial">Partial reload from their inventory (low ammunition).</string>
 	<string name="char_actions_fragile_broken">%s is broken due to natural 1 with fragile condition.</string>
 	<string name="char_actions_fragile_destroyed">%s is destroyed due to natural 1 with fragile condition while already broken.</string>
 	<!-- Headers -->
