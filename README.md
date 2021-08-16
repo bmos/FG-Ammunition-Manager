@@ -19,7 +19,7 @@ This extension aids in tracking whether some ranged weapons are loaded and assis
 # Compatibility and Instructions
 This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.1.4 (2021-06-08).
 
-This extension works with the 3.5E, PFRPG, SFRPG, and 4E rulesets.
+This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
 
 # Video Demonstration (click for video)
 [<img src="https://i.ytimg.com/vi_webp/luAgwIrQ-JE/hqdefault.webp">](https://www.youtube.com/watch?v=luAgwIrQ-JE)
