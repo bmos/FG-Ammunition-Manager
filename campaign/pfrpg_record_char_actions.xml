@@ -64,7 +64,6 @@
 	</windowclass>
 	
 	<windowclass name="char_weapon_editor" merge="join">
-		<frame>recordsheet</frame>
 		<placement>
 			<size width="400" height="388" />
 		</placement>
@@ -72,27 +71,6 @@
 			<minimum width="400" height="388" />
 			<dynamic />
 		</sizelimits>
-		<nodelete />
-		<playercontrol />
-		<tooltip control="name" />
-		<sheetdata>
-			<windowtitlebar name="title">
-				<resource>weapon_title</resource>
-			</windowtitlebar>
-			
-			<frame_record_editor name="contentframe" />
-
-			<subwindow_record name="main">
-				<class>char_weapon_editor_main</class>
-				<activate />
-			</subwindow_record>
-			<scrollbar_record>
-				<target>main</target>
-			</scrollbar_record>
-
-			<resize_recordsheet />
-			<close_recordsheet />
-		</sheetdata>
 	</windowclass>
 
 	<windowclass name="char_weapon_editor_main" merge="join">
