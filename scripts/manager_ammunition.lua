@@ -85,13 +85,9 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 					end
 
 					if nMaxAmmo ~= 0 and not bInfiniteAmmo then
-						if not nodeAmmo then
-							if nAmmo == nMaxAmmo then
-								ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
-								DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
-							else
-								DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
-							end
+						if nAmmo == nMaxAmmo then
+							ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
 						else
 							if nAmmo <= 0 then
 								ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
