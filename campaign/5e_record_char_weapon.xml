@@ -84,7 +84,7 @@
 			</basicnumber>
 			<label_fieldtop name="label_missedshots">
 				<anchored to="missedshots" />
-				<static textres="weapon_label_missedshots" />
+				<static textres="weapon_label_expended" />
 				<readonly />
 				<center />
 			</label_fieldtop>

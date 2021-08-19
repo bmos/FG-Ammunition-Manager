@@ -46,21 +46,27 @@ local function breakWeapon(rSource, nodeWeapon, sWeaponName)
 	end
 end
 
---	tick off used ammunition, count misses, post 'out of ammo' chat message
-function ammoTracker(rSource, sDesc, sResult)
-	local sWeaponName = sDesc:gsub('%[ATTACK %(%u%)%]', '');
+local function getWeaponName(s)
+	local sWeaponName = s:gsub('%[ATTACK %(%u%)%]', '');
 	sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(%u%)%]', '');
 	sWeaponName = sWeaponName:gsub('%[%u+%]', '');
+	if sWeaponName:match('%[USING ') then
+		sWeaponName = sWeaponName:match('%[USING (%a+)');
+	end
 	sWeaponName = sWeaponName:gsub('%[.+%]', '');
 	sWeaponName = sWeaponName:gsub(' %(vs%. .+%)', '');
 	sWeaponName = StringManager.trim(sWeaponName);
+
+	return sWeaponName or ''
+end
+
+--	tick off used ammunition, count misses, post 'out of ammo' chat message
+function ammoTracker(rSource, sDesc, sResult, bCountAll)
+	local sWeaponName = getWeaponName(sDesc)
 	if not sDesc:match('%[CONFIRM%]') and sWeaponName ~= '' then
 		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
 		for _,nodeWeapon in pairs(nodeWeaponList.getChildren()) do
-			local sWeaponNameFromNode = DB.getValue(nodeWeapon, 'name', '')
-			sWeaponNameFromNode = sWeaponNameFromNode:gsub('%[%u+%]', '');
-			sWeaponNameFromNode = sWeaponNameFromNode:gsub('%[.+%]', '');
-			sWeaponNameFromNode = StringManager.trim(sWeaponNameFromNode)
+			local sWeaponNameFromNode = getWeaponName(DB.getValue(nodeWeapon, 'name', ''))
 			if sWeaponNameFromNode == sWeaponName then
 				if sResult == "fumble" then -- break fragile weapon on natural 1
 					local _,sWeaponNode = DB.getValue(nodeWeapon, 'shortcut', '')
@@ -95,7 +101,7 @@ function ammoTracker(rSource, sDesc, sResult)
 							end
 						end
 
-						if sResult == 'miss' or sResult == 'fumble' then -- counting misses
+						if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
 							DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
 						end
 					end
@@ -564,7 +570,7 @@ function onAttack_5e(rSource, rTarget, rRoll)
 	
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
+	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult, true) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if rTarget then
