@@ -44,6 +44,7 @@
 				ammo_label.setVisible(bRanged);
 
 				local bShow = (activatedetail.getValue() == 1);
+				if bShow then ammopicker.clear(); ammopicker.onInit(); end -- re-build ammopicker list when opening details
 				ammunition_label.setVisible(bRanged and bShow);
 				recoverypercentage.setVisible(bRanged and bShow);
 				label_ammopercentof.setVisible(bRanged and bShow);
