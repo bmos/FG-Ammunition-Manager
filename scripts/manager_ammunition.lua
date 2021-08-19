@@ -2,7 +2,7 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
-tLoadWeapons = { 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling', 'loadaction' }
+tLoadWeapons = { 'loadaction' }
 
 function getAmmoNode(nodeWeapon, rActor)
 	local sAmmo = DB.getValue(nodeWeapon, "ammopicker", "");
@@ -600,9 +600,11 @@ function onInit()
 	-- replace result handlers
 	local sRuleset = User.getRulesetName()
 	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
+		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' }
 		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_pfrpg);
 	elseif sRuleset == "4E" then
+		tLoadWeapons = { 'loadaction', 'ballista' }
 		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_4e);
 	elseif sRuleset == "5E" then
