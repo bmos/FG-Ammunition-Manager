@@ -89,7 +89,7 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 							ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
 							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
 						else
-							DB.setValue(nodeAmmo, 'ammo', 'number', nAmmo);
+							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
 						end
 
 						if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
