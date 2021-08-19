@@ -13,7 +13,7 @@ function onInit()
 	local nodeInventory = getDatabaseNode().getChild('....inventorylist')
 	if nodeInventory then
 		for _,v in pairs(nodeInventory.getChildren()) do
-			if v.getChild(itemsheetname[1]) then
+			if v.getChild(itemsheetname[1]) and DB.getValue(v, "carried", 0) ~= 0 then
 				local sName = DB.getValue(v, "name", "");
 				local sItemType = DB.getValue(v, itemsheetname[1], ""):lower()
 				local bAmmo = sItemType:match("ammunition") or sItemType:match("ammo");
