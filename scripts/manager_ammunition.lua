@@ -278,6 +278,11 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 
 	Comm.deliverChatMessage(rMessage);
 
+	--	bmos adding automatic ammunition ticker and chat messaging
+	--	for compatibility with ammunition tracker, add this here in your onAttack function
+	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
+	--	end bmos adding automatic ammunition ticker and chat messaging
+
 	if rAction.sResult == "crit" then
 		ActionAttack.setCritState(rSource, rTarget);
 	end
@@ -347,11 +352,6 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	-- end compatibility with mirror image handler
 
 	end
-
-	--	bmos adding automatic ammunition ticker and chat messaging
-	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and bIsSourcePC then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
-	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if rTarget then
 		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
