@@ -10,13 +10,18 @@ function onInit()
 
 	local aAutoFill = {};
 	table.insert(aAutoFill, Interface.getString("none"));
-	for _,v in pairs(getDatabaseNode().getChild('....inventorylist').getChildren()) do
-		local sName = DB.getValue(v, "name", "");
-		local sItemType = DB.getValue(v, itemsheetname[1], ""):lower()
-		local bAmmo = sItemType:match("ammunition") or sItemType:match("ammo");
-		if bAmmo then
-			if sName ~= "" then
-				table.insert(aAutoFill, sName);
+	local nodeInventory = getDatabaseNode().getChild('....inventorylist')
+	if nodeInventory then
+		for _,v in pairs(nodeInventory.getChildren()) do
+			if v.getChild(itemsheetname[1]) then
+				local sName = DB.getValue(v, "name", "");
+				local sItemType = DB.getValue(v, itemsheetname[1], ""):lower()
+				local bAmmo = sItemType:match("ammunition") or sItemType:match("ammo");
+				if bAmmo then
+					if sName ~= "" then
+						table.insert(aAutoFill, sName);
+					end
+				end
 			end
 		end
 	end
