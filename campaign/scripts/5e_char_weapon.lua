@@ -11,7 +11,7 @@ function onAttackAction(draginfo)
 	local rAction = CharWeaponManager.buildAttackAction(nodeChar, nodeWeapon);
 	
 	-- Decrement ammo
-	CharWeaponManager.decrementAmmo(nodeChar, nodeWeapon);
+	-- CharWeaponManager.decrementAmmo(nodeChar, nodeWeapon);
 	
 	-- Perform action
 	local rActor = ActorManager.resolveActor(nodeChar);
@@ -20,5 +20,7 @@ function onAttackAction(draginfo)
 	if not (nMaxAmmo > 0) or (nMaxAttacks >= 1) then	
 		ActionAttack.performRoll(draginfo, rActor, rAction);
 		return true;
+	else
+		ChatManager.Message(Interface.getString("char_message_atkwithnoammo"), true, rActor);
 	end
 end
