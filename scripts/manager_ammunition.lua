@@ -600,12 +600,15 @@ function onInit()
 		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' }
 		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_pfrpg);
+		ActionAttack.onAttack = onAttack_pfrpg
 	elseif sRuleset == "4E" then
 		tLoadWeapons = { 'loadaction', 'ballista' }
 		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_4e);
+		ActionAttack.onAttack = onAttack_4e
 	elseif sRuleset == "5E" then
 		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_5e);
+		ActionAttack.onAttack = onAttack_5e
 	end
 end
