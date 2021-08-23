@@ -51,7 +51,7 @@ local function getWeaponName(s)
 	sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(%u%)%]', '');
 	sWeaponName = sWeaponName:gsub('%[%u+%]', '');
 	if sWeaponName:match('%[USING ') then
-		sWeaponName = sWeaponName:match('%[USING (%a+)');
+		sWeaponName = sWeaponName:match('%[USING (.+)%]');
 	end
 	sWeaponName = sWeaponName:gsub('%[.+%]', '');
 	sWeaponName = sWeaponName:gsub(' %(vs%. .+%)', '');
