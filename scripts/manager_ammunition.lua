@@ -4,7 +4,7 @@
 
 tLoadWeapons = { 'loadaction' }
 
-local sRuleset = User.getRulesetName()
+local sRuleset
 
 function getAmmoNode(nodeWeapon, rActor)
 	local sAmmo = DB.getValue(nodeWeapon, "ammopicker", "");
@@ -598,6 +598,7 @@ end
 
 -- Function Overrides
 function onInit()
+	sRuleset = User.getRulesetName()
 	-- replace result handlers
 	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
 		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' }
