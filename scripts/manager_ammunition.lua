@@ -84,6 +84,8 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 						bInfiniteAmmo = EffectManager35E.hasEffectCondition(rSource, 'INFAMMO')
 					elseif sRuleset == "4E" then
 						bInfiniteAmmo = EffectManager4E.hasEffectCondition(rSource, 'INFAMMO')
+					elseif sRuleset == "5E" then
+						bInfiniteAmmo = EffectManager5E.hasEffectCondition(rSource, 'INFAMMO')
 					end
 
 					if nMaxAmmo ~= 0 and not bInfiniteAmmo then
