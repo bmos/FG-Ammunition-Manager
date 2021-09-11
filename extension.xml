@@ -43,5 +43,10 @@
 		<includefile source="strings/strings_weapon_loaded.xml" />
 		<!-- Scripts -->
 		<script name="AmmunitionManager" file="scripts/manager_ammunition.lua" />
+		<!-- Buttons -->
+		<icon name="button_load" file="graphics/button_load.png" />
+		<icon name="button_unload" file="graphics/button_unload.png" />
+		<icon name="button_reload" file="graphics/button_reload.png" />
+		<icon name="button_reload_down" file="graphics/button_reload_down.png" />
 	</base>
 </root>

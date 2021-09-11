@@ -3,7 +3,7 @@
 -- attribution and copyright information.
 --
 
-function onButtonPress()
+function onClickRelease(target, button, image, ...)
 	local rActor = ActorManager.resolveActor(getDatabaseNode().getChild('....'));
 	local nodeWeapon = window.getDatabaseNode();
 
