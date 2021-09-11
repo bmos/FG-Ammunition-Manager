@@ -39,6 +39,7 @@
 				end
 				local bRanged = (type.getValue() == 1);
 				isloaded.setVisible(hasLoadAction(bRanged));
+				button_reload.setVisible(bRanged);
 				maxammo.setVisible(bRanged);
 				ammocounter.setVisible(bRanged);
 				ammo_label.setVisible(bRanged);
@@ -148,31 +149,36 @@
 			</combobox>
 			
 			<label name="range_label" insertbefore="ammo_label">
-				<anchored width="70">
+				<anchored width="62">
 					<top parent="name" anchor="bottom" relation="relative" offset="8" />
-					<left offset="10" />
+					<left offset="35" />
 				</anchored>
 				<static textres="char_label_weaponrange" />
 			</label>
 
-			<buttonfield name="isloaded">
-				<anchored width="12" height="12">
-					<top parent="ammo_label" anchor="top" relation="relative" offset="4" />
-					<right parent="ammo_label" anchor="left" relation="relative" offset="0" />
+			<buttonfield name="button_reload">
+				<anchored width="27" height="10">
+					<left offset="2" />
+					<top parent="ammo_label" anchor="top" offset="0" />
 				</anchored>
-				<state icon="button_checkoff" tooltipres="tooltip_actions_unloaded" />
-				<state icon="button_checkon" tooltipres="tooltip_actions_loaded" />
+				<icon normal="button_reload" pressed="button_reload_down" />
+				<tooltip textres="weapon_tooltip_reloadammo" />
 				<default>0</default>
-				<script file="campaign/scripts/ammo_isloaded.lua" />
-			</buttonfield>
-
-			<basicnumber name="maxammo">
-				<script file="campaign/scripts/ammo_maxammo.lua" />
 				<maxammo>maxammo</maxammo>
 				<ammo>ammo</ammo>
 				<count>count</count>
-				<tooltip textres="weapon_tooltip_reloadammo" />
-			</basicnumber>
+				<script file="campaign/scripts/ammo_reloadammo.lua" />
+			</buttonfield>
+			<buttonfield name="isloaded">
+				<anchored width="27" height="10">
+					<top parent="button_reload" anchor="bottom" offset="1" />
+					<left offset="2" />
+				</anchored>
+				<state icon="button_load" tooltipres="tooltip_actions_unloaded" />
+				<state icon="button_unload" tooltipres="tooltip_actions_loaded" />
+				<default>0</default>
+				<script file="campaign/scripts/ammo_isloaded.lua" />
+			</buttonfield>
 		</sheetdata>
 	</windowclass>
 </root>
