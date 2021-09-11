@@ -3,10 +3,10 @@
 -- attribution and copyright information.
 --
 
-function onDoubleClick(x,y)
+function onClickRelease(target, button, image)
 	local nMisses = window.missedshots.getValue() or 0
 	if nMisses > 0 then
-		local nPercent = (getValue() or 50) / 100
+		local nPercent = (window.recoverypercentage.getValue() or 50) / 100
 		local nAmmoRecovered = math.floor(nMisses * nPercent)
 		ChatManager.SystemMessage(string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered))
 

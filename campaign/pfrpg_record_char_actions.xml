@@ -88,7 +88,7 @@
 				<nodrag />
 				<nodrop />
 				<noreset />
-				<anchored width="175" height="20">
+				<anchored width="160" height="20">
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
 					<left offset="5" />
 				</anchored>
@@ -105,11 +105,9 @@
 			<basicnumber name="recoverypercentage">
 				<anchored to="ammopicker" width="40" height="20">
 					<top anchor="top" offset="0" />
-					<left anchor="right" offset="15" />
+					<left anchor="right" offset="10" />
 				</anchored>
 				<default>50</default>
-				<script file="campaign/scripts/ammo_recoverypercentage.lua" />
-				<tooltip textres="weapon_tooltip_recoverypercentage" />
 				<tabtarget prev="ammopicker" next="missedshots" />
 			</basicnumber>
 			<label_fieldtop name="label_recoverypercentage">
@@ -133,6 +131,12 @@
 				<readonly />
 				<center />
 			</label_fieldtop>
+			<buttoncontrol name="recoverammo">
+				<anchored to="missedshots" position="right" offset="7" width="20" />
+				<icon normal="button_add" pressed="button_add_down" />
+				<tooltip textres="weapon_tooltip_recoverammo" />
+				<script file="campaign/scripts/ammo_recover.lua" />
+			</buttoncontrol>
 		</sheetdata>
 	</windowclass>
 </root>
