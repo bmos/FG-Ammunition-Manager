@@ -49,6 +49,7 @@
 				recoverypercentage.setVisible(bRanged and bShow);
 				label_ammopercentof.setVisible(bRanged and bShow);
 				missedshots.setVisible(bRanged and bShow);
+				recoverammo.setVisible(bRanged and bShow);
 				ammopicker.setComboBoxVisible(bRanged and bShow);
 			end
 		</script>
@@ -102,8 +103,6 @@
 					<left parent="ammunition_label" anchor="right" offset="5" />
 				</anchored>
 				<default>50</default>
-				<tooltip textres="weapon_tooltip_recoverypercentage" />
-				<script file="campaign/scripts/ammo_recoverypercentage.lua" />
 			</basicnumber>
 			<label name="label_ammopercentof">
 				<anchored to="recoverypercentage" position="righthigh" offset="10,0" width="32" />
@@ -119,6 +118,15 @@
 				<hideonvalue>0</hideonvalue>
 				<tooltip textres="weapon_tooltip_missedshots" />
 			</basicnumber>
+			<buttoncontrol name="recoverammo">
+				<anchored height="20" width="20">
+					<top parent="missedshots" anchor="top" />
+					<right parent="properties" anchor="right" offset="0" />
+				</anchored>
+				<icon normal="button_add" pressed="button_add_down" />
+				<tooltip textres="weapon_tooltip_recoverammo" />
+				<script file="campaign/scripts/ammo_recover.lua" />
+			</buttoncontrol>
 			<combobox name="ammopicker">
 				<frame>
 					<hidereadonly />
@@ -132,12 +140,13 @@
 				<anchored to="missedshots" height="20">
 					<top anchor="top" />
 					<left anchor="right" offset="15" />
-					<right parent="properties" anchor="right" offset="0" />
+					<right parent="recoverammo" anchor="left" offset="-7" />
 				</anchored>
 				<default textres="none" />
 				<itemsheetname>class</itemsheetname>
 				<script file="campaign/scripts/ammo_ammopicker.lua" />
 			</combobox>
+			
 			<label name="range_label" insertbefore="ammo_label">
 				<anchored width="70">
 					<top parent="name" anchor="bottom" relation="relative" offset="8" />
