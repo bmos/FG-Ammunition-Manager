@@ -39,6 +39,5 @@ function onReloadAction(draginfo)
 		ChatManager.Message(Interface.getString("char_message_ammofull"), true, rActor);
 	end
 
-
 	return true;
 end

@@ -6,13 +6,24 @@
 	<windowclass name="char_weapon" merge="join">
 		<script file="campaign/scripts/5e_char_weapon.lua" />
 		<sheetdata>
-			<basicnumber name="maxammo">
-				<script file="campaign/scripts/ammo_maxammo.lua" />
+			<buttonfield name="button_reload">
+				<anchored width="27" height="10">
+					<top parent="name" anchor="bottom" offset="11" />
+					<left offset="2" />
+				</anchored>
+				<icon normal="button_reload" pressed="button_reload_down" />
+				<tooltip textres="weapon_tooltip_reloadammo" />
+				<default>0</default>
 				<maxammo>maxammo</maxammo>
 				<ammo>ammo</ammo>
 				<count>count</count>
-				<tooltip textres="weapon_tooltip_reloadammo" />
-			</basicnumber>
+				<script file="campaign/scripts/ammo_reloadammo.lua" />
+			</buttonfield>
+			<label name="label_ammo">
+				<anchored width="50">
+					<left offset="33" />
+				</anchored>
+			</label>
 		</sheetdata>
 	</windowclass>
 
@@ -43,7 +54,7 @@
 				<nodrag />
 				<nodrop />
 				<noreset />
-				<anchored width="175" height="20">
+				<anchored width="160" height="20">
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
 					<left offset="5" />
 				</anchored>
@@ -63,8 +74,6 @@
 					<left anchor="right" offset="15" />
 				</anchored>
 				<default>50</default>
-				<script file="campaign/scripts/ammo_recoverypercentage.lua" />
-				<tooltip textres="weapon_tooltip_recoverypercentage" />
 				<tabtarget prev="ammopicker" next="missedshots" />
 			</basicnumber>
 			<label_fieldtop name="label_recoverypercentage">
@@ -88,6 +97,12 @@
 				<readonly />
 				<center />
 			</label_fieldtop>
+			<buttoncontrol name="recoverammo">
+				<anchored to="missedshots" position="right" offset="7" width="20" />
+				<icon normal="button_add" pressed="button_add_down" />
+				<tooltip textres="weapon_tooltip_recoverammo" />
+				<script file="campaign/scripts/ammo_recover.lua" />
+			</buttoncontrol>
 		</sheetdata>
 	</windowclass>
 </root>

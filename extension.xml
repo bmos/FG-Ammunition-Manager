@@ -5,7 +5,7 @@
 <root version='3.3' release='3'>
 	<properties>
 		<name>Feature: Ammunition Manager</name>
-		<version>2.6</version>
+		<version>2.7</version>
 		<author>bmos (Wil Thieme)</author>
 		<description>This extension aids in tracking ammunition and whether ranged weapons are loaded.</description>
 		<ruleset>
@@ -25,7 +25,7 @@
 		</ruleset>
 	</properties>
 
-	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v2.6:\nThis extension aids in tracking ammunition and whether ranged weapons are loaded." font="emotefont" />
+	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v2.7:\nThis extension aids in tracking ammunition and whether ranged weapons are loaded." font="emotefont" />
 
 	<base>
 		<!-- Campaign Records -->
@@ -43,5 +43,10 @@
 		<includefile source="strings/strings_weapon_loaded.xml" />
 		<!-- Scripts -->
 		<script name="AmmunitionManager" file="scripts/manager_ammunition.lua" />
+		<!-- Buttons -->
+		<icon name="button_load" file="graphics/button_load.png" />
+		<icon name="button_unload" file="graphics/button_unload.png" />
+		<icon name="button_reload" file="graphics/button_reload.png" />
+		<icon name="button_reload_down" file="graphics/button_reload_down.png" />
 	</base>
 </root>

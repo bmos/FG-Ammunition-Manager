@@ -20,23 +20,41 @@
 				<script file="campaign/scripts/ammo_attack.lua" />
 			</number_charweaponattacktotal>
 			
-			<buttonfield name="isloaded">
-				<anchored width="12" height="12">
-					<top parent="label_ammo" anchor="top" relation="relative" offset="4" />
-					<right parent="label_ammo" anchor="left" relation="relative" offset="3" />
+			<buttonfield name="button_reload">
+				<anchored width="27" height="10">
+					<top parent="name" anchor="bottom" offset="6" />
+					<left offset="2" />
 				</anchored>
-				<state icon="button_checkoff" tooltipres="tooltip_actions_unloaded" />
-				<state icon="button_checkon" tooltipres="tooltip_actions_loaded" />
+				<icon normal="button_reload" pressed="button_reload_down" />
+				<tooltip textres="weapon_tooltip_reloadammo" />
 				<default>0</default>
-				<script file="campaign/scripts/ammo_isloaded.lua" />
-			</buttonfield>
-			<basicnumber name="maxammo">
-				<script file="campaign/scripts/ammo_maxammo.lua" />
 				<maxammo>maxammo</maxammo>
 				<ammo>ammo</ammo>
 				<count>count</count>
-				<tooltip textres="weapon_tooltip_reloadammo" />
-			</basicnumber>
+				<script file="campaign/scripts/ammo_reloadammo.lua" />
+			</buttonfield>
+			<buttonfield name="isloaded">
+				<anchored width="27" height="10">
+					<top parent="button_reload" anchor="bottom" offset="1" />
+					<left offset="2" />
+				</anchored>
+				<state icon="button_load" tooltipres="tooltip_actions_unloaded" />
+				<state icon="button_unload" tooltipres="tooltip_actions_loaded" />
+				<default>0</default>
+				<script file="campaign/scripts/ammo_isloaded.lua" />
+			</buttonfield>
+			<label name="label_range">
+				<anchored offset="25,5" />
+			</label>
+			<simplenumber name="rangeincrement">
+				<anchored offset="5,0" width="30" />
+			</simplenumber>
+			<label name="label_ammo">
+				<anchored offset="10,0" />
+			</label>
+			<simplenumber name="maxammo">
+				<anchored offset="5,0" width="30" />
+			</simplenumber>
 		</sheetdata>
 	</windowclass>
 </root>
