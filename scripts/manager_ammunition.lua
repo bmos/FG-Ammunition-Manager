@@ -68,41 +68,38 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	if not sDesc:match('%[CONFIRM%]') and sWeaponName ~= '' then
 		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
 		for _,nodeWeapon in pairs(nodeWeaponList.getChildren()) do
-			if DB.getValue(nodeWeapon, 'type', 0) == 1 then
-				local sWeaponNameFromNode = getWeaponName(DB.getValue(nodeWeapon, 'name', ''))
-				if sWeaponNameFromNode == sWeaponName then
-					if sResult == "fumble" then -- break fragile weapon on natural 1
-						local _,sWeaponNode = DB.getValue(nodeWeapon, 'shortcut', '')
-						local nodeWeaponLink = DB.findNode(sWeaponNode)
-						breakWeapon(rSource, nodeWeaponLink, sWeaponName)
-					end
-					if sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]') then
-						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
-						local nAmmo = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
+			local sWeaponNameFromNode = getWeaponName(DB.getValue(nodeWeapon, 'name', ''))
+			if sWeaponNameFromNode == sWeaponName then
+				if sResult == "fumble" then -- break fragile weapon on natural 1
+					local _,sWeaponNode = DB.getValue(nodeWeapon, 'shortcut', '')
+					local nodeWeaponLink = DB.findNode(sWeaponNode)
+					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
+				end
+				if sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]') then
+					local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
+					local nAmmo = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
 
-						local bInfiniteAmmo
-						if sRuleset == "PFRPG" or sRuleset == "3.5E" then
-							bInfiniteAmmo = EffectManager35E.hasEffectCondition(rSource, 'INFAMMO')
-						elseif sRuleset == "4E" then
-							bInfiniteAmmo = EffectManager4E.hasEffectCondition(rSource, 'INFAMMO')
-						elseif sRuleset == "5E" then
-							bInfiniteAmmo = EffectManager5E.hasEffectCondition(rSource, 'INFAMMO')
+					local bInfiniteAmmo
+					if sRuleset == "PFRPG" or sRuleset == "3.5E" then
+						bInfiniteAmmo = EffectManager35E.hasEffectCondition(rSource, 'INFAMMO')
+					elseif sRuleset == "4E" then
+						bInfiniteAmmo = EffectManager4E.hasEffectCondition(rSource, 'INFAMMO')
+					elseif sRuleset == "5E" then
+						bInfiniteAmmo = EffectManager5E.hasEffectCondition(rSource, 'INFAMMO')
+					end
+
+					if nMaxAmmo ~= 0 and not bInfiniteAmmo then
+						if nAmmo == nMaxAmmo then
+							ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
+						else
+							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
 						end
 
-						if nMaxAmmo ~= 0 and not bInfiniteAmmo then
-							if nAmmo == nMaxAmmo then
-								ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
-								DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
-							else
-								DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
-							end
-
-							if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
-								DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
-							end
+						if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
+							DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
 						end
 					end
-					break
 				end
 			end
 		end
