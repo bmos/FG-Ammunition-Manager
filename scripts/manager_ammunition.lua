@@ -75,7 +75,8 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 					local nodeWeaponLink = DB.findNode(sWeaponNode)
 					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
 				end
-				if sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]') then
+				local bRangedWeapon = DB.getValue(nodeWeapon, 'type', 0) == 1;
+				if (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) and bRangedWeapon then
 					local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
 					local nAmmo = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
 
