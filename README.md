@@ -22,4 +22,4 @@ This extension has been tested with [FantasyGrounds Unity](https://www.fantasygr
 This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
 
 # Video Demonstration (click for video)
-[<img src="https://i.ytimg.com/vi_webp/luAgwIrQ-JE/hqdefault.webp">](https://www.youtube.com/watch?v=luAgwIrQ-JE)
+[<img src="https://i.ytimg.com/vi_webp/RAzqDLXPidA/hqdefault.webp">](https://www.youtube.com/watch?v=RAzqDLXPidA)
