@@ -40,3 +40,19 @@ function onAttackAction(draginfo)
 	end
 	-- end bmos only allowing attacks when ammo is sufficient
 end
+
+function onDataChanged()
+	if super and super.onDataChanged then
+		super.onDataChanged();
+	end
+	button_reload.setVisible(type.getValue() ~= 0);
+end
+
+function onInit()
+	if super and super.onInit then
+		super.onInit();
+	end
+	local nodeWeapon = getDatabaseNode();
+	DB.addHandler(nodeWeapon.getPath(), "onChildUpdate", onDataChanged);
+	onDataChanged();
+end
