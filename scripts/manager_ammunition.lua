@@ -454,7 +454,7 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager then
-		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rAction.nTotal)
+		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rAction.nTotal);
 		if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
 	end
 	--	end bmos adding hit margin tracking
@@ -557,7 +557,7 @@ function onAttack_5e(rSource, rTarget, rRoll)
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager then
-		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rAction.nTotal)
+		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rAction.nTotal);
 		if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
 	end
 	--	end bmos adding hit margin tracking
@@ -599,21 +599,21 @@ end
 
 -- Function Overrides
 function onInit()
-	sRuleset = User.getRulesetName()
+	sRuleset = User.getRulesetName();
 	-- replace result handlers
 	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
-		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' }
+		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' };
 		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_pfrpg);
-		ActionAttack.onAttack = onAttack_pfrpg
+		ActionAttack.onAttack = onAttack_pfrpg;
 	elseif sRuleset == "4E" then
-		tLoadWeapons = { 'loadaction', 'ballista' }
+		tLoadWeapons = { 'loadaction', 'ballista' };
 		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_4e);
-		ActionAttack.onAttack = onAttack_4e
+		ActionAttack.onAttack = onAttack_4e;
 	elseif sRuleset == "5E" then
 		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_5e);
-		ActionAttack.onAttack = onAttack_5e
+		ActionAttack.onAttack = onAttack_5e;
 	end
 end
