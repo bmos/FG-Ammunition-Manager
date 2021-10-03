@@ -161,8 +161,8 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	end
 
 	-- for compatibility with mirror image handler, add this here in your onAttack function
-	-- Get the misfire threshold
 	if MirrorImageHandler then
+		-- Get the misfire threshold
 		local sMisfireRange = string.match(rRoll.sDesc, "%[MISFIRE (%d+)%]");
 		if sMisfireRange then
 			rAction.nMisfire = tonumber(sMisfireRange) or 0;
