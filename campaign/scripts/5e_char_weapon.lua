@@ -5,7 +5,7 @@
 
 function onAttackAction(draginfo)
 	local nodeWeapon = getDatabaseNode();
-	local nodeChar = nodeWeapon.getChild("...")
+	local nodeChar = nodeWeapon.getChild("...");
 
 	-- Build basic attack action record
 	local rAction = CharWeaponManager.buildAttackAction(nodeChar, nodeWeapon);
