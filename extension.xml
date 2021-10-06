@@ -8,7 +8,6 @@
 		<version>2.7</version>
 		<author>bmos (Wil Thieme)</author>
 		<description>This extension aids in tracking ammunition and whether ranged weapons are loaded.</description>
-		<loadorder>100</loadorder>
 		<ruleset>
 			<name>3.5E</name>
 		</ruleset>
