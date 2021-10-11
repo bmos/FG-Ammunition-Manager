@@ -56,3 +56,11 @@ function onInit()
 	DB.addHandler(nodeWeapon.getPath(), "onChildUpdate", onDataChanged);
 	onDataChanged();
 end
+
+function onClose()
+	if super and super.onClose then
+		super.onClose();
+	end
+	local nodeWeapon = getDatabaseNode();
+	DB.removeHandler(nodeWeapon.getPath(), "onChildUpdate", onDataChanged);
+end
