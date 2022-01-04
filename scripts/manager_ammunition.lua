@@ -329,9 +329,6 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	end
 	if bRollMissChance and (nMissChance > 0) then
 		local aMissChanceDice = { "d100" };
-		if not UtilityManager.isClientFGU() then
-			table.insert(aMissChanceDice, "d10");
-		end
 		local sMissChanceText;
 		sMissChanceText = string.gsub(rMessage.text, " %[CRIT %d+%]", "");
 		sMissChanceText = string.gsub(sMissChanceText, " %[CONFIRM%]", "");
