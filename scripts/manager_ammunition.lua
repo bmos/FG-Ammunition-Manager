@@ -271,7 +271,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
+	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	--	bmos adding hit margin tracking
@@ -454,7 +454,7 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
+	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	--	bmos adding hit margin tracking
@@ -558,7 +558,7 @@ function onAttack_5e(rSource, rTarget, rRoll)
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
+	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if not rTarget then
@@ -627,4 +627,7 @@ function onInit()
 		ActionsManager.registerResultHandler("attack", onAttack_5e);
 		ActionAttack.onAttack = onAttack_5e;
 	end
+
+	OptionsManager.registerOption2('ATKRESULTWEAPON', false, 'option_header_game', 'opt_lab_atkresultweaponname', 'option_entry_cycler',
+			{ labels = "option_val_on", values = "on", baselabel = "option_val_off", baseval = "off", default = "off" });
 end
