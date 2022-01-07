@@ -269,6 +269,11 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 		table.insert(rAction.aMessages, "[MISS CHANCE " .. nMissChance .. "%]");
 	end
 
+	--	bmos adding weapon name to chat
+	--	for compatibility with ammunition tracker, add this here in your onAttack function
+	if AmmunitionManager then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
+	--	end bmos adding automatic ammunition ticker and chat messaging
+
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager then
@@ -447,6 +452,11 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 		table.insert(rAction.aMessages, "[CHECK FOR CRITICAL]");
 	end
 
+	--	bmos adding weapon name to chat
+	--	for compatibility with ammunition tracker, add this here in your onAttack function
+	if AmmunitionManager then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
+	--	end bmos adding automatic ammunition ticker and chat messaging
+
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager then
@@ -524,7 +534,7 @@ function onAttack_5e(rSource, rTarget, rRoll)
 	if nCritThreshold < 2 or nCritThreshold > 20 then
 		nCritThreshold = 20;
 	end
-	
+
 	rAction.nFirstDie = 0;
 	if #(rRoll.aDice) > 0 then
 		rAction.nFirstDie = rRoll.aDice[1].result or 0;
@@ -545,7 +555,12 @@ function onAttack_5e(rSource, rTarget, rRoll)
 			table.insert(rAction.aMessages, "[MISS]");
 		end
 	end
-	
+
+	--	bmos adding weapon name to chat
+	--	for compatibility with ammunition tracker, add this here in your onAttack function
+	if AmmunitionManager then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
+	--	end bmos adding automatic ammunition ticker and chat messaging
+
 	if not rTarget then
 		rMessage.text = rMessage.text .. " " .. table.concat(rAction.aMessages, " ");
 	end
