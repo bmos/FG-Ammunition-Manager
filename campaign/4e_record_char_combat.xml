@@ -148,7 +148,7 @@
 				<script file="campaign/scripts/ammo_ammopicker.lua" />
 			</combobox>
 			
-			<label name="range_label" insertbefore="ammo_label">
+			<label name="range_label" insertbefore="ammunition_label">
 				<anchored width="62">
 					<top parent="name" anchor="bottom" relation="relative" offset="8" />
 					<left offset="35" />
@@ -159,7 +159,7 @@
 			<buttonfield name="button_reload">
 				<anchored width="27" height="10">
 					<left offset="2" />
-					<top parent="ammo_label" anchor="top" offset="0" />
+					<top parent="ammunition_label" anchor="top" offset="0" />
 				</anchored>
 				<icon normal="button_reload" pressed="button_reload_down" />
 				<tooltip textres="weapon_tooltip_reloadammo" />
