@@ -148,7 +148,7 @@
 				<script file="campaign/scripts/ammo_ammopicker.lua" />
 			</combobox>
 			
-			<label name="range_label" insertbefore="ammunition_label">
+			<label name="range_label">
 				<anchored width="62">
 					<top parent="name" anchor="bottom" relation="relative" offset="8" />
 					<left offset="35" />
