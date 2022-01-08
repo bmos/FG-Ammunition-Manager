@@ -16,6 +16,8 @@ This extension aids in tracking whether some ranged weapons are loaded and assis
 
 * If used with my [Item Durability](https://github.com/bmos/FG-PFRPG-Item-Durability) extension, natural 1s rolled with a weapon with "fragile" in the properties field will be broken automatically. If the weapon is already broken, the weapon will be destroyed instead.
 
+* Enabling the "Chat: Show weapon name in results" option will add the weapon name to attack results in chat such as "Attack [16] -> [at Goblin] with Shortsword [HIT]" instead of "Attack [16] -> [at Goblin] [HIT]".
+
 # Compatibility and Instructions
 This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.1.4 (2021-06-08).
 
