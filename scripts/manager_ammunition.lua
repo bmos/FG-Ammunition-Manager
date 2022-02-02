@@ -66,7 +66,7 @@ end
 function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	local sWeaponName = getWeaponName(sDesc)
 	if not sDesc:match('%[CONFIRM%]') and sWeaponName ~= '' then
-		local nodeWeaponList = DB.findNode(rSource.sCreatureNode .. '.weaponlist');
+		local nodeWeaponList = ActorManager.getCreatureNode(rSource).getChild('.weaponlist');
 		for _,nodeWeapon in pairs(nodeWeaponList.getChildren()) do
 			local sWeaponNameFromNode = getWeaponName(DB.getValue(nodeWeapon, 'name', ''))
 			if sWeaponNameFromNode == sWeaponName then
