@@ -1,6 +1,11 @@
 # PFRPG Ammunition Manager
 This extension aids in tracking whether some ranged weapons are loaded and assists in ammo tracking for all ranged weapons.
 
+# Compatibility and Instructions
+This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.1.13 (2022-01-05).
+
+This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
+
 # Features
 * Adds a checkbox to the left of the ammo label on the weapons section of the actions tab; this checkbox is only shown for some weapons (those with 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', or 'loadaction' in the weapon name). Loading these weapon will post a message to chat to help monitor the action-economy. Attacks attempted with these weapons without loading first will post a message to chat.
 
@@ -17,11 +22,6 @@ This extension aids in tracking whether some ranged weapons are loaded and assis
 * If used with my [Item Durability](https://github.com/bmos/FG-PFRPG-Item-Durability) extension, natural 1s rolled with a weapon with "fragile" in the properties field will be broken automatically. If the weapon is already broken, the weapon will be destroyed instead.
 
 * Enabling the "Chat: Show weapon name in results" option will add the weapon name to attack results in chat such as "Attack [16] -> [at Goblin] with Shortsword [HIT]" instead of "Attack [16] -> [at Goblin] [HIT]".
-
-# Compatibility and Instructions
-This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.1.4 (2021-06-08).
-
-This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
 
 # Video Demonstration (click for video)
 [<img src="https://i.ytimg.com/vi_webp/RAzqDLXPidA/hqdefault.webp">](https://www.youtube.com/watch?v=RAzqDLXPidA)
