@@ -17,7 +17,7 @@ function onClickRelease(target, button, image)
 
 		if nExcess > 0 then
 			local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-			local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor)
+			local nodeAmmo = DB.findNode(DB.getValue(nodeWeapon, 'ammopickernode', ''));
 			if nodeAmmo then
 				local nCount = DB.getValue(nodeAmmo, 'count', 0)
 				DB.setValue(nodeAmmo, 'count', 'number', nCount + nExcess)

@@ -10,7 +10,7 @@ function onClickRelease(target, button, image, ...)
 
 	local nodeWeapon = window.getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
+	local nodeAmmo = DB.findNode(DB.getValue(nodeWeapon, 'ammopickernode', ''));
 
 	if nodeAmmo then
 		local nCount = DB.getValue(nodeAmmo, count[1], 0)
