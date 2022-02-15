@@ -6,6 +6,23 @@ tLoadWeapons = { 'loadaction' }
 
 local sRuleset
 
+function getAmmoNode(nodeWeapon, rActor)
+	local nodeAmmo = DB.findNode(DB.getValue(nodeWeapon, 'ammopickernode', ''));
+	local sAmmo = DB.getValue(nodeWeapon, "ammopicker", "");
+	if not nodeAmmo and sAmmo ~= "" then
+		local nodeChar = ActorManager.getCreatureNode(rActor);
+		if nodeChar then
+			for _,nodeItem in pairs(nodeChar.getChild("inventorylist").getChildren()) do
+				if DB.getValue(nodeItem, "name", "") == sAmmo then
+					return nodeItem;
+				end
+			end
+		end
+	else
+		return nodeAmmo;
+	end
+end
+
 -- examine weapon properties to check if fragile
 local function isFragile(nodeWeapon)
 	local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower()

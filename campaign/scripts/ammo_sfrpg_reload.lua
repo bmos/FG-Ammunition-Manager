@@ -4,7 +4,7 @@
 --
 
 local function reduceItemCount(nodeWeapon, rActor, nAmmo)
-	local nodeAmmo = DB.findNode(DB.getValue(nodeWeapon, 'ammopickernode', ''));
+	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
 	if nodeAmmo then
 		local nCount = DB.getValue(nodeAmmo, "count", 0)
 		if (nAmmo > 0) and (nCount > 0) then
