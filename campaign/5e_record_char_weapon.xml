@@ -36,7 +36,9 @@
 			<dynamic />
 		</sizelimits>
 	</windowclass>
+
 	<windowclass name="char_weapon_editor_main" merge="join">
+		<script file="campaign/scripts/char_weapon_editor_main.lua" />
 		<sheetdata>
 			<!-- Ammo -->
 			<header_column name="header_ammo">
