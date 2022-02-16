@@ -48,11 +48,11 @@ function onInit()
 				local bAmmo = false;
 				if itemsheetname[1] and nodeItem.getChild(itemsheetname[1]) then
 					local sItemType = DB.getValue(nodeItem, itemsheetname[1], ''):lower();
-					bAmmo = bAmmo or (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil);
+					bAmmo = (bAmmo == true) or (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil);
 				end
 				if itemsheetname[2] and nodeItem.getChild(itemsheetname[2]) then
 					local sItemSubType = DB.getValue(nodeItem, itemsheetname[2], ''):lower();
-					bAmmo = bAmmo or (sItemSubType:match('ammunition') ~= nil) or (sItemSubType:match('ammo') ~= nil);
+					bAmmo = (bAmmo == true) or (sItemSubType:match('ammunition') ~= nil) or (sItemSubType:match('ammo') ~= nil);
 				end
 				if bAmmo then
 					if sName ~= '' then
