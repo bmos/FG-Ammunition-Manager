@@ -29,17 +29,17 @@ function onInit()
 			super.onInit();
 		end
 		if super.setListValue then
-			super.setListValue = setListValue
+			super.setListValue = setListValue;
 		end
 	end
 
 	local aAutoFill = {};
 	table.insert(aAutoFill, Interface.getString('none'));
-	local nodeInventory = getDatabaseNode().getChild('....inventorylist')
+	local nodeInventory = getDatabaseNode().getChild('....inventorylist');
 	if nodeInventory then
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
 			if nodeItem.getChild(itemsheetname[1]) and DB.getValue(nodeItem, 'carried', 0) ~= 0 then
-				local sName = ''
+				local sName = '';
 				if ItemManager.getIDState(nodeItem) then
 					sName = DB.getValue(nodeItem, 'name', '');
 				else
@@ -55,5 +55,5 @@ function onInit()
 			end
 		end
 	end
-	addItems(aAutoFill)
+	addItems(aAutoFill);
 end
