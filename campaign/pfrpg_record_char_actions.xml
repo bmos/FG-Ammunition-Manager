@@ -111,6 +111,7 @@
 				</anchored>
 				<default textres="none" />
 				<itemsheetname>subtype</itemsheetname>
+				<itemsheetname>type</itemsheetname>
 				<script file="campaign/scripts/ammo_ammopicker.lua" />
 			</combobox>
 			<label_fieldtop name="label_ammopicker">
