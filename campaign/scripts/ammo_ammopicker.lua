@@ -40,7 +40,7 @@ function onInit()
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
 				local sName = '';
-				if ItemManager.getIDState(nodeItem) then
+				if LibraryData.getIDState("item", nodeItem, true) then
 					sName = DB.getValue(nodeItem, 'name', '');
 				else
 					sName = DB.getValue(nodeItem, 'nonid_name', '');
