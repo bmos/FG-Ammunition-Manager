@@ -37,10 +37,15 @@ function onInit()
 	table.insert(aAutoFill, Interface.getString('none'));
 	local nodeInventory = getDatabaseNode().getChild('....inventorylist')
 	if nodeInventory then
-		for _,v in pairs(nodeInventory.getChildren()) do
-			if v.getChild(itemsheetname[1]) and DB.getValue(v, 'carried', 0) ~= 0 then
-				local sName = DB.getValue(v, 'name', '');
-				local sItemType = DB.getValue(v, itemsheetname[1], ''):lower()
+		for _,nodeItem in pairs(nodeInventory.getChildren()) do
+			if nodeItem.getChild(itemsheetname[1]) and DB.getValue(nodeItem, 'carried', 0) ~= 0 then
+				local sName = ''
+				if ItemManager.getIDState(nodeItem) then
+					sName = DB.getValue(nodeItem, 'name', '');
+				else
+					sName = DB.getValue(nodeItem, 'nonid_name', '');
+				end
+				local sItemType = DB.getValue(nodeItem, itemsheetname[1], ''):lower()
 				local bAmmo = sItemType:match('ammunition') or sItemType:match('ammo');
 				if bAmmo then
 					if sName ~= '' then

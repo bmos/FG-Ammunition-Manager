@@ -8,13 +8,19 @@ local sRuleset
 
 function getAmmoNode(nodeWeapon, rActor)
 	local nodeAmmo = DB.findNode(DB.getValue(nodeWeapon, 'ammopickernode', ''));
-	local sAmmo = DB.getValue(nodeWeapon, "ammopicker", "");
-	if not nodeAmmo and sAmmo ~= "" then
+	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '');
+	if not nodeAmmo and sAmmo ~= '' then
 		local nodeChar = ActorManager.getCreatureNode(rActor);
 		if nodeChar then
-			for _,nodeItem in pairs(nodeChar.getChild("inventorylist").getChildren()) do
-				if DB.getValue(nodeItem, "name", "") == sAmmo then
-					return nodeItem;
+			for _,nodeItem in pairs(nodeChar.getChild('inventorylist').getChildren()) do
+				if ItemManager.getIDState(nodeItem) then
+					if DB.getValue(nodeItem, 'name', '') == sAmmo then
+						return nodeItem;
+					end
+				else
+					if DB.getValue(nodeItem, 'nonid_name', '') == sAmmo then
+						return nodeItem;
+					end
 				end
 			end
 		end
