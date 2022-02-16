@@ -38,7 +38,7 @@ function onInit()
 	local nodeInventory = getDatabaseNode().getChild('....inventorylist');
 	if nodeInventory then
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
-			if nodeItem.getChild(itemsheetname[1]) and DB.getValue(nodeItem, 'carried', 0) ~= 0 then
+			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
 				local sName = '';
 				if ItemManager.getIDState(nodeItem) then
 					sName = DB.getValue(nodeItem, 'name', '');
@@ -50,9 +50,9 @@ function onInit()
 					local sItemType = DB.getValue(nodeItem, itemsheetname[1], ''):lower();
 					bAmmo = (bAmmo == true) or (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil);
 				end
-				if itemsheetname[2] and nodeItem.getChild(itemsheetname[2]) then
-					local sItemSubType = DB.getValue(nodeItem, itemsheetname[2], ''):lower();
-					bAmmo = (bAmmo == true) or (sItemSubType:match('ammunition') ~= nil) or (sItemSubType:match('ammo') ~= nil);
+				if itemsheetaltname[1] and nodeItem.getChild(itemsheetaltname[1]) then
+					local sItemAltType = DB.getValue(nodeItem, itemsheetaltname[1], ''):lower();
+					bAmmo = (bAmmo == true) or (sItemAltType:match('ammunition') ~= nil) or (sItemAltType:match('ammo') ~= nil);
 				end
 				if bAmmo then
 					if sName ~= '' then
