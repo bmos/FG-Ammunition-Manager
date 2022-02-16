@@ -25,7 +25,7 @@ function onDataChanged()
 		super.onDataChanged()
 	end
 	local nodeWeapon = getDatabaseNode();
-	local bRanged = DB.getValue(nodeWeapon, 'type', 0) ~= 0;
+	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1;
 	header_ammo.setVisible(bRanged);
 	ammopicker.setVisible(bRanged);
 	label_ammopicker.setVisible(bRanged);
