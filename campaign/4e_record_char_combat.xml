@@ -9,16 +9,14 @@
 				if super and super.onInit then
 					super.onInit();
 				end
-				DB.addHandler(getDatabaseNode().getChild('name').getNodeName(), "onUpdate", toggleDetail);
-				DB.addHandler(getDatabaseNode().getChild('properties').getNodeName(), "onUpdate", toggleDetail);
+				DB.addHandler(getDatabaseNode().getNodeName(), "onChildUpdate", toggleDetail);
 				toggleDetail();
 			end
 			function onClose()
 				if super and super.onClose then
 					super.onClose();
 				end
-				DB.removeHandler(getDatabaseNode().getChild('name').getNodeName(), "onUpdate", toggleDetail);
-				DB.removeHandler(getDatabaseNode().getChild('properties').getNodeName(), "onUpdate", toggleDetail);
+				DB.removeHandler(getDatabaseNode().getNodeName(), "onChildUpdate", toggleDetail);
 			end
 			function onTypeChanged()
 				if super and super.onTypeChanged then
@@ -43,9 +41,22 @@
 				local bRanged = (type.getValue() == 1);
 				isloaded.setVisible(bRanged and hasLoadAction());
 				if button_reload then button_reload.setVisible(bRanged) end
-				maxammo.setVisible(bRanged);
-				ammocounter.setVisible(bRanged);
+
+				local nodeWeapon = getDatabaseNode();
+				local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
+				local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
+				local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
+
 				ammo_label.setVisible(bRanged);
+				if nodeAmmoLink then
+					maxammo.setLink(nodeAmmoLink.getChild('count'))
+					missedshots.setLink(nodeAmmoLink.getChild('missedshots'))
+				else
+					maxammo.setLink()
+					missedshots.setLink()
+				end
+				ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
+
 
 				local bShow = (activatedetail.getValue() == 1);
 				if bShow then ammopicker.clear(); ammopicker.onInit(); end -- re-build ammopicker list when opening details
@@ -121,6 +132,7 @@
 				<default>0</default>
 				<hideonvalue>0</hideonvalue>
 				<tooltip textres="weapon_tooltip_missedshots" />
+				<script file="common/scripts/number_crosslink.lua" />
 			</basicnumber>
 			<buttoncontrol name="recoverammo">
 				<anchored height="20" width="20">
@@ -187,6 +199,9 @@
 				<default>0</default>
 				<script file="campaign/scripts/ammo_isloaded.lua" />
 			</buttonfield>
+			<basicnumber name="maxammo">
+				<script file="common/scripts/number_crosslink.lua" />
+			</basicnumber>
 		</sheetdata>
 	</windowclass>
 </root>
