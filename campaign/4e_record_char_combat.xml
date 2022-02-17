@@ -39,7 +39,7 @@
 				end
 				local bRanged = (type.getValue() == 1);
 				isloaded.setVisible(hasLoadAction(bRanged));
-				button_reload.setVisible(bRanged);
+				if button_reload then button_reload.setVisible(bRanged) end
 				maxammo.setVisible(bRanged);
 				ammocounter.setVisible(bRanged);
 				ammo_label.setVisible(bRanged);
@@ -156,7 +156,7 @@
 				<static textres="char_label_weaponrange" />
 			</label>
 
-			<buttonfield name="button_reload">
+			<!-- <buttonfield name="button_reload">
 				<anchored width="27" height="10">
 					<left offset="2" />
 					<top parent="ammunition_label" anchor="top" offset="0" />
@@ -168,11 +168,15 @@
 				<ammo>ammo</ammo>
 				<count>count</count>
 				<script file="campaign/scripts/ammo_reloadammo.lua" />
-			</buttonfield>
+			</buttonfield> -->
 			<buttonfield name="isloaded">
-				<anchored width="27" height="10">
+				<!-- <anchored width="27" height="10">
 					<top parent="button_reload" anchor="bottom" offset="1" />
 					<left offset="2" />
+				</anchored> -->
+				<anchored width="27" height="10">
+					<left offset="2" />
+					<top parent="ammunition_label" anchor="top" offset="5" />
 				</anchored>
 				<state icon="button_load" tooltipres="tooltip_actions_unloaded" />
 				<state icon="button_unload" tooltipres="tooltip_actions_loaded" />

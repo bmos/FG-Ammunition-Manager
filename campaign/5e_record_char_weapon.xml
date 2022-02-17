@@ -6,7 +6,7 @@
 	<windowclass name="char_weapon" merge="join">
 		<script file="campaign/scripts/5e_char_weapon.lua" />
 		<sheetdata>
-			<buttonfield name="button_reload">
+			<!-- <buttonfield name="button_reload">
 				<anchored width="27" height="10">
 					<top parent="name" anchor="bottom" offset="11" />
 					<left offset="2" />
@@ -18,7 +18,7 @@
 				<ammo>ammo</ammo>
 				<count>count</count>
 				<script file="campaign/scripts/ammo_reloadammo.lua" />
-			</buttonfield>
+			</buttonfield> -->
 			<label name="label_ammo">
 				<anchored width="50">
 					<left offset="33" />

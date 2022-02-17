@@ -54,7 +54,7 @@ function onDataChanged()
 	rangeincrement.setVisible(bRanged);
 
 	isloaded.setVisible(bRanged and hasLoadAction(nodeWeapon));
-	button_reload.setVisible(bRanged);
+	if button_reload then button_reload.setVisible(bRanged) end
 	label_ammo.setVisible(bRanged);
 	maxammo.setVisible(bRanged);
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);

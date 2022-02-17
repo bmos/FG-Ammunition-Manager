@@ -40,7 +40,7 @@
 			</number_charweaponattacktotal>
 			
 			<!-- Ranged specific fields -->
-			<buttonfield name="button_reload">
+			<!-- <buttonfield name="button_reload">
 				<anchored width="27" height="10">
 					<top parent="name" anchor="bottom" offset="6" />
 					<left offset="2" />
@@ -52,10 +52,14 @@
 				<ammo>ammo</ammo>
 				<count>count</count>
 				<script file="campaign/scripts/ammo_reloadammo.lua" />
-			</buttonfield>
+			</buttonfield> -->
 			<buttonfield name="isloaded">
-				<anchored width="27" height="10">
+				<!-- <anchored width="27" height="10">
 					<top parent="button_reload" anchor="bottom" offset="1" />
+					<left offset="2" />
+				</anchored> -->
+				<anchored width="27" height="10">
+					<top parent="name" anchor="bottom" offset="11" />
 					<left offset="2" />
 				</anchored>
 				<state icon="button_load" tooltipres="tooltip_actions_unloaded" />

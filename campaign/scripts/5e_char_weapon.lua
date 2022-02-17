@@ -45,7 +45,7 @@ function onDataChanged()
 	if super and super.onDataChanged then
 		super.onDataChanged();
 	end
-	button_reload.setVisible(type.getValue() ~= 0);
+	if button_reload then button_reload.setVisible(type.getValue() ~= 0) end
 
 	local nodeWeapon = getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
