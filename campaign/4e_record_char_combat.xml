@@ -72,7 +72,7 @@
 				<default>0</default>
 				<hideonvalue>0</hideonvalue>
 				<tooltip textres="weapon_tooltip_missedshots" />
-				<script file="common/scripts/number_crosslink.lua" />
+				<script file="common/scripts/number_crosslink_unlink.lua" />
 				<invisible />
 			</basicnumber>
 			<buttoncontrol name="recoverammo">
@@ -143,7 +143,7 @@
 				<script file="campaign/scripts/ammo_isloaded.lua" />
 			</buttonfield>
 			<basicnumber name="maxammo">
-				<script file="common/scripts/number_crosslink.lua" />
+				<script file="common/scripts/number_crosslink_unlink.lua" />
 			</basicnumber>
 		</sheetdata>
 	</windowclass>

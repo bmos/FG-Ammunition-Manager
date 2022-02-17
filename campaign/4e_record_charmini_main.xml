@@ -83,7 +83,7 @@
 				<script file="campaign/scripts/ammo_isloaded.lua" />
 			</buttonfield>
 			<basicnumber name="maxammo">
-				<script file="common/scripts/number_crosslink.lua" />
+				<script file="common/scripts/number_crosslink_unlink.lua" />
 			</basicnumber>
 		</sheetdata>
 	</windowclass>
