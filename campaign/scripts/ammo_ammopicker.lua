@@ -19,6 +19,9 @@ local function setListValue(sValue)
 		end
 	end
 
+	local nodeOldNode = nodeInventory.getChild('ammopickernode')
+	if nodeOldNode then nodeOldNode.delete() end
+
 	setTooltipText(sValue);
 	refreshSelectionDisplay();
 end
