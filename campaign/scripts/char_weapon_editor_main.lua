@@ -44,5 +44,7 @@ function onDataChanged()
 			nodeAmmoMisses = nodeAmmoLink.getChild('missedshots')
 		end
 		missedshots.setLink(nodeAmmoMisses);
+	else
+		missedshots.setLink();
 	end
 end
