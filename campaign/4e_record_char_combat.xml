@@ -57,7 +57,6 @@
 				end
 				ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
 
-
 				local bShow = (activatedetail.getValue() == 1);
 				if bShow then ammopicker.clear(); ammopicker.onInit(); end -- re-build ammopicker list when opening details
 				ammunition_label.setVisible(bRanged and bShow);
