@@ -32,7 +32,7 @@ function onAttackAction(draginfo)
 	-- "ActionAttack.performRoll(draginfo, rActor, rAction);" and "return true;"
 	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon, rActor))
 
-	if (bInfiniteAmmo or nAmmo &gt; 0) then	
+	if (bInfiniteAmmo or nAmmo > 0) then	
 		ActionAttack.performRoll(draginfo, rActor, rAction);
 		return true;
 	else
