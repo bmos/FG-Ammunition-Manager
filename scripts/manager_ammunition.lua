@@ -102,9 +102,10 @@ function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining, s
 end
 
 function getAmmoNodeLink(nodeWeapon)
-	local _,sAmmoNode = DB.getValue(nodeWeapon, 'ammoshortcut', '');
-	local nodeAmmoLink = DB.findNode(sAmmoNode);
-	return nodeAmmoLink
+	local _,sAmmoNode = DB.getValue(nodeWeapon, 'ammoshortcut');
+	if sAmmoNode then
+		return DB.findNode(sAmmoNode)
+	end
 end
 
 function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
