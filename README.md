@@ -24,4 +24,4 @@ This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
 * Enabling the "Chat: Show weapon name in results" option will add the weapon name to attack results in chat such as "Attack [16] -> [at Goblin] with Shortsword [HIT]" instead of "Attack [16] -> [at Goblin] [HIT]".
 
 # Video Demonstration (click for video)
-[<img src="https://i.ytimg.com/vi_webp/RAzqDLXPidA/hqdefault.webp">](https://www.youtube.com/watch?v=RAzqDLXPidA)
+[<img src="https://i.ytimg.com/vi_webp/yW0JeWRxnx8/hqdefault.webp">](https://www.youtube.com/watch?v=yW0JeWRxnx8)
