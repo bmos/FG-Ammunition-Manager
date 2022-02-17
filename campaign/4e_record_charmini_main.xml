@@ -10,6 +10,7 @@
 					super.onInit();
 				end
 				DB.addHandler(getDatabaseNode().getChild('name').getNodeName(), "onUpdate", toggleDetail);
+				DB.addHandler(getDatabaseNode().getChild('properties').getNodeName(), "onUpdate", toggleDetail);
 				toggleDetail();
 			end
 			function onClose()
@@ -17,6 +18,7 @@
 					super.onClose();
 				end
 				DB.removeHandler(getDatabaseNode().getChild('name').getNodeName(), "onUpdate", toggleDetail);
+				DB.removeHandler(getDatabaseNode().getChild('properties').getNodeName(), "onUpdate", toggleDetail);
 			end
 			function onTypeChanged()
 				if super and super.onTypeChanged then
@@ -24,14 +26,15 @@
 				end
 				toggleDetail();
 			end
-			function hasLoadAction(bRanged)
+			function hasLoadAction()
 				local bHasLoadAction
+				local sWeaponProperties = string.lower(DB.getValue(getDatabaseNode(), 'properties', ''));
 				local sWeaponName = string.lower(DB.getValue(getDatabaseNode(), 'name', 'ranged weapon'));
 				for _,v in pairs(AmmunitionManager.tLoadWeapons) do
 					if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
 				end
 
-				return (bRanged and bHasLoadAction)
+				return (bHasLoadAction and not sWeaponProperties:find('load free'))
 			end
 			function toggleDetail()
 				if super and super.toggleDetail then
@@ -39,7 +42,7 @@
 				end
 				local bRanged = (type.getValue() == 1);
 				
-				isloaded.setVisible(hasLoadAction(bRanged));
+				isloaded.setVisible(bRanged and hasLoadAction());
 				if button_reload then button_reload.setVisible(bRanged) end
 				maxammo.setVisible(bRanged);
 				ammo_label.setVisible(bRanged);
@@ -56,7 +59,7 @@
 						local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
 						DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
 						local bRanged = (window.type.getValue() == 1);
-						if window.hasLoadAction(bRanged) and bNotLoaded then
+						if bRanged and bNotLoaded and window.hasLoadAction() then
 							local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 							
