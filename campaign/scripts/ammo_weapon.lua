@@ -47,7 +47,7 @@ function onDataChanged()
 	local nodeWeapon = getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
-	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
+	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
 
 	local bRanged = (type.getValue() == 1);
 	label_range.setVisible(bRanged);
