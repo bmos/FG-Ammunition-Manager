@@ -12,9 +12,9 @@ local function setListValue(sValue)
 	if nodeInventory then
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
 			if sValue == '' then
-				DB.setValue(nodeWeapon, 'ammopickernode', 'string', '')
+				DB.setValue(nodeWeapon, "ammoshortcut", "windowreference", "item", "");
 			elseif sValue == DB.getValue(nodeItem, 'name', '') then
-				DB.setValue(nodeWeapon, 'ammopickernode', 'string', nodeItem.getNodeName())
+				DB.setValue(nodeWeapon, "ammoshortcut", "windowreference", "item", "....inventorylist." .. nodeItem.getName());
 			end
 		end
 	end

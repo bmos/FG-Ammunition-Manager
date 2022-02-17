@@ -7,7 +7,8 @@ tLoadWeapons = { 'loadaction' }
 local sRuleset
 
 function getAmmoNode(nodeWeapon, rActor)
-	local nodeAmmo = DB.findNode(DB.getValue(nodeWeapon, 'ammopickernode', ''));
+	local _,sAmmoShortcut = DB.getValue(nodeWeapon, 'ammoshortcut');
+	local nodeAmmo = DB.findNode(sAmmoShortcut)
 	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '');
 	if not nodeAmmo and sAmmo ~= '' then
 		local nodeChar = ActorManager.getCreatureNode(rActor);
