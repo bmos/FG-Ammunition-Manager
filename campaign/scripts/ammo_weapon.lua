@@ -46,6 +46,8 @@ function onDataChanged()
 	
 	local nodeWeapon = getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
+	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNodeLink(nodeWeapon));
+	local nodeAmmoLink = AmmunitionManager.getAmmoNodeLink(nodeWeapon);
 
 	local bRanged = (type.getValue() == 1);
 	label_range.setVisible(bRanged);
@@ -56,4 +58,10 @@ function onDataChanged()
 	label_ammo.setVisible(bRanged);
 	maxammo.setVisible(bRanged);
 	ammocounter.setVisible(bRanged);
+
+	if nodeAmmoLink then
+		maxammo.setLink(nodeAmmoLink.getChild('count'))
+	else
+		maxammo.setLink()
+	end
 end

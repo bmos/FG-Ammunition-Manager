@@ -35,4 +35,14 @@ function onDataChanged()
 	missedshots.setVisible(bRanged);
 	label_missedshots.setVisible(bRanged);
 	recoverammo.setVisible(bRanged);
+
+	local nodeAmmoLink = AmmunitionManager.getAmmoNodeLink(nodeWeapon);
+	if nodeAmmoLink then
+		local nodeAmmoMisses = nodeAmmoLink.getChild('missedshots')
+		if not nodeAmmoMisses then
+			local nodeAmmoMisses = nodeAmmoLink.getChild('missedshots')
+			DB.setValue(nodeAmmoLink, 'missedshots', 'number', 0)
+		end
+		missedshots.setLink(nodeAmmoMisses);
+	end
 end

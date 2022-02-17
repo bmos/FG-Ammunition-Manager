@@ -24,6 +24,9 @@
 					<left offset="33" />
 				</anchored>
 			</label>
+			<basicnumber name="maxammo">
+				<script file="common/scripts/number_crosslink.lua" />
+			</basicnumber>
 		</sheetdata>
 	</windowclass>
 
@@ -93,6 +96,7 @@
 				<anchored to="label_ammopercentof" position="righthigh" offset="5,0" width="40" height="20" />
 				<default>0</default>
 				<hideonvalue>0</hideonvalue>
+				<script file="common/scripts/number_crosslink.lua" />
 			</basicnumber>
 			<label_fieldtop name="label_missedshots">
 				<anchored to="missedshots" />
