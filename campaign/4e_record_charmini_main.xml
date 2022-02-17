@@ -67,25 +67,24 @@
 					function onDoubleClick(x,y)
 						local rActor, _, _ = CharManager.getAdvancedRollStructures("attack", nil, window.getDatabaseNode());
 						local nodeWeapon = window.getDatabaseNode();
-						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
 
-						if not (nMaxAmmo > 0) or (1 &lt;= nMaxAttacks) then	
+						local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNodeLink(nodeWeapon))
+
+						if (bInfiniteAmmo or nAmmo &gt; 0) then	
 							if not automateAmmo(nodeWeapon) then return window.onAttackAction(); end
-						elseif nMaxAmmo > 0 then
+						else
 							ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
 						end			
 					end			
-
 					function onDragStart(button, x, y, draginfo)
 						local rActor, _, _ = CharManager.getAdvancedRollStructures("attack", nil, window.getDatabaseNode());
-
 						local nodeWeapon = window.getDatabaseNode();
-						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
-						if not (nMaxAmmo > 0) or (1 &lt;= nMaxAttacks) then	
+
+						local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNodeLink(nodeWeapon))
+
+						if (bInfiniteAmmo or nAmmo &gt; 0) then	
 							if not automateAmmo(nodeWeapon) then return window.onAttackAction(draginfo); end
-						elseif nMaxAmmo > 0 then
+						else
 							ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
 						end			
 					end

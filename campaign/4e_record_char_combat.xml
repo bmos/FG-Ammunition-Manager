@@ -60,12 +60,12 @@
 					function action(draginfo)
 						local rActor, rAction, rFocus = CharManager.getAdvancedRollStructures("attack", nil, window.getDatabaseNode());
 						local nodeWeapon = window.getDatabaseNode();
-						local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-						local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
 
-						if not (nMaxAmmo > 0) or (1 &lt;= nMaxAttacks) then	
+						local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNodeLink(nodeWeapon))
+
+						if (bInfiniteAmmo or nAmmo &gt; 0) then	
 							ActionAttack.performRoll(draginfo, rActor, rAction, rFocus);
-						elseif nMaxAmmo > 0 then
+						else
 							ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
 						end
 

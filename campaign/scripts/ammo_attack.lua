@@ -9,10 +9,9 @@ function action(draginfo)
 	rAttack.order = tonumber(string.sub(getName(), 7)) or 1;
 
 	local nodeWeapon = window.getDatabaseNode();
-	local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-	local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
+	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNodeLink(nodeWeapon))
 
-	if not (nMaxAmmo > 0) or (nMaxAttacks >= 1) then	
+	if (bInfiniteAmmo or nAmmo > 0) then
 		ActionAttack.performRoll(draginfo, rActor, rAttack);
 		return true;
 	end

@@ -14,12 +14,11 @@ function action(draginfo)
 		rAttack.modifier = DB.getValue(nodeWeapon, "attack" .. i, 0);
 		rAttack.order = i;
 
-		local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-		local nMaxAttacks = nMaxAmmo - DB.getValue(nodeWeapon, 'ammo', 0)
+		local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNodeLink(nodeWeapon))
 
-		if not (nMaxAmmo > 0) or (i <= nMaxAttacks) then	
+		if (bInfiniteAmmo or nAmmo >= i) then	
 			table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack));
-		elseif (nMaxAmmo > 0) then
+		else
 			ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
 		end
 	end

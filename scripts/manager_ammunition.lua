@@ -72,6 +72,64 @@ local function getWeaponName(s)
 	return sWeaponName or ''
 end
 
+function countMissedShots(nodeWeapon, nodeAmmoLink, sResult, bCountAll)
+	if nodeAmmoLink then
+		if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
+			DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.nodeAmmoLink(nodeWeapon, 'missedshots', 0) + 1);
+		end
+	else
+		if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
+			DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
+		end
+	end
+end
+
+function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
+	if nodeAmmoLink then
+		if nAmmoRemaining == 0 then
+			ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+			DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining);
+		else
+			DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining);
+		end
+	else
+		if nAmmoRemaining <= 0 then
+			ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+		end
+		local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
+		DB.setValue(nodeWeapon, 'ammo', 'number', nMaxAmmo - nAmmoRemaining);
+	end
+end
+
+function getAmmoNodeLink(nodeWeapon)
+	local _,sAmmoNode = DB.getValue(nodeWeapon, 'ammoshortcut', '');
+	local nodeAmmoLink = DB.findNode(sAmmoNode);
+	return nodeAmmoLink
+end
+
+function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
+	local bInfiniteAmmo = false;
+	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
+		bInfiniteAmmo = EffectManager35E.hasEffectCondition(rSource, 'INFAMMO');
+	elseif sRuleset == "4E" then
+		bInfiniteAmmo = EffectManager4E.hasEffectCondition(rSource, 'INFAMMO');
+	elseif sRuleset == "5E" then
+		bInfiniteAmmo = EffectManager5E.hasEffectCondition(rSource, 'INFAMMO');
+	end
+
+	local nAmmo = 0;
+	if not bInfiniteAmmo then
+		if nodeAmmoLink then
+			nAmmo = DB.getValue(nodeAmmoLink, 'count', 0);
+		else
+			local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
+			local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0);
+			nAmmo = nMaxAmmo - nAmmoUsed
+		end
+	end
+	return nAmmo, bInfiniteAmmo
+end
+
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
 function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	local sWeaponName = getWeaponName(sDesc)
@@ -86,29 +144,11 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
 				end
 				if (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) and DB.getValue(nodeWeapon, 'type', 0) ~= 0 then
-					local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
-					local nAmmo = DB.getValue(nodeWeapon, 'ammo', 0) + 1;
-
-					local bInfiniteAmmo
-					if sRuleset == "PFRPG" or sRuleset == "3.5E" then
-						bInfiniteAmmo = EffectManager35E.hasEffectCondition(rSource, 'INFAMMO')
-					elseif sRuleset == "4E" then
-						bInfiniteAmmo = EffectManager4E.hasEffectCondition(rSource, 'INFAMMO')
-					elseif sRuleset == "5E" then
-						bInfiniteAmmo = EffectManager5E.hasEffectCondition(rSource, 'INFAMMO')
-					end
-
-					if nMaxAmmo ~= 0 and not bInfiniteAmmo then
-						if nAmmo == nMaxAmmo then
-							ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
-							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
-						else
-							DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo);
-						end
-
-						if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
-							DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
-						end
+					local nodeAmmoLink = getAmmoNodeLink(nodeWeapon)
+					local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
+					if not bInfiniteAmmo then
+						writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
+						countMissedShots(nodeWeapon, nodeAmmoLink, sResult, bCountAll)
 					end
 				end
 			end
