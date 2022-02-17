@@ -19,7 +19,7 @@ local function setListValue(sValue)
 		end
 	end
 
-	local nodeOldNode = nodeInventory.getChild('ammopickernode')
+	local nodeOldNode = nodeWeapon.getChild('ammopickernode')
 	if nodeOldNode then nodeOldNode.delete() end
 
 	setTooltipText(sValue);
