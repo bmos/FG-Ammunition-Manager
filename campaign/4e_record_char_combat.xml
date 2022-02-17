@@ -4,69 +4,7 @@
 
 <root>
 	<windowclass name="char_weapon" merge="join">
-		<script>
-			function onInit()
-				if super and super.onInit then
-					super.onInit();
-				end
-				DB.addHandler(getDatabaseNode().getNodeName(), "onChildUpdate", toggleDetail);
-				toggleDetail();
-			end
-			function onClose()
-				if super and super.onClose then
-					super.onClose();
-				end
-				DB.removeHandler(getDatabaseNode().getNodeName(), "onChildUpdate", toggleDetail);
-			end
-			function onTypeChanged()
-				if super and super.onTypeChanged then
-					super.onTypeChanged();
-				end
-				toggleDetail();
-			end
-			function hasLoadAction()
-				local bHasLoadAction
-				local sWeaponProperties = string.lower(DB.getValue(getDatabaseNode(), 'properties', ''));
-				local sWeaponName = string.lower(DB.getValue(getDatabaseNode(), 'name', 'ranged weapon'));
-				for _,v in pairs(AmmunitionManager.tLoadWeapons) do
-					if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
-				end
-
-				return (bHasLoadAction and not sWeaponProperties:find('load free'))
-			end
-			function toggleDetail()
-				if super and super.toggleDetail then
-					super.toggleDetail();
-				end
-				local bRanged = (type.getValue() == 1);
-				isloaded.setVisible(bRanged and hasLoadAction());
-				if button_reload then button_reload.setVisible(bRanged) end
-
-				local nodeWeapon = getDatabaseNode();
-				local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-				local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
-				local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
-
-				ammo_label.setVisible(bRanged);
-				if nodeAmmoLink then
-					maxammo.setLink(nodeAmmoLink.getChild('count'))
-					missedshots.setLink(nodeAmmoLink.getChild('missedshots'))
-				else
-					maxammo.setLink()
-					missedshots.setLink()
-				end
-				ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
-
-				local bShow = (activatedetail.getValue() == 1);
-				if bShow then ammopicker.clear(); ammopicker.onInit(); end -- re-build ammopicker list when opening details
-				ammunition_label.setVisible(bRanged and bShow);
-				recoverypercentage.setVisible(bRanged and bShow);
-				label_ammopercentof.setVisible(bRanged and bShow);
-				missedshots.setVisible(bRanged and bShow);
-				recoverammo.setVisible(bRanged and bShow);
-				ammopicker.setComboBoxVisible(bRanged and bShow);
-			end
-		</script>
+		<script file="campaign/scripts/4e_char_weaponlist.lua" />
 		<sheetdata>
 			<genericcontrol name="attackicon">
 				<script>
@@ -110,6 +48,7 @@
 					<left offset="10" />
 				</anchored>
 				<static textres="weapon_label_ammopicker" />
+				<invisible />
 			</label>
 			<basicnumber name="recoverypercentage">
 				<anchored width="30" height="20">
@@ -117,11 +56,13 @@
 					<left parent="ammunition_label" anchor="right" offset="5" />
 				</anchored>
 				<default>50</default>
+				<invisible />
 			</basicnumber>
 			<label name="label_ammopercentof">
 				<anchored to="recoverypercentage" position="righthigh" offset="10,0" width="32" />
 				<static>% of </static>
 				<center />
+				<invisible />
 			</label>
 			<basicnumber name="missedshots">
 				<anchored to="recoverypercentage" width="30" height="20">
@@ -132,6 +73,7 @@
 				<hideonvalue>0</hideonvalue>
 				<tooltip textres="weapon_tooltip_missedshots" />
 				<script file="common/scripts/number_crosslink.lua" />
+				<invisible />
 			</basicnumber>
 			<buttoncontrol name="recoverammo">
 				<anchored height="20" width="20">
@@ -141,6 +83,7 @@
 				<icon normal="button_add" pressed="button_add_down" />
 				<tooltip textres="weapon_tooltip_recoverammo" />
 				<script file="campaign/scripts/ammo_recover.lua" />
+				<invisible />
 			</buttoncontrol>
 			<combobox name="ammopicker">
 				<frame>
@@ -161,6 +104,7 @@
 				<itemsheetname>class</itemsheetname>
 				<itemsheetaltname>subclass</itemsheetaltname>
 				<script file="campaign/scripts/ammo_ammopicker.lua" />
+				<invisible />
 			</combobox>
 			
 			<label name="range_label">
