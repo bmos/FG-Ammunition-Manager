@@ -11,9 +11,15 @@ local function setListValue(sValue)
 	local nodeInventory = nodeWeapon.getChild('...inventorylist')
 	if nodeInventory then
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
+			local sName = '';
+			if LibraryData.getIDState("item", nodeItem, true) then
+				sName = DB.getValue(nodeItem, 'name', '');
+			else
+				sName = DB.getValue(nodeItem, 'nonid_name', '');
+			end
 			if sValue == '' then
 				DB.setValue(nodeWeapon, "ammoshortcut", "windowreference", "item", "");
-			elseif sValue == DB.getValue(nodeItem, 'name', '') then
+			elseif sValue == sName then
 				DB.setValue(nodeWeapon, "ammoshortcut", "windowreference", "item", "....inventorylist." .. nodeItem.getName());
 			end
 		end
