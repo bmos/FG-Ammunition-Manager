@@ -8,7 +8,10 @@ local sRuleset
 
 function getAmmoNode(nodeWeapon, rActor)
 	local _,sAmmoShortcut = DB.getValue(nodeWeapon, 'ammoshortcut');
-	local nodeAmmo = DB.findNode(sAmmoShortcut)
+	local nodeAmmo
+	if sAmmoShortcut then
+		nodeAmmo = DB.findNode(sAmmoShortcut)
+	end
 	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '');
 	if not nodeAmmo and sAmmo ~= '' then
 		local nodeChar = ActorManager.getCreatureNode(rActor);
