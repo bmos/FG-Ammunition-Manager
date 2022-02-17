@@ -36,7 +36,7 @@ function onDataChanged()
 	label_missedshots.setVisible(bRanged);
 	recoverammo.setVisible(bRanged);
 
-	local nodeAmmoLink = AmmunitionManager.getAmmoNodeLink(nodeWeapon);
+	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
 	if nodeAmmoLink then
 		local nodeAmmoMisses = nodeAmmoLink.getChild('missedshots')
 		if not nodeAmmoMisses then

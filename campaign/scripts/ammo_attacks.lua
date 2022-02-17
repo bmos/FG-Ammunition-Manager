@@ -14,7 +14,7 @@ function action(draginfo)
 		rAttack.modifier = DB.getValue(nodeWeapon, "attack" .. i, 0);
 		rAttack.order = i;
 
-		local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNodeLink(nodeWeapon))
+		local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon, rActor))
 
 		if (bInfiniteAmmo or nAmmo >= i) then	
 			table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack));
