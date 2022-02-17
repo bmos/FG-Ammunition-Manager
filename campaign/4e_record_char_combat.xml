@@ -148,6 +148,7 @@
 				</anchored>
 				<default textres="none" />
 				<itemsheetname>class</itemsheetname>
+				<itemsheetaltname>subclass</itemsheetaltname>
 				<script file="campaign/scripts/ammo_ammopicker.lua" />
 			</combobox>
 			
