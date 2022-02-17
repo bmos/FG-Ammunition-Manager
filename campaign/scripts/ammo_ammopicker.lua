@@ -49,11 +49,11 @@ function onInit()
 					sName = DB.getValue(nodeItem, 'nonid_name', '');
 				end
 				local bAmmo = false;
-				if itemsheetname[1] and nodeItem.getChild(itemsheetname[1]) then
+				if itemsheetname and itemsheetname[1] and nodeItem.getChild(itemsheetname[1]) then
 					local sItemType = DB.getValue(nodeItem, itemsheetname[1], ''):lower();
 					bAmmo = (bAmmo == true) or (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil);
 				end
-				if itemsheetaltname[1] and nodeItem.getChild(itemsheetaltname[1]) then
+				if itemsheetaltname and itemsheetaltname[1] and nodeItem.getChild(itemsheetaltname[1]) then
 					local sItemAltType = DB.getValue(nodeItem, itemsheetaltname[1], ''):lower();
 					bAmmo = (bAmmo == true) or (sItemAltType:match('ammunition') ~= nil) or (sItemAltType:match('ammo') ~= nil);
 				end
