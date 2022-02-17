@@ -50,6 +50,7 @@ function onDataChanged()
 	local nodeWeapon = getDatabaseNode();
 	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNodeLink(nodeWeapon));
 	local nodeAmmoLink = AmmunitionManager.getAmmoNodeLink(nodeWeapon);
+	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
 	if nodeAmmoLink then
 		maxammo.setLink(nodeAmmoLink.getChild('count'))
 	else

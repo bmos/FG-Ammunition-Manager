@@ -57,7 +57,7 @@ function onDataChanged()
 	button_reload.setVisible(bRanged);
 	label_ammo.setVisible(bRanged);
 	maxammo.setVisible(bRanged);
-	ammocounter.setVisible(bRanged);
+	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
 
 	if nodeAmmoLink then
 		maxammo.setLink(nodeAmmoLink.getChild('count'))
