@@ -40,8 +40,8 @@ function onDataChanged()
 	if nodeAmmoLink then
 		local nodeAmmoMisses = nodeAmmoLink.getChild('missedshots')
 		if not nodeAmmoMisses then
-			local nodeAmmoMisses = nodeAmmoLink.getChild('missedshots')
 			DB.setValue(nodeAmmoLink, 'missedshots', 'number', 0)
+			nodeAmmoMisses = nodeAmmoLink.getChild('missedshots')
 		end
 		missedshots.setLink(nodeAmmoMisses);
 	end
