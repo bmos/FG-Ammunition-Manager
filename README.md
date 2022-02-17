@@ -21,6 +21,8 @@ This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
 
 * If used with my [Item Durability](https://github.com/bmos/FG-PFRPG-Item-Durability) extension, natural 1s rolled with a weapon with "fragile" in the properties field will be broken automatically. If the weapon is already broken, the weapon will be destroyed instead.
 
+* If used with [Advanced Effects](https://forge.fantasygrounds.com/shop/items/33/view), effects attached to ammmunition will also be included in attacks made with a weapon using that ammunition.
+
 * Enabling the "Chat: Show weapon name in results" option will add the weapon name to attack results in chat such as "Attack [16] -> [at Goblin] with Shortsword [HIT]" instead of "Attack [16] -> [at Goblin] [HIT]".
 
 # Video Demonstration (click for video)
