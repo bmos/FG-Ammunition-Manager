@@ -75,7 +75,7 @@ end
 function countMissedShots(nodeWeapon, nodeAmmoLink, sResult, bCountAll)
 	if nodeAmmoLink then
 		if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
-			DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.nodeAmmoLink(nodeWeapon, 'missedshots', 0) + 1);
+			DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.getValue(nodeAmmoLink, 'missedshots', 0) + 1);
 		end
 	else
 		if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
