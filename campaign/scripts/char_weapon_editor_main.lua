@@ -5,7 +5,7 @@
 
 function onInit()
 	if super and super.onInit then
-		super.onInit()
+		super.onInit();
 	end
 	local sNode = getDatabaseNode().getPath();
 	DB.addHandler(sNode, "onChildUpdate", onDataChanged);
@@ -14,7 +14,7 @@ end
 
 function onClose()
 	if super and super.onClose then
-		super.onClose()
+		super.onClose();
 	end
 	local sNode = getDatabaseNode().getPath();
 	DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
@@ -22,7 +22,7 @@ end
 
 function onDataChanged()	
 	if super and super.onDataChanged then
-		super.onDataChanged()
+		super.onDataChanged();
 	end
 	local nodeWeapon = getDatabaseNode();
 	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1;
