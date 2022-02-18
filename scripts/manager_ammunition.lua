@@ -124,6 +124,7 @@ function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 			local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
 			local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0);
 			nAmmo = nMaxAmmo - nAmmoUsed
+			if nMaxAmmo == 0 then bInfiniteAmmo = true end
 		end
 	end
 	return nAmmo, bInfiniteAmmo
