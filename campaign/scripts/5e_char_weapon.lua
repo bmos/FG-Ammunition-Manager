@@ -11,15 +11,7 @@ function onAttackAction(draginfo)
 	local rAction = CharWeaponManager.buildAttackAction(nodeChar, nodeWeapon);
 
 	-- Decrement ammo
-	-- CharWeaponManager.decrementAmmo(nodeChar, nodeWeapon);
-
-	-- bmos removing redundant ammo counting
-	-- for compatibility with ammunition tracker, make this change in your char_weapon.lua
-	-- this if section replaces the commented out line above: "CharWeaponManager.decrementAmmo(nodeChar, nodeWeapon);"
-	if not AmmunitionManager then
-		CharWeaponManager.decrementAmmo(nodeChar, nodeWeapon);
-	end
-	-- end bmos removing redundant ammo counting
+	CharWeaponManager.decrementAmmo(nodeChar, nodeWeapon);
 
 	-- Perform action
 	local rActor = ActorManager.resolveActor(nodeChar);

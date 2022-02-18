@@ -557,6 +557,10 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	end
 end
 
+local function decrementAmmo_5e(nodeChar, nodeWeapon)
+
+end
+
 function onAttack_5e(rSource, rTarget, rRoll)
 	ActionsManager2.decodeAdvantage(rRoll);
 
@@ -676,6 +680,7 @@ function onInit()
 		ActionsManager.unregisterResultHandler("attack");
 		ActionsManager.registerResultHandler("attack", onAttack_5e);
 		ActionAttack.onAttack = onAttack_5e;
+		CharWeaponManager.decrementAmmo = decrementAmmo_5e
 	end
 
 	OptionsManager.registerOption2('ATKRESULTWEAPON', false, 'option_header_game', 'opt_lab_atkresultweaponname', 'option_entry_cycler',
