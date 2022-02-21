@@ -6,7 +6,6 @@
 local bLocked = false;
 local sLink = nil;
 local widget = nil;
-local originalvalue = 0;
 
 function onInit()
 	if super and super.onInit then
@@ -80,9 +79,6 @@ function setLink(dbnode, bLock)
 		DB.removeHandler(sLink, "onUpdate", onLinkUpdated);
 		sLink = nil;
 		widget.destroy()
-		if not dbnode then setValue(originalvalue) end
-	else
-		originalvalue = getValue() or 0
 	end
 		
 	if dbnode then
