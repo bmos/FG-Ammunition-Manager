@@ -59,9 +59,13 @@ function onDataChanged()
 	maxammo.setVisible(bRanged);
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
 
-	if nodeAmmoLink then
-		maxammo.setLink(nodeAmmoLink.getChild('count'))
+	if maxammo.setLink then
+		if nodeAmmoLink then
+			maxammo.setLink(nodeAmmoLink.getChild('count'))
+		else
+			maxammo.setLink()
+		end
 	else
-		maxammo.setLink()
+		Debug.chat("WARNING: NO AMMUNITION SET ON ITEM", DB.getValue(nodeWeapon, 'name'))
 	end
 end
