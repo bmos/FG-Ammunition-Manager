@@ -144,7 +144,7 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
 				end
 				if (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) and DB.getValue(nodeWeapon, 'type', 0) ~= 0 then
-					local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon, rSource)
+					local nodeAmmoLink = getAmmoNode(nodeWeapon, rSource)
 					local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 					if not bInfiniteAmmo then
 						writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
