@@ -7,8 +7,8 @@ local function setListValue(sValue)
 	setValue(sValue);
 
 	-- save node to weapon node when choosing ammo
-	local nodeWeapon = getDatabaseNode().getParent()
-	local nodeInventory = nodeWeapon.getChild('...inventorylist')
+	local nodeWeapon = getDatabaseNode().getParent();
+	local nodeInventory = nodeWeapon.getChild('...inventorylist');
 	if nodeInventory then
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
 			local sName = '';
@@ -25,7 +25,7 @@ local function setListValue(sValue)
 		end
 	end
 
-	local nodeOldNode = nodeWeapon.getChild('ammopickernode')
+	local nodeOldNode = nodeWeapon.getChild('ammopickernode');
 	if nodeOldNode then nodeOldNode.delete() end
 
 	setTooltipText(sValue);
