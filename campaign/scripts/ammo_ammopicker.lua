@@ -44,6 +44,11 @@ function onInit()
 
 	local aAutoFill = {};
 	table.insert(aAutoFill, Interface.getString('none'));
+
+	local bThrown = false;
+	if User.getRulesetName() == "5E" then
+		bThrown = DB.getValue(getDatabaseNode().getParent(), 'type', 0) == 2;
+	end
 	local nodeInventory = getDatabaseNode().getChild('....inventorylist');
 	if nodeInventory then
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
@@ -57,11 +62,19 @@ function onInit()
 				local bAmmo = false;
 				if itemsheetname[1] and nodeItem.getChild(itemsheetname[1]) then
 					local sItemType = DB.getValue(nodeItem, itemsheetname[1], ''):lower();
-					bAmmo = (bAmmo == true) or (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil);
+					if bThrown then
+						bAmmo = (bAmmo == true) or (sItemType:match('weapon') ~= nil);
+					else
+						bAmmo = (bAmmo == true) or (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil);
+					end
 				end
 				if itemsheetaltname[1] and nodeItem.getChild(itemsheetaltname[1]) then
 					local sItemAltType = DB.getValue(nodeItem, itemsheetaltname[1], ''):lower();
-					bAmmo = (bAmmo == true) or (sItemAltType:match('ammunition') ~= nil) or (sItemAltType:match('ammo') ~= nil);
+					if bThrown then
+						bAmmo = (bAmmo == true) or (sItemAltType:match('weapon') ~= nil);
+					else
+						bAmmo = (bAmmo == true) or (sItemAltType:match('ammunition') ~= nil) or (sItemAltType:match('ammo') ~= nil);
+					end
 				end
 				if bAmmo then
 					if sName ~= '' then
