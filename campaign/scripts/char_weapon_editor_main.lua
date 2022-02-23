@@ -26,15 +26,19 @@ function onDataChanged()
 	end
 	local nodeWeapon = getDatabaseNode();
 	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1;
-	header_ammo.setVisible(bRanged);
-	ammopicker.setVisible(bRanged);
-	label_ammopicker.setVisible(bRanged);
-	recoverypercentage.setVisible(bRanged);
-	label_recoverypercentage.setVisible(bRanged);
-	label_ammopercentof.setVisible(bRanged);
-	missedshots.setVisible(bRanged);
-	label_missedshots.setVisible(bRanged);
-	recoverammo.setVisible(bRanged);
+
+	local bThrown = false;
+	if User.getRulesetName() == "5E" then bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2; end
+
+	header_ammo.setVisible(bRanged or bThrown);
+	ammopicker.setVisible(bRanged or bThrown);
+	label_ammopicker.setVisible(bRanged or bThrown);
+	recoverypercentage.setVisible(bRanged or bThrown);
+	label_recoverypercentage.setVisible(bRanged or bThrown);
+	label_ammopercentof.setVisible(bRanged or bThrown);
+	missedshots.setVisible(bRanged or bThrown);
+	label_missedshots.setVisible(bRanged or bThrown);
+	recoverammo.setVisible(bRanged or bThrown);
 
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
 	if nodeAmmoLink then

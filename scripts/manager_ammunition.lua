@@ -113,8 +113,10 @@ function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 	elseif sRuleset == "5E" then
 		bInfiniteAmmo = EffectManager5E.hasEffectCondition(rSource, 'INFAMMO');
 	end
+	local bThrown = false;
 	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1;
-	if not bRanged then bInfiniteAmmo = true end
+	if sRuleset == "5E" then bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2; end
+	if (not bRanged and not bThrown) then bInfiniteAmmo = true end
 
 	local nAmmo = 0;
 	if not bInfiniteAmmo then
