@@ -40,7 +40,6 @@ function onDataChanged()
 	if button_reload then button_reload.setVisible(type.getValue() ~= 0) end
 
 	local nodeWeapon = getDatabaseNode();
-	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
