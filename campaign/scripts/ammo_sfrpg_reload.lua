@@ -3,8 +3,8 @@
 -- attribution and copyright information.
 --
 
-local function reduceItemCount(nodeWeapon, rActor, nAmmo)
-	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
+local function reduceItemCount(nodeWeapon, nAmmo)
+	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon);
 	if nodeAmmo then
 		local nCount = DB.getValue(nodeAmmo, "count", 0)
 		if (nAmmo > 0) and (nCount > 0) then
@@ -30,10 +30,10 @@ function onReloadAction(draginfo)
 	if nAmmo > 0 then
 		if nUses == 1 then
 			ChatManager.Message(Interface.getString("char_message_ammodrawn"), true, rActor);
-			reduceItemCount(nodeWeapon, rActor, nAmmo);
+			reduceItemCount(nodeWeapon, nAmmo);
 		else
 			ChatManager.Message(Interface.getString("char_message_reloadammo"), true, rActor);
-			reduceItemCount(nodeWeapon, rActor, nAmmo);
+			reduceItemCount(nodeWeapon, nAmmo);
 		end
 	else
 		ChatManager.Message(Interface.getString("char_message_ammofull"), true, rActor);

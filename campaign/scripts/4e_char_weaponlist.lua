@@ -43,7 +43,7 @@ function toggleDetail()
 
 	local nodeWeapon = getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
+	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
 
 	ammo_label.setVisible(bRanged);

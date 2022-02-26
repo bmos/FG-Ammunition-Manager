@@ -45,8 +45,8 @@ function onDataChanged()
 	onDamageChanged();
 	
 	local nodeWeapon = getDatabaseNode();
+	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
 
 	local bRanged = (type.getValue() == 1);

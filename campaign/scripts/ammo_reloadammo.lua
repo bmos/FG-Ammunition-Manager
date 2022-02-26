@@ -9,14 +9,14 @@ function onClickRelease(target, button, image, ...)
 	end
 
 	local nodeWeapon = window.getDatabaseNode();
-	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
+	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon);
 
 	if nodeAmmo then
 		local nCount = DB.getValue(nodeAmmo, count[1], 0)
 		local nAmmo = DB.getValue(nodeWeapon, ammo[1], 0)
 
 		if (nAmmo > 0) and (nCount > 0) then
+			local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 			local nAmmoRemaining = (nCount - nAmmo)
 			if nAmmoRemaining > -1 then
 				DB.setValue(nodeWeapon, ammo[1], 'number', 0)

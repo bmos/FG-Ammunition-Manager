@@ -22,7 +22,7 @@ function onAttackAction(draginfo)
 	-- for compatibility with ammunition tracker, make this change in your char_weapon.lua
 	-- this if section replaces the two commented out lines above:
 	-- "ActionAttack.performRoll(draginfo, rActor, rAction);" and "return true;"
-	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon, rActor))
+	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
 	if (bInfiniteAmmo or nAmmo > 0) then	
 		ActionAttack.performRoll(draginfo, rActor, rAction);
@@ -41,7 +41,7 @@ function onDataChanged()
 
 	local nodeWeapon = getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon, rActor);
+	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
 	ammocounter.setVisible(not bInfiniteAmmo and not nodeAmmoLink);
 	if nodeAmmoLink then

@@ -6,31 +6,44 @@ tLoadWeapons = { 'loadaction' }
 
 local sRuleset
 
-function getAmmoNode(nodeWeapon, rActor)
-	local _,sAmmoShortcut = DB.getValue(nodeWeapon, 'ammoshortcut');
+---	This function finds the correct node for a weapon's ammunition.
+--	It first checks for a path saved in ammoshortcut. If found, databasenode record is returned.
+--	If no path is found, it checks to see if the ammo name is known.
+--	If ammo name is available, it searches through the inventory for a match. If found, databasenode record is returned.
+--	If no match is found, nothing is returned.
+function getAmmoNode(nodeWeapon)
 	local nodeAmmo
+
+	local _,sAmmoShortcut = DB.getValue(nodeWeapon, 'ammoshortcut', '');
 	if sAmmoShortcut and sAmmoShortcut ~= '' then
 		nodeAmmo = DB.findNode(sAmmoShortcut)
 	end
-	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '');
+
+	-- if ammoshortcut does not provide a good node, try searching the inventory.
 	if not nodeAmmo and sAmmo ~= '' then
-		local nodeChar = ActorManager.getCreatureNode(rActor);
-		if nodeChar then
-			for _,nodeItem in pairs(nodeChar.getChild('inventorylist').getChildren()) do
-				if ItemManager.getIDState(nodeItem) then
-					if DB.getValue(nodeItem, 'name', '') == sAmmo then
-						return nodeItem;
-					end
-				else
-					if DB.getValue(nodeItem, 'nonid_name', '') == sAmmo then
-						return nodeItem;
+		Debug.console("Ammunition Manager: Weapon's ammoshortcut node was not found. Searching inventory instead.");
+		local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '');
+		if sAmmo ~= '' then
+			local nodeInventory = nodeWeapon.getChild('...inventorylist');
+			if nodeInventory.getName() == 'inventorylist' then
+				for _,nodeItem in pairs(nodeInventory.getChildren()) do
+					if ItemManager.getIDState(nodeItem) then
+						if DB.getValue(nodeItem, 'name', '') == sAmmo then
+							return nodeItem;
+						end
+					else
+						if DB.getValue(nodeItem, 'nonid_name', '') == sAmmo then
+							return nodeItem;
+						end
 					end
 				end
+			else
+				Debug.console("Ammunition Manager: Weapon's character was node not found. Aborting ammunition search.");
 			end
 		end
-	else
-		return nodeAmmo;
 	end
+
+	return nodeAmmo;
 end
 
 -- examine weapon properties to check if fragile
@@ -146,7 +159,7 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
 				end
 				if (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) and DB.getValue(nodeWeapon, 'type', 0) ~= 0 then
-					local nodeAmmoLink = getAmmoNode(nodeWeapon, rSource)
+					local nodeAmmoLink = getAmmoNode(nodeWeapon)
 					local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 					if not bInfiniteAmmo then
 						writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)

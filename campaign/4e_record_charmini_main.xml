@@ -27,7 +27,7 @@
 						local rActor, _, _ = CharManager.getAdvancedRollStructures("attack", nil, window.getDatabaseNode());
 						local nodeWeapon = window.getDatabaseNode();
 
-						local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon, rActor))
+						local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
 						if (bInfiniteAmmo or nAmmo &gt; 0) then	
 							if not automateAmmo(nodeWeapon) then return window.onAttackAction(); end
@@ -39,7 +39,7 @@
 						local rActor, _, _ = CharManager.getAdvancedRollStructures("attack", nil, window.getDatabaseNode());
 						local nodeWeapon = window.getDatabaseNode();
 
-						local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon, rActor))
+						local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
 						if (bInfiniteAmmo or nAmmo &gt; 0) then	
 							if not automateAmmo(nodeWeapon) then return window.onAttackAction(draginfo); end

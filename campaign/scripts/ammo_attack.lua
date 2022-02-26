@@ -9,7 +9,7 @@ function action(draginfo)
 	rAttack.order = tonumber(string.sub(getName(), 7)) or 1;
 
 	local nodeWeapon = window.getDatabaseNode();
-	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon, rActor))
+	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
 	if (bInfiniteAmmo or nAmmo > 0) then
 		ActionAttack.performRoll(draginfo, rActor, rAttack);
