@@ -2,6 +2,7 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
+--	This table exists so people can add search terms for weapons that should have a load button.
 tLoadWeapons = { 'loadaction' }
 
 local sRuleset
@@ -48,27 +49,27 @@ end
 
 -- examine weapon properties to check if fragile
 local function isFragile(nodeWeapon)
-	local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower()
-	local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0
-	local bIsMasterwork = sWeaponProperties:find('masterwork') or false
-	local bIsBone = sWeaponProperties:find('bone') or false
-	local bIsMagic = DB.getValue(nodeWeapon, 'bonus', 0) > 0
+	local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower();
+	local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0;
+	local bIsMasterwork = sWeaponProperties:find('masterwork') or false;
+	local bIsBone = sWeaponProperties:find('bone') or false;
+	local bIsMagic = DB.getValue(nodeWeapon, 'bonus', 0) > 0;
 	return (bIsFragile and not bIsMagic and (not bIsMasterwork or bIsBone))
 end
 
---	if weapon is fragile, set as broken or destroyed and post chat message.
+--	if weapon is fragile, set as broken or destroyed and post a chat message.
 local function breakWeapon(rSource, nodeWeapon, sWeaponName)
 	if nodeWeapon and isFragile(nodeWeapon) then
-		local nBroken = DB.getValue(nodeWeapon, 'broken', 0)
-		local nItemHitpoints = DB.getValue(nodeWeapon, 'hitpoints', 0)
-		local nItemDamage = DB.getValue(nodeWeapon, 'itemdamage', 0)
+		local nBroken = DB.getValue(nodeWeapon, 'broken', 0);
+		local nItemHitpoints = DB.getValue(nodeWeapon, 'hitpoints', 0);
+		local nItemDamage = DB.getValue(nodeWeapon, 'itemdamage', 0);
 		if nBroken == 0 then
-			DB.setValue(nodeWeapon, 'broken', 'number', 1)
-			DB.setValue(nodeWeapon, 'itemdamage', 'number', math.floor(nItemHitpoints / 2) + math.max(nItemDamage, 1))
+			DB.setValue(nodeWeapon, 'broken', 'number', 1);
+			DB.setValue(nodeWeapon, 'itemdamage', 'number', math.floor(nItemHitpoints / 2) + math.max(nItemDamage, 1));
 			ChatManager.Message(string.format(Interface.getString('char_actions_fragile_broken'), sWeaponName), true, rSource);
 		elseif nBroken == 1 then
-			DB.setValue(nodeWeapon, 'broken', 'number', 2)
-			DB.setValue(nodeWeapon, 'itemdamage', 'number', nItemHitpoints + math.max(nItemDamage, 1))
+			DB.setValue(nodeWeapon, 'broken', 'number', 2);
+			DB.setValue(nodeWeapon, 'itemdamage', 'number', nItemHitpoints + math.max(nItemDamage, 1));
 			ChatManager.Message(string.format(Interface.getString('char_actions_fragile_destroyed'), sWeaponName), true, rSource);
 		end
 	end
