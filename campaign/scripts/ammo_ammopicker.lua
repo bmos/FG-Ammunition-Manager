@@ -11,12 +11,7 @@ local function setListValue(sValue)
 	local nodeInventory = nodeWeapon.getChild('...inventorylist');
 	if nodeInventory then
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
-			local sName = '';
-			if LibraryData.getIDState("item", nodeItem, true) then
-				sName = DB.getValue(nodeItem, 'name', '');
-			else
-				sName = DB.getValue(nodeItem, 'nonid_name', '');
-			end
+			local sName = ItemManager.getDisplayName(nodeItem, true);
 			if sValue == '' then
 				DB.setValue(nodeWeapon, "ammoshortcut", "windowreference", "item", "");
 			elseif sValue == sName then
@@ -53,12 +48,7 @@ function onInit()
 	if nodeInventory then
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
-				local sName = '';
-				if LibraryData.getIDState("item", nodeItem, true) then
-					sName = DB.getValue(nodeItem, 'name', '');
-				else
-					sName = DB.getValue(nodeItem, 'nonid_name', '');
-				end
+				local sName = ItemManager.getDisplayName(nodeItem, true);
 				local bAmmo = false;
 				if itemsheetname[1] and nodeItem.getChild(itemsheetname[1]) then
 					local sItemType = DB.getValue(nodeItem, itemsheetname[1], ''):lower();
