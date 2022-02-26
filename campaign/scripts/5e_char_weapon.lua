@@ -37,7 +37,7 @@ function onDataChanged()
 	if super and super.onDataChanged then
 		super.onDataChanged();
 	end
-	if button_reload then button_reload.setVisible(type.getValue() ~= 0) end
+	if button_reload then button_reload.setVisible(type.getValue() ~= 0); end
 
 	local nodeWeapon = getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
@@ -45,9 +45,9 @@ function onDataChanged()
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
 	ammocounter.setVisible(not bInfiniteAmmo and not nodeAmmoLink);
 	if nodeAmmoLink then
-		maxammo.setLink(nodeAmmoLink.getChild('count'))
+		maxammo.setLink(nodeAmmoLink.getChild('count'));
 	else
-		maxammo.setLink()
+		maxammo.setLink();
 	end
 end
 
