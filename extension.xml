@@ -25,7 +25,7 @@
 		</ruleset>
 	</properties>
 
-	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v3.0:\nThis extension aids in tracking ammunition and whether ranged weapons are loaded." font="emotefont" />
+	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v3.1:\nThis extension aids in tracking ammunition and whether ranged weapons are loaded." font="emotefont" />
 
 	<base>
 		<!-- Campaign Records -->
