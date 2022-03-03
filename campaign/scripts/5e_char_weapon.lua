@@ -24,11 +24,20 @@ function onAttackAction(draginfo)
 	-- "ActionAttack.performRoll(draginfo, rActor, rAction);" and "return true;"
 	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
-	if (bInfiniteAmmo or nAmmo > 0) then	
-		ActionAttack.performRoll(draginfo, rActor, rAction);
-		return true;
+	-- only allow attacks when 'loading' weapons have been loaded
+	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil
+	local bIsLoaded = DB.getValue(nodeWeapon, 'isloaded', 0) == 1
+	if not bLoading or (bLoading and bIsLoaded) then
+		if (bInfiniteAmmo or nAmmo > 0) then	
+			ActionAttack.performRoll(draginfo, rActor, rAction);
+			if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
+			return true;
+		else
+			ChatManager.Message(Interface.getString("char_message_atkwithnoammo"), true, rActor);
+			if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
+		end
 	else
-		ChatManager.Message(Interface.getString("char_message_atkwithnoammo"), true, rActor);
+		ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), DB.getValue(nodeWeapon, 'name', 'weapon')), true, rActor);
 	end
 	-- end bmos only allowing attacks when ammo is sufficient
 end
@@ -40,6 +49,8 @@ function onDataChanged()
 	if button_reload then button_reload.setVisible(type.getValue() ~= 0); end
 
 	local nodeWeapon = getDatabaseNode();
+	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil
+	isloaded.setVisible(bLoading);
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);

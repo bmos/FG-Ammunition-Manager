@@ -6,22 +6,23 @@
 	<windowclass name="char_weapon" merge="join">
 		<script file="campaign/scripts/5e_char_weapon.lua" />
 		<sheetdata>
-			<!-- <buttonfield name="button_reload">
+			<buttonfield name="isloaded">
+				<!-- <anchored width="27" height="10">
+					<top parent="button_reload" anchor="bottom" offset="1" />
+					<left offset="2" />
+				</anchored> -->
 				<anchored width="27" height="10">
 					<top parent="name" anchor="bottom" offset="11" />
 					<left offset="2" />
 				</anchored>
-				<icon normal="button_reload" pressed="button_reload_down" />
-				<tooltip textres="weapon_tooltip_reloadammo" />
+				<state icon="button_load" tooltipres="tooltip_actions_unloaded" />
+				<state icon="button_unload" tooltipres="tooltip_actions_loaded" />
 				<default>0</default>
-				<maxammo>maxammo</maxammo>
-				<ammo>ammo</ammo>
-				<count>count</count>
-				<script file="campaign/scripts/ammo_reloadammo.lua" />
-			</buttonfield> -->
+				<script file="campaign/scripts/ammo_isloaded.lua" />
+			</buttonfield>
 			<label name="label_ammo">
-				<anchored width="50">
-					<left offset="33" />
+				<anchored>
+					<left offset="125" />
 				</anchored>
 			</label>
 			<basicnumber name="maxammo">
