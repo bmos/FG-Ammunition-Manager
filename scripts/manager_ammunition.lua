@@ -337,7 +337,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
+	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then table.insert(rAction.aMessages, "with " .. AmmunitionManager.getWeaponName(rRoll.sDesc)) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	--	bmos adding hit margin tracking
