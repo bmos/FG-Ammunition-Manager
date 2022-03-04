@@ -3,25 +3,10 @@
 -- attribution and copyright information.
 --
 
-function onAttackAction(draginfo)
+local onAttackAction_old
+function onAttackAction_new(draginfo, ...)
 	local nodeWeapon = getDatabaseNode();
-	local nodeChar = nodeWeapon.getChild("...");
-
-	-- Build basic attack action record
-	local rAction = CharWeaponManager.buildAttackAction(nodeChar, nodeWeapon);
-
-	-- Decrement ammo
-	CharWeaponManager.decrementAmmo(nodeChar, nodeWeapon);
-
-	-- Perform action
-	local rActor = ActorManager.resolveActor(nodeChar);
-	-- ActionAttack.performRoll(draginfo, rActor, rAction);
-	-- return true;
-
-	-- bmos only allowing attacks when ammo is sufficient
-	-- for compatibility with ammunition tracker, make this change in your char_weapon.lua
-	-- this if section replaces the two commented out lines above:
-	-- "ActionAttack.performRoll(draginfo, rActor, rAction);" and "return true;"
+	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
 	-- only allow attacks when 'loading' weapons have been loaded
@@ -29,9 +14,8 @@ function onAttackAction(draginfo)
 	local bIsLoaded = DB.getValue(nodeWeapon, 'isloaded', 0) == 1
 	if not bLoading or (bLoading and bIsLoaded) then
 		if (bInfiniteAmmo or nAmmo > 0) then	
-			ActionAttack.performRoll(draginfo, rActor, rAction);
 			if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
-			return true;
+			return onAttackAction_old(draginfo, ...);
 		else
 			ChatManager.Message(Interface.getString("char_message_atkwithnoammo"), true, rActor);
 			if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
@@ -63,8 +47,14 @@ function onDataChanged()
 end
 
 function onInit()
-	if super and super.onInit then
-		super.onInit();
+	if super then
+		if super.onAttackAction then
+			onAttackAction_old = super.onAttackAction;
+			super.onAttackAction = onAttackAction_new;
+		end
+		if super.onInit then
+			super.onInit();
+		end
 	end
 	local nodeWeapon = getDatabaseNode();
 	DB.addHandler(nodeWeapon.getPath(), "onChildUpdate", onDataChanged);
