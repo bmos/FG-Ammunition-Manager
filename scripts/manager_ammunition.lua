@@ -75,7 +75,7 @@ local function breakWeapon(rSource, nodeWeapon, sWeaponName)
 	end
 end
 
-local function getWeaponName(s)
+function getWeaponName(s)
 	local sWeaponName = s:gsub('%[ATTACK %(%u%)%]', '');
 	sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(%u%)%]', '');
 	sWeaponName = sWeaponName:gsub('%[%u+%]', '');
@@ -628,7 +628,7 @@ function onAttack_5e(rSource, rTarget, rRoll)
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
+	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then table.insert(rAction.aMessages, "with " .. AmmunitionManager.getWeaponName(rRoll.sDesc)) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if not rTarget then
