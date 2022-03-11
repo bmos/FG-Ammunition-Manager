@@ -26,6 +26,36 @@ function onAttackAction_new(draginfo, ...)
 	-- end bmos only allowing attacks when ammo is sufficient
 end
 
+function onDamageAction_new(draginfo)
+	local nodeWeapon = getDatabaseNode();
+	local nodeChar = nodeWeapon.getChild("...")
+
+	-- Build basic damage action record
+	local rAction = CharWeaponManager.buildDamageAction(nodeChar, nodeWeapon);
+
+	-- Perform damage action
+	local rActor = ActorManager.resolveActor(nodeChar);
+
+	-- Celestian adding itemPath to rActor so that when effects
+	-- are checked we can compare against action only effects
+	local _, sRecord = DB.getValue(nodeWeapon, "shortcut", "", "");
+	rActor.itemPath = sRecord;
+	-- end Adanced Effects piece ---
+
+	-- bmos adding ammoPath for AmmunitionManager + Advanced Effects integration
+	-- add this in the onDamageAction function of other effects to maintain compatibility
+	if AmmunitionManager then
+		local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor)
+		if nodeAmmo then
+			rActor.ammoPath = nodeAmmo.getPath()
+		end
+	end
+	-- end bmos adding ammoPath
+	
+	ActionDamage.performRoll(draginfo, rActor, rAction);
+	return true;
+end
+
 function onDataChanged()
 	if super and super.onDataChanged then
 		super.onDataChanged();
@@ -51,6 +81,9 @@ function onInit()
 		if super.onAttackAction then
 			onAttackAction_old = super.onAttackAction;
 			super.onAttackAction = onAttackAction_new;
+		end
+		if super.onDamageAction then
+			super.onDamageAction = onDamageAction_new;
 		end
 		if super.onInit then
 			super.onInit();
