@@ -26,7 +26,7 @@ function onAttackAction_new(draginfo, ...)
 	-- end bmos only allowing attacks when ammo is sufficient
 end
 
-function onDamageAction_new(draginfo)
+function onDamageAction(draginfo)
 	local nodeWeapon = getDatabaseNode();
 	local nodeChar = nodeWeapon.getChild("...")
 
@@ -81,9 +81,6 @@ function onInit()
 		if super.onAttackAction then
 			onAttackAction_old = super.onAttackAction;
 			super.onAttackAction = onAttackAction_new;
-		end
-		if super.onDamageAction then
-			super.onDamageAction = onDamageAction_new;
 		end
 		if super.onInit then
 			super.onInit();
