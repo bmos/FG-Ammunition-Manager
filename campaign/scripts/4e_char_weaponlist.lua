@@ -23,7 +23,6 @@ function toggleDetail()
 
 	local bRanged = (type.getValue() == 1);
 	isloaded.setVisible(bRanged and hasLoadAction());
-	if button_reload then button_reload.setVisible(bRanged) end
 
 	local nodeWeapon = getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
@@ -33,25 +32,23 @@ function toggleDetail()
 	ammo_label.setVisible(bRanged);
 	if nodeAmmoLink then
 		maxammo.setLink(nodeAmmoLink.getChild('count'))
-		if missedshots then missedshots.setLink(nodeAmmoLink.getChild('missedshots')) end
+		missedshots.setLink(nodeAmmoLink.getChild('missedshots'))
 	else
 		maxammo.setLink()
-		if missedshots then missedshots.setLink() end
+		missedshots.setLink()
 	end
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
 
-	if activatedetail then
-		local bShow = (activatedetail.getValue() == 1);
-		ammunition_label.setVisible(bRanged and bShow);
-		recoverypercentage.setVisible(bRanged and bShow);
-		label_ammopercentof.setVisible(bRanged and bShow);
-		missedshots.setVisible(bRanged and bShow);
-		recoverammo.setVisible(bRanged and bShow);
-		ammopicker.setComboBoxVisible(bRanged and bShow);
+	local bShow = bRanged and (activatedetail.getValue() == 1);
+	ammunition_label, .setVisible(bShow);
+	recoverypercentage.setVisible(bShow);
+	label_ammopercentof.setVisible(bShow);
+	missedshots.setVisible(bShow);
+	recoverammo.setVisible(bShow);
+	ammopicker.setComboBoxVisible(bShow);
 
-		-- re-build ammopicker list when opening details
-		if bShow then ammopicker.clear(); ammopicker.onInit(); end
-	end
+	-- re-build ammopicker list when opening details
+	if bShow then ammopicker.clear(); ammopicker.onInit(); end
 end
 
 -- luacheck: globals onTypeChanged
