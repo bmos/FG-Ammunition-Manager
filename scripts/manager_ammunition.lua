@@ -5,8 +5,6 @@
 --	This table exists so people can add search terms for weapons that should have a load button.
 tLoadWeapons = { 'loadaction' }
 
-local sRuleset
-
 ---	This function finds the correct node for a weapon's ammunition.
 --	It first checks for a path saved in ammoshortcut. If found, databasenode record is returned.
 --	If no path is found, it checks to see if the ammo name is known.
@@ -118,6 +116,7 @@ function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining, s
 	end
 end
 
+local sRuleset
 function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 	local bInfiniteAmmo = false;
 	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
