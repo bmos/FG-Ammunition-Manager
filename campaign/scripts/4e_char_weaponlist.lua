@@ -8,7 +8,7 @@ function hasLoadAction()
 	local bHasLoadAction = false;
 	local nodeWeapon = getDatabaseNode();
 	local sWeaponProperties = string.lower(DB.getValue(nodeWeapon, 'properties', ''));
-	local sWeaponName = string.lower(DB.getValue(nodeWeapon), 'name', 'ranged weapon'));
+	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 	for _,v in pairs(AmmunitionManager.tLoadWeapons) do
 		if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
 	end
