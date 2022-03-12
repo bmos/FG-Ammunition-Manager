@@ -23,7 +23,7 @@ jobs:
       uses: thedoctor0/zip-release@master
       with:
         filename: 'extension_filename.ext'
-        exclusions: '*.git* /*node_modules/* .editorconfig body.md *.psd'
+        exclusions: '*.git* /*node_modules/* .editorconfig body.md *.psd *.xcf'
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
