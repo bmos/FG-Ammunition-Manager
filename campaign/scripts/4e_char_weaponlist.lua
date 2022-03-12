@@ -18,7 +18,7 @@ end
 
 -- luacheck: globals toggleDetail
 function toggleDetail()
--- luacheck: globals type, isloaded, ammo_label, missedshots, ammocounter, ammunition_label, recoverypercentage, label_ammopercentof, recoverammo, ammopicker
+	-- luacheck: globals type isloaded ammo_label missedshots ammocounter ammunition_label recoverypercentage label_ammopercentof recoverammo ammopicker
 	if super and super.toggleDetail then
 		super.toggleDetail();
 	end
