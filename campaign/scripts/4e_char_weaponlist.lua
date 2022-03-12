@@ -3,7 +3,6 @@
 -- attribution and copyright information.
 --
 
--- luacheck: globals hasLoadAction
 function hasLoadAction()
 	local bHasLoadAction = false;
 	local nodeWeapon = getDatabaseNode();
@@ -16,9 +15,7 @@ function hasLoadAction()
 	return (bHasLoadAction and not sWeaponProperties:find('load free'))
 end
 
--- luacheck: globals toggleDetail
 function toggleDetail()
-	-- luacheck: globals type isloaded ammo_label missedshots ammocounter ammunition_label recoverypercentage label_ammopercentof recoverammo ammopicker
 	if super and super.toggleDetail then
 		super.toggleDetail();
 	end
@@ -53,7 +50,6 @@ function toggleDetail()
 	if bShow then ammopicker.clear(); ammopicker.onInit(); end
 end
 
--- luacheck: globals onTypeChanged
 function onTypeChanged()
 	if super and super.onTypeChanged then
 		super.onTypeChanged();
