@@ -28,7 +28,7 @@ jobs:
           
           # Additional command-line arguments.
           # See https://luacheck.readthedocs.io/en/stable/cli.html
-          args: '-qo 113 --exclude-files .install/*'
+          args: '--exclude-files .install/*'
 
           # Emits annotations for source code at locations parsed from the output.
           # Must be set to "none", "warning" or "error".
