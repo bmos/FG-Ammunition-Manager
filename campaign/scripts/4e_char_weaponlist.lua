@@ -16,7 +16,9 @@ function hasLoadAction()
 	return (bHasLoadAction and not sWeaponProperties:find('load free'))
 end
 
+-- luacheck: globals toggleDetail
 function toggleDetail()
+-- luacheck: globals type, isloaded, ammo_label, missedshots, ammocounter, ammunition_label, recoverypercentage, label_ammopercentof, recoverammo, ammopicker
 	if super and super.toggleDetail then
 		super.toggleDetail();
 	end
