@@ -16,7 +16,7 @@ function hasLoadAction()
 	return (bHasLoadAction and not sWeaponProperties:find('load free'))
 end
 
-local function toggleDetail()
+function toggleDetail()
 	if super and super.toggleDetail then
 		super.toggleDetail();
 	end
