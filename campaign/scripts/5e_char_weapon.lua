@@ -1,10 +1,10 @@
--- 
--- Please see the LICENSE.md file included with this distribution for 
+--
+-- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
 
 local onAttackAction_old
-function onAttackAction_new(draginfo, ...)
+local function onAttackAction_new(draginfo, ...)
 	local nodeWeapon = getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
@@ -13,7 +13,7 @@ function onAttackAction_new(draginfo, ...)
 	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil
 	local bIsLoaded = DB.getValue(nodeWeapon, 'isloaded', 0) == 1
 	if not bLoading or (bLoading and bIsLoaded) then
-		if (bInfiniteAmmo or nAmmo > 0) then	
+		if (bInfiniteAmmo or nAmmo > 0) then
 			if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
 			return onAttackAction_old(draginfo, ...);
 		else
@@ -26,6 +26,7 @@ function onAttackAction_new(draginfo, ...)
 	-- end bmos only allowing attacks when ammo is sufficient
 end
 
+-- luacheck: globals onDamageAction
 function onDamageAction(draginfo)
 	local nodeWeapon = getDatabaseNode();
 	local nodeChar = nodeWeapon.getChild("...")
@@ -51,11 +52,12 @@ function onDamageAction(draginfo)
 		end
 	end
 	-- end bmos adding ammoPath
-	
+
 	ActionDamage.performRoll(draginfo, rActor, rAction);
 	return true;
 end
 
+-- luacheck: globals onDataChanged
 function onDataChanged()
 	if super and super.onDataChanged then
 		super.onDataChanged();
