@@ -22,7 +22,7 @@ local function onAttackAction_new(draginfo, ...)
 		end
 	else
 		local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
-		ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor);
+		ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor));
 	end
 	-- end bmos only allowing attacks when ammo is sufficient
 end
