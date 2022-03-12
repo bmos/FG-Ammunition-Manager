@@ -1,38 +1,22 @@
--- 
--- Please see the LICENSE.md file included with this distribution for 
+--
+-- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
 
-function onInit()
-	if super and super.onInit then
-		super.onInit();
-	end
-	DB.addHandler(getDatabaseNode().getNodeName(), "onChildUpdate", toggleDetail);
-	toggleDetail();
-end
-function onClose()
-	if super and super.onClose then
-		super.onClose();
-	end
-	DB.removeHandler(getDatabaseNode().getNodeName(), "onChildUpdate", toggleDetail);
-end
-function onTypeChanged()
-	if super and super.onTypeChanged then
-		super.onTypeChanged();
-	end
-	toggleDetail();
-end
+-- luacheck: globals hasLoadAction
 function hasLoadAction()
-	local bHasLoadAction
-	local sWeaponProperties = string.lower(DB.getValue(getDatabaseNode(), 'properties', ''));
-	local sWeaponName = string.lower(DB.getValue(getDatabaseNode(), 'name', 'ranged weapon'));
+	local bHasLoadAction = false;
+	local nodeWeapon = getDatabaseNode();
+	local sWeaponProperties = string.lower(DB.getValue(nodeWeapon), 'properties', ''));
+	local sWeaponName = string.lower(DB.getValue(nodeWeapon), 'name', 'ranged weapon'));
 	for _,v in pairs(AmmunitionManager.tLoadWeapons) do
 		if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
 	end
 
 	return (bHasLoadAction and not sWeaponProperties:find('load free'))
 end
-function toggleDetail()
+
+local function toggleDetail()
 	if super and super.toggleDetail then
 		super.toggleDetail();
 	end
@@ -58,12 +42,37 @@ function toggleDetail()
 
 	if activatedetail then
 		local bShow = (activatedetail.getValue() == 1);
-		if bShow then ammopicker.clear(); ammopicker.onInit(); end -- re-build ammopicker list when opening details
 		ammunition_label.setVisible(bRanged and bShow);
 		recoverypercentage.setVisible(bRanged and bShow);
 		label_ammopercentof.setVisible(bRanged and bShow);
 		missedshots.setVisible(bRanged and bShow);
 		recoverammo.setVisible(bRanged and bShow);
 		ammopicker.setComboBoxVisible(bRanged and bShow);
+
+		-- re-build ammopicker list when opening details
+		if bShow then ammopicker.clear(); ammopicker.onInit(); end
 	end
+end
+
+-- luacheck: globals onTypeChanged
+function onTypeChanged()
+	if super and super.onTypeChanged then
+		super.onTypeChanged();
+	end
+	toggleDetail();
+end
+
+function onInit()
+	if super and super.onInit then
+		super.onInit();
+	end
+	DB.addHandler(getDatabaseNode().getNodeName(), "onChildUpdate", toggleDetail);
+	toggleDetail();
+end
+
+function onClose()
+	if super and super.onClose then
+		super.onClose();
+	end
+	DB.removeHandler(getDatabaseNode().getNodeName(), "onChildUpdate", toggleDetail);
 end
