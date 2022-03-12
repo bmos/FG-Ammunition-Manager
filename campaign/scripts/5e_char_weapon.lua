@@ -21,7 +21,8 @@ local function onAttackAction_new(draginfo, ...)
 			if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
 		end
 	else
-		ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), DB.getValue(nodeWeapon, 'name', 'weapon')), true, rActor);
+		local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
+		ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor);
 	end
 	-- end bmos only allowing attacks when ammo is sufficient
 end
@@ -62,7 +63,7 @@ function onDataChanged()
 	if super and super.onDataChanged then
 		super.onDataChanged();
 	end
-	if button_reload then button_reload.setVisible(type.getValue() ~= 0); end
+	if button_reload then button_reload.setVisible(DB.getValue(nodeWeapon, 'type', 0) ~= 0); end
 
 	local nodeWeapon = getDatabaseNode();
 	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil
