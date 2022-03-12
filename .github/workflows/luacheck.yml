@@ -1,6 +1,10 @@
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - '**.js'
+  pull_request:
 
-name: Run Luacheck on Push
+name: Run Luacheck on Push or PR
 
 jobs:
   build:
@@ -26,7 +30,7 @@ jobs:
           
           # Additional command-line arguments.
           # See https://luacheck.readthedocs.io/en/stable/cli.html
-          args: '--exclude-files .install/*'
+          args: -qo 113 '--exclude-files .install/*'
 
           # Emits annotations for source code at locations parsed from the output.
           # Must be set to "none", "warning" or "error".
