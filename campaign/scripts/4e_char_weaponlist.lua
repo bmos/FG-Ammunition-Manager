@@ -3,6 +3,7 @@
 -- attribution and copyright information.
 --
 
+-- luacheck: globals hasLoadAction
 function hasLoadAction()
 	local bHasLoadAction = false;
 	local nodeWeapon = getDatabaseNode();
@@ -15,15 +16,16 @@ function hasLoadAction()
 	return (bHasLoadAction and not sWeaponProperties:find('load free'))
 end
 
+-- luacheck: globals toggleDetail
 function toggleDetail()
 	if super and super.toggleDetail then
 		super.toggleDetail();
 	end
 
-	local bRanged = (type.getValue() == 1);
+	local nodeWeapon = getDatabaseNode();
+	local bRanged = (DB.getValue(nodeWeapon, 'type', 0) == 1);
 	isloaded.setVisible(bRanged and hasLoadAction());
 
-	local nodeWeapon = getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
@@ -50,6 +52,7 @@ function toggleDetail()
 	if bShow then ammopicker.clear(); ammopicker.onInit(); end
 end
 
+-- luacheck: globals onTypeChanged
 function onTypeChanged()
 	if super and super.onTypeChanged then
 		super.onTypeChanged();
