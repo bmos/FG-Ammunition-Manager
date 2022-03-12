@@ -115,24 +115,7 @@
 				<static textres="char_label_weaponrange" />
 			</label>
 
-			<!-- <buttonfield name="button_reload">
-				<anchored width="27" height="10">
-					<left offset="2" />
-					<top parent="ammunition_label" anchor="top" offset="0" />
-				</anchored>
-				<icon normal="button_reload" pressed="button_reload_down" />
-				<tooltip textres="weapon_tooltip_reloadammo" />
-				<default>0</default>
-				<maxammo>maxammo</maxammo>
-				<ammo>ammo</ammo>
-				<count>count</count>
-				<script file="campaign/scripts/ammo_reloadammo.lua" />
-			</buttonfield> -->
 			<buttonfield name="isloaded">
-				<!-- <anchored width="27" height="10">
-					<top parent="button_reload" anchor="bottom" offset="1" />
-					<left offset="2" />
-				</anchored> -->
 				<anchored width="27" height="10">
 					<left offset="2" />
 					<top parent="ammunition_label" anchor="top" offset="5" />
