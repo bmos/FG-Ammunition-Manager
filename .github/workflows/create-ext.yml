@@ -1,6 +1,8 @@
 on:
-  release:
-    types: [published]
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -14,16 +16,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Archive Release
       uses: thedoctor0/zip-release@master
       with:
         filename: 'extension_filename.ext'
         exclusions: '*.git* /*node_modules/* .editorconfig body.md *.psd'
-    - name: Upload Asset
-      uses: PeerXu/upload-asset@v1
+    - name: Create Release
+      uses: ncipollo/release-action@v1
       with:
-        file: 'extension_filename.ext'
-        with_sha1: true
-        suffix: .ext
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: "extension_filename.ext"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        allowUpdates: true
