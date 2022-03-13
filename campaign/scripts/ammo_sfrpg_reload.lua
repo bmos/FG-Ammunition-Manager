@@ -20,10 +20,9 @@ local function reduceItemCount(nodeWeapon, nAmmo)
 	end
 end
 
-function onReloadAction(draginfo)
+function onReloadAction()
 	local nodeWeapon = getDatabaseNode();
-	local nodeChar = nodeWeapon.getChild("...");
-	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
+	local rActor, _ = CharManager.getWeaponAttackRollStructures(nodeWeapon);
 
 	local nAmmo = DB.getValue(nodeWeapon, "ammo",0);
 	local nUses = DB.getValue(nodeWeapon, "uses",0);
