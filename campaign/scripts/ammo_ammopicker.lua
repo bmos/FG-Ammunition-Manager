@@ -27,6 +27,17 @@ local function setListValue_new(sValue)
 	refreshSelectionDisplay();
 end
 
+local function isAmmo(nodeItem, sTypeField)
+	if sTypeField and nodeItem.getChild(sTypeField) then
+		local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower();
+		if bThrown then
+			return (sItemType:match('weapon') ~= nil);
+		else
+			return (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil);
+		end
+	end
+end
+
 function onInit()
 	if super then
 		if super.onInit then
@@ -47,25 +58,8 @@ function onInit()
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
 				local sName = ItemManager.getDisplayName(nodeItem, true);
-				local bAmmo = false;
-				if itemsheetname[1] and nodeItem.getChild(itemsheetname[1]) then
-					local sItemType = DB.getValue(nodeItem, itemsheetname[1], ''):lower();
-					if bThrown then
-						bAmmo = (bAmmo == true) or (sItemType:match('weapon') ~= nil);
-					else
-						bAmmo = (bAmmo == true) or (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil);
-					end
-				end
-				if itemsheetaltname[1] and nodeItem.getChild(itemsheetaltname[1]) then
-					local sItemAltType = DB.getValue(nodeItem, itemsheetaltname[1], ''):lower();
-					if bThrown then
-						bAmmo = (bAmmo == true) or (sItemAltType:match('weapon') ~= nil);
-					else
-						bAmmo = (bAmmo == true) or (sItemAltType:match('ammunition') ~= nil) or (sItemAltType:match('ammo') ~= nil);
-					end
-				end
-				if bAmmo then
-					if sName ~= '' then
+				if sName ~= '' then
+					if isAmmo(nodeItem, itemsheetname[1]) or isAmmo(nodeItem, itemsheetaltname[1]) then
 						table.insert(aAutoFill, sName);
 					end
 				end
