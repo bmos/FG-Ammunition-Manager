@@ -1,5 +1,5 @@
--- 
--- Please see the LICENSE.md file included with this distribution for 
+--
+-- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
 
