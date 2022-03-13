@@ -20,6 +20,7 @@ local function reduceItemCount(nodeWeapon, nAmmo)
 	end
 end
 
+-- luacheck: globals onReloadAction
 function onReloadAction()
 	local nodeWeapon = getDatabaseNode();
 	local rActor, _ = CharManager.getWeaponAttackRollStructures(nodeWeapon);
