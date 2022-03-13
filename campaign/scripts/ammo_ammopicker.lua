@@ -28,6 +28,10 @@ local function setListValue_new(sValue)
 end
 
 local function isAmmo(nodeItem, sTypeField)
+	local bThrown = false;
+	if User.getRulesetName() == "5E" then
+		bThrown = DB.getValue(getDatabaseNode().getParent(), 'type', 0) == 2;
+	end
 	if sTypeField and nodeItem.getChild(sTypeField) then
 		local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower();
 		if bThrown then
@@ -49,10 +53,6 @@ function onInit()
 	local aAutoFill = {};
 	table.insert(aAutoFill, Interface.getString('none'));
 
-	local bThrown = false;
-	if User.getRulesetName() == "5E" then
-		bThrown = DB.getValue(getDatabaseNode().getParent(), 'type', 0) == 2;
-	end
 	local nodeInventory = getDatabaseNode().getChild('....inventorylist');
 	if nodeInventory then
 		for _,nodeItem in pairs(nodeInventory.getChildren()) do
