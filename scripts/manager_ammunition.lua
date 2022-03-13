@@ -3,12 +3,14 @@
 --
 
 --	This table exists so people can add search terms for weapons that should have a load button.
+--	luacheck: globals tLoadWeapons
 tLoadWeapons = { 'loadaction' }
 
 ---	This function finds the correct node for a weapon's ammunition.
 --	It first checks for a path saved in ammoshortcut. If found, databasenode record is returned.
 --	If no path is found, it checks to see if the ammo name is known.
---	If ammo name is available, it searches through the inventory for a match. If found, databasenode record is returned.
+--	If ammo name is available, it searches through the inventory for a match.
+--	If found, databasenode record is returned.
 --	If no match is found, nothing is returned.
 function getAmmoNode(nodeWeapon)
 	local nodeAmmo
