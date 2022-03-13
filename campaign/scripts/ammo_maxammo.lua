@@ -3,9 +3,9 @@
 -- attribution and copyright information.
 --
 
-function onDoubleClick(x, y)
+function onDoubleClick(x, y, ...)
 	if super and super.onDoubleClick then
-		super.onDoubleClick(x, y);
+		super.onDoubleClick(x, y, ...);
 	end
 
 	local nodeWeapon = window.getDatabaseNode();
