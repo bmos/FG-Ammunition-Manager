@@ -3,7 +3,7 @@
 -- attribution and copyright information.
 --
 
-local function setListValue(sValue)
+local function setListValue_new(sValue)
 	setValue(sValue);
 
 	-- save node to weapon node when choosing ammo
@@ -32,9 +32,7 @@ function onInit()
 		if super.onInit then
 			super.onInit();
 		end
-		if super.setListValue then
-			super.setListValue = setListValue;
-		end
+		super.setListValue = setListValue_new;
 	end
 
 	local aAutoFill = {};
