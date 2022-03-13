@@ -16,6 +16,7 @@ function action(draginfo)
 		return true;
 	end
 end
-function onDoubleClick(x,y)
+
+function onDoubleClick()
 	if not window.automateAmmo(window.getDatabaseNode()) then return action(); end
 end
