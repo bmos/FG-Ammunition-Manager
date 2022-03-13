@@ -23,7 +23,7 @@ function getAmmoNode(nodeWeapon)
 	-- if ammoshortcut does not provide a good node, try searching the inventory.
 	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '');
 	if not nodeAmmo and sAmmo ~= '' then
-		Debug.console("Ammunition Manager: Weapon's ammoshortcut node was not found. Searching inventory instead.");
+		Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'));
 		if sAmmo ~= '' then
 			local nodeInventory = nodeWeapon.getChild('...inventorylist');
 			if nodeInventory.getName() == 'inventorylist' then
@@ -39,7 +39,7 @@ function getAmmoNode(nodeWeapon)
 					end
 				end
 			else
-				Debug.console("Ammunition Manager: Weapon's character was node not found. Aborting ammunition search.");
+				Debug.console(Interface.getString('debug_ammo_noinventoryfound'));
 			end
 		end
 	end

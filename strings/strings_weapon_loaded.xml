@@ -3,6 +3,9 @@
 <!-- Please see the LICENSE.md file included with this distribution for attribution and copyright information. -->
 
 <root>
+	<!-- Debug Messages -->
+	<string name="debug_ammo_noammoshortcutfound">Ammunition Manager: Weapon's ammoshortcut node was not found. Searching inventory instead.</string>
+	<string name="debug_ammo_noinventoryfound">Ammunition Manager: Couldn't locate character inventory. Aborting ammunition search.</string>
 	<!-- Tooltips -->
 	<string name="tooltip_actions_loaded">Loaded</string>
 	<string name="tooltip_actions_unloaded">Not Loaded</string>
