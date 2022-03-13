@@ -4,12 +4,10 @@
 --
 
 function action(draginfo)
-	local nValue = getValue();
 	local nodeWeapon = window.getDatabaseNode();
 	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
 
 	local rRolls = {};
-	local sAttack, aAttackDice, nAttackMod;
 	for i = 1, getValue() do
 		rAttack.modifier = DB.getValue(nodeWeapon, "attack" .. i, 0);
 		rAttack.order = i;
