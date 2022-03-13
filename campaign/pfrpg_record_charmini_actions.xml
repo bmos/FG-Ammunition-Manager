@@ -20,24 +20,7 @@
 				<script file="campaign/scripts/ammo_attack.lua" />
 			</number_charweaponattacktotal>
 			
-			<!-- <buttonfield name="button_reload">
-				<anchored width="27" height="10">
-					<top parent="name" anchor="bottom" offset="6" />
-					<left offset="2" />
-				</anchored>
-				<icon normal="button_reload" pressed="button_reload_down" />
-				<tooltip textres="weapon_tooltip_reloadammo" />
-				<default>0</default>
-				<maxammo>maxammo</maxammo>
-				<ammo>ammo</ammo>
-				<count>count</count>
-				<script file="campaign/scripts/ammo_reloadammo.lua" />
-			</buttonfield> -->
 			<buttonfield name="isloaded">
-				<!-- <anchored width="27" height="10">
-					<top parent="button_reload" anchor="bottom" offset="1" />
-					<left offset="2" />
-				</anchored> -->
 				<anchored width="27" height="10">
 					<top parent="name" anchor="bottom" offset="11" />
 					<left offset="2" />
