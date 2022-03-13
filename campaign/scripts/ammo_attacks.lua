@@ -14,7 +14,7 @@ function action(draginfo)
 
 		local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
-		if (bInfiniteAmmo or nAmmo >= i) then	
+		if (bInfiniteAmmo or nAmmo >= i) then
 			table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack));
 		else
 			ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
