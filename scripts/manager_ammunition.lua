@@ -160,7 +160,8 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 					local nodeWeaponLink = DB.findNode(sWeaponNode)
 					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
 				end
-				if (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) and DB.getValue(nodeWeapon, 'type', 0) ~= 0 then
+				local bMelee = DB.getValue(nodeWeapon, 'type', 0) == 0
+				if (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) and not bMelee then
 					local nodeAmmoLink = getAmmoNode(nodeWeapon)
 					local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 					if not bInfiniteAmmo then
@@ -338,7 +339,9 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then table.insert(rAction.aMessages, "with " .. AmmunitionManager.getWeaponName(rRoll.sDesc)) end
+	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then
+		table.insert(rAction.aMessages, "with " .. AmmunitionManager.getWeaponName(rRoll.sDesc));
+	end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	--	bmos adding hit margin tracking
@@ -353,7 +356,9 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
+	if AmmunitionManager and ActorManager.isPC(rSource) then
+		AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult);
+	end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if rAction.sResult == "crit" then
