@@ -1,6 +1,6 @@
 [![Build FG-Usable File](https://github.com/bmos/FG-Ammunition-Manager/actions/workflows/create-ext.yml/badge.svg)](https://github.com/bmos/FG-Ammunition-Manager/actions/workflows/create-ext.yml) [![Luacheck](https://github.com/bmos/FG-Ammunition-Manager/actions/workflows/luacheck.yml/badge.svg)](https://github.com/bmos/FG-Ammunition-Manager/actions/workflows/luacheck.yml)
 
-# PFRPG Ammunition Manager
+# Ammunition Manager
 This extension aids in tracking whether some ranged weapons are loaded and assists in ammo tracking for all ranged weapons.
 
 # Compatibility and Instructions
