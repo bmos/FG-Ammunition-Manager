@@ -12,39 +12,34 @@ tLoadWeapons = { 'loadaction' }
 --	If ammo name is available, it searches through the inventory for a match.
 --	If found, databasenode record is returned.
 --	If no match is found, nothing is returned.
+--	luacheck: globals getAmmoNode
 function getAmmoNode(nodeWeapon)
-	local nodeAmmo
-
 	local _,sAmmoShortcut = DB.getValue(nodeWeapon, 'ammoshortcut', '');
 	if sAmmoShortcut and sAmmoShortcut ~= '' then
-		nodeAmmo = DB.findNode(sAmmoShortcut)
+		return DB.findNode(sAmmoShortcut)
 	end
 
 	-- if ammoshortcut does not provide a good node, try searching the inventory.
 	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '');
-	if not nodeAmmo and sAmmo ~= '' then
+	if sAmmo ~= '' then
 		Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'));
-		if sAmmo ~= '' then
-			local nodeInventory = nodeWeapon.getChild('...inventorylist');
-			if nodeInventory.getName() == 'inventorylist' then
-				for _,nodeItem in pairs(nodeInventory.getChildren()) do
-					if ItemManager.getIDState(nodeItem) then
-						if DB.getValue(nodeItem, 'name', '') == sAmmo then
-							return nodeItem;
-						end
-					else
-						if DB.getValue(nodeItem, 'nonid_name', '') == sAmmo then
-							return nodeItem;
-						end
+		local nodeInventory = nodeWeapon.getChild('...inventorylist');
+		if nodeInventory.getName() == 'inventorylist' then
+			for _,nodeItem in pairs(nodeInventory.getChildren()) do
+				if ItemManager.getIDState(nodeItem) then
+					if DB.getValue(nodeItem, 'name', '') == sAmmo then
+						return nodeItem;
+					end
+				else
+					if DB.getValue(nodeItem, 'nonid_name', '') == sAmmo then
+						return nodeItem;
 					end
 				end
-			else
-				Debug.console(Interface.getString('debug_ammo_noinventoryfound'));
 			end
+		else
+			Debug.console(Interface.getString('debug_ammo_noinventoryfound'));
 		end
 	end
-
-	return nodeAmmo;
 end
 
 -- examine weapon properties to check if fragile
@@ -75,6 +70,7 @@ local function breakWeapon(rSource, nodeWeapon, sWeaponName)
 	end
 end
 
+--	luacheck: globals getWeaponName
 function getWeaponName(s)
 	local sWeaponName = s:gsub('%[ATTACK %(%u%)%]', '');
 	sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(%u%)%]', '');
@@ -89,6 +85,7 @@ function getWeaponName(s)
 	return sWeaponName or ''
 end
 
+--	luacheck: globals countMissedShots
 function countMissedShots(nodeWeapon, nodeAmmoLink, sResult, bCountAll)
 	if nodeAmmoLink then
 		if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
@@ -101,7 +98,7 @@ function countMissedShots(nodeWeapon, nodeAmmoLink, sResult, bCountAll)
 	end
 end
 
-function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
+local function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
 	if nodeAmmoLink then
 		if nAmmoRemaining == 0 then
 			ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
@@ -118,20 +115,23 @@ function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining, s
 	end
 end
 
+local function isInfiniteAmmo(rSource, nodeWeapon)
+	local bInfiniteAmmo = DB.getValue(nodeWeapon, 'type', 0) ~= 1;
+	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
+		bInfiniteAmmo = bInfiniteAmmo or EffectManager35E.hasEffectCondition(rSource, 'INFAMMO');
+	elseif sRuleset == "4E" then
+		bInfiniteAmmo = bInfiniteAmmo or EffectManager4E.hasEffectCondition(rSource, 'INFAMMO');
+	elseif sRuleset == "5E" then
+		local bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2
+		bInfiniteAmmo = (bInfiniteAmmo and not bThrown) or EffectManager5E.hasEffectCondition(rSource, 'INFAMMO');
+	end
+	return bInfiniteAmmo
+end
+
+--	luacheck: globals getAmmoRemaining
 local sRuleset
 function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
-	local bInfiniteAmmo = false;
-	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
-		bInfiniteAmmo = EffectManager35E.hasEffectCondition(rSource, 'INFAMMO');
-	elseif sRuleset == "4E" then
-		bInfiniteAmmo = EffectManager4E.hasEffectCondition(rSource, 'INFAMMO');
-	elseif sRuleset == "5E" then
-		bInfiniteAmmo = EffectManager5E.hasEffectCondition(rSource, 'INFAMMO');
-	end
-	local bThrown = false;
-	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1;
-	if sRuleset == "5E" then bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2; end
-	if (not bRanged and not bThrown) then bInfiniteAmmo = true end
+	local bInfiniteAmmo = isInfiniteAmmo(rSource, nodeWeapon)
 
 	local nAmmo = 0;
 	if not bInfiniteAmmo then
@@ -148,6 +148,7 @@ function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 end
 
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
+--	luacheck: globals ammoTracker
 function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	local sWeaponName = getWeaponName(sDesc)
 	if not sDesc:match('%[CONFIRM%]') and sWeaponName ~= '' then
@@ -175,6 +176,7 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 end
 
 --	calculate how much attacks hit/miss by
+--	luacheck: globals calculateMargin
 function calculateMargin(nDC, nTotal)
 	if nDC and nTotal then
 		local nMargin = 0
@@ -190,6 +192,7 @@ function calculateMargin(nDC, nTotal)
 end
 
 local function onAttack_pfrpg(rSource, rTarget, rRoll)
+	--	luacheck: push
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
 	local bIsSourcePC = ActorManager.isPC(rSource);
@@ -226,6 +229,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 			table.insert(rAction.aMessages, string.format(sFormat, nDefEffectsBonus));
 		end
 	end
+	--	luacheck: pop
 
 	-- for compatibility with mirror image handler, add this here in your onAttack function
 	if MirrorImageHandler then
@@ -237,6 +241,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	end
 	-- end compatibility with mirror image handler
 
+	--	luacheck: push
 	-- Get the crit threshold
 	rAction.nCrit = 20;
 	local sAltCritRange = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
@@ -336,6 +341,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	if ((rRoll.sType == "critconfirm") or not rAction.bCritThreat) and (nMissChance > 0) then
 		table.insert(rAction.aMessages, "[MISS CHANCE " .. nMissChance .. "%]");
 	end
+	--	luacheck: pop
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
@@ -352,7 +358,9 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	end
 	--	end bmos adding hit margin tracking
 
+	--	luacheck: push
 	Comm.deliverChatMessage(rMessage);
+	--	luacheck: pop
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
@@ -361,6 +369,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
+	--	luacheck: push
 	if rAction.sResult == "crit" then
 		ActionAttack.setCritState(rSource, rTarget);
 	end
@@ -371,7 +380,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	else
 		if rAction.bCritThreat then
 			local rCritConfirmRoll = { sType = "critconfirm", aDice = {"d20"}, bTower = rRoll.bTower, bSecret = rRoll.bSecret };
-				
+
 			local nCCMod = EffectManager35E.getEffectsBonus(rSource, {"CC"}, true, nil, rTarget);
 			if nCCMod ~= 0 then
 				rCritConfirmRoll.sDesc = string.format("%s [CONFIRM %+d]", rRoll.sDesc, nCCMod);
@@ -396,7 +405,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 		elseif (rAction.sResult ~= "miss") and (rAction.sResult ~= "fumble") then
 			bRollMissChance = true;
 
-		-- for compatibility with mirror image handler, add this here in your onAttack function 
+		-- for compatibility with mirror image handler, add this here in your onAttack function
 		elseif MirrorImageHandler and (rAction.sResult == "miss") and (nDefenseVal - rAction.nTotal <= 5) then
 			bRollMissChance = true;
 			nMissChance = 0;
@@ -409,7 +418,12 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 		local sMissChanceText;
 		sMissChanceText = string.gsub(rMessage.text, " %[CRIT %d+%]", "");
 		sMissChanceText = string.gsub(sMissChanceText, " %[CONFIRM%]", "");
-		local rMissChanceRoll = { sType = "misschance", sDesc = sMissChanceText .. " [MISS CHANCE " .. nMissChance .. "%]", aDice = aMissChanceDice, nMod = 0 };
+		local rMissChanceRoll = {
+			sType = "misschance",
+			sDesc = sMissChanceText .. " [MISS CHANCE " .. nMissChance .. "%]",
+			aDice = aMissChanceDice,
+			nMod = 0
+		};
 		ActionsManager.roll(rSource, rTarget, rMissChanceRoll);
 
 	-- for compatibility with mirror image handler, add this here in your onAttack function
@@ -454,9 +468,11 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
 		ActionAttack.notifyApplyHRFC("Critical Hit");
 	end
+	--	luacheck: pop
 end
 
 local function onAttack_4e(rSource, rTarget, rRoll)
+	--	luacheck: push
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
 	local rAction = {};
@@ -477,7 +493,7 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	end
 
 	-- Get the crit threshold
-	rAction.nCrit = 20;	
+	rAction.nCrit = 20;
 	local sAltCritRange = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
 	if sAltCritRange then
 		rAction.nCrit = tonumber(sAltCritRange) or 20;
@@ -523,10 +539,13 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 		rAction.sResult = "crit";
 		table.insert(rAction.aMessages, "[CHECK FOR CRITICAL]");
 	end
+	--	luacheck: pop
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc)) end
+	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then
+			table.insert(rAction.aMessages, "with " .. getWeaponName(rRoll.sDesc))
+	end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	--	bmos adding hit margin tracking
@@ -537,13 +556,16 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	end
 	--	end bmos adding hit margin tracking
 
+	--	luacheck: push
 	Comm.deliverChatMessage(rMessage);
+	--	luacheck: pop
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
+	--	luacheck: push
 	if rTarget then
 		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
 	end
@@ -562,7 +584,7 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 			elseif string.match(rRoll.sDesc, "%[RM%]") then
 				bRemoveTarget = true;
 			end
-			
+
 			if bRemoveTarget then
 				TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget));
 			end
@@ -577,13 +599,14 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
 		ActionAttack.notifyApplyHRFC("Critical Hit");
 	end
+	--	luacheck: pop
 end
 
-local function decrementAmmo_5e(nodeChar, nodeWeapon)
-
+local function decrementAmmo_5e()
 end
 
-function onAttack_5e(rSource, rTarget, rRoll)
+local function onAttack_5e(rSource, rTarget, rRoll)
+	--	luacheck: push
 	ActionsManager2.decodeAdvantage(rRoll);
 
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
@@ -592,7 +615,7 @@ function onAttack_5e(rSource, rTarget, rRoll)
 	local rAction = {};
 	rAction.nTotal = ActionsManager.total(rRoll);
 	rAction.aMessages = {};
-	
+
 	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus = ActorManager5E.getDefenseValue(rSource, rTarget, rRoll);
 	if nAtkEffectsBonus ~= 0 then
 		rAction.nTotal = rAction.nTotal + nAtkEffectsBonus;
@@ -604,7 +627,7 @@ function onAttack_5e(rSource, rTarget, rRoll)
 		local sFormat = "[" .. Interface.getString("effects_def_tag") .. " %+d]"
 		table.insert(rAction.aMessages, string.format(sFormat, nDefEffectsBonus));
 	end
-	
+
 	local sCritThreshold = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
 	local nCritThreshold = tonumber(sCritThreshold) or 20;
 	if nCritThreshold < 2 or nCritThreshold > 20 then
@@ -631,15 +654,20 @@ function onAttack_5e(rSource, rTarget, rRoll)
 			table.insert(rAction.aMessages, "[MISS]");
 		end
 	end
+	--	luacheck: pop
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then table.insert(rAction.aMessages, "with " .. AmmunitionManager.getWeaponName(rRoll.sDesc)) end
+	if AmmunitionManager and OptionsManager.isOption("ATKRESULTWEAPON", "on") then
+		table.insert(rAction.aMessages, "with " .. AmmunitionManager.getWeaponName(rRoll.sDesc))
+	end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
+	--	luacheck: push
 	if not rTarget then
 		rMessage.text = rMessage.text .. " " .. table.concat(rAction.aMessages, " ");
 	end
+	--	luacheck: pop
 
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
@@ -648,23 +676,26 @@ function onAttack_5e(rSource, rTarget, rRoll)
 		if nHitMargin then table.insert(rAction.aMessages, "[BY " .. nHitMargin .. "+]") end
 	end
 	--	end bmos adding hit margin tracking
-	
+
+	--	luacheck: push
 	Comm.deliverChatMessage(rMessage);
-	
+	--	luacheck: pop
+
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult, true) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
+	--	luacheck: push
 	if rTarget then
 		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
 	end
-	
+
 	-- TRACK CRITICAL STATE
 	if rAction.sResult == "crit" then
 		ActionAttack.setCritState(rSource, rTarget);
 	end
-	
+
 	-- REMOVE TARGET ON MISS OPTION
 	if rTarget then
 		if (rAction.sResult == "miss" or rAction.sResult == "fumble") then
@@ -673,7 +704,7 @@ function onAttack_5e(rSource, rTarget, rRoll)
 			end
 		end
 	end
-	
+
 	-- HANDLE FUMBLE/CRIT HOUSE RULES
 	local sOptionHRFC = OptionsManager.getOption("HRFC");
 	if rAction.sResult == "fumble" and ((sOptionHRFC == "both") or (sOptionHRFC == "fumble")) then
@@ -682,6 +713,7 @@ function onAttack_5e(rSource, rTarget, rRoll)
 	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
 		ActionAttack.notifyApplyHRFC("Critical Hit");
 	end
+	--	luacheck: pop
 end
 
 -- Function Overrides

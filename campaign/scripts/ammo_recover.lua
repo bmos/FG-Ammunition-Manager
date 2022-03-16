@@ -1,8 +1,8 @@
--- 
+--
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
-function onClickRelease(target, button, image)
+function onClickRelease()
 	local nMisses = window.missedshots.getValue() or 0
 	if nMisses > 0 then
 		local nPercent = (window.recoverypercentage.getValue() or 50) / 100

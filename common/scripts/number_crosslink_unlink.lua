@@ -1,4 +1,4 @@
--- 
+--
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
@@ -24,7 +24,7 @@ function onClose()
 	end
 end
 
-function onDrop(x, y, draginfo)
+function onDrop(_, _, draginfo)
 	if Session.IsHost then
 		if draginfo.getType() ~= "number" then
 			return false;
@@ -59,12 +59,13 @@ function onValueChanged()
 	end
 end
 
+-- luacheck: globals onLinkUpdated
 function onLinkUpdated()
 	if sLink and not bLocked then
 		bLocked = true;
 
 		setValue(DB.getValue(sLink, 0));
-		
+
 		if self.update then
 			self.update();
 		end
@@ -73,13 +74,14 @@ function onLinkUpdated()
 	end
 end
 
+-- luacheck: globals setLink
 function setLink(dbnode, bLock)
 	if sLink then
 		DB.removeHandler(sLink, "onUpdate", onLinkUpdated);
 		sLink = nil;
 		widget.destroy()
 	end
-		
+
 	if dbnode then
 		sLink = dbnode.getPath();
 
@@ -87,7 +89,7 @@ function setLink(dbnode, bLock)
 			widget = addBitmapWidget("field_linked");
 			widget.setPosition("bottomright", 0, -2);
 		end
-		
+
 		if bLock == true then
 			setReadOnly(true);
 		end
@@ -96,4 +98,3 @@ function setLink(dbnode, bLock)
 		onLinkUpdated();
 	end
 end
-

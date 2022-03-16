@@ -1,11 +1,11 @@
--- 
+--
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
 function onInit()
 	registerMenuItem(Interface.getString("menu_deleteweapon"), "delete", 4);
 	registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 4, 3);
-	
+
 	local sNode = getDatabaseNode().getPath();
 	DB.addHandler(sNode, "onChildUpdate", onDataChanged);
 	onDataChanged();
@@ -16,8 +16,10 @@ function onClose()
 	DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
 end
 
+-- luacheck: globals hasLoadAction
 function hasLoadAction(nodeWeapon)
 	local bHasLoadAction
+	-- luacheck: globals type
 	local bRanged = (type.getValue() == 1);
 	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 	for _,v in pairs(AmmunitionManager.tLoadWeapons) do
@@ -27,6 +29,7 @@ function hasLoadAction(nodeWeapon)
 	return (bRanged and bHasLoadAction)
 end
 
+-- luacheck: globals automateAmmo
 function automateAmmo(nodeWeapon)
 	local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
 	DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
@@ -42,12 +45,13 @@ end
 function onDataChanged()
 	onLinkChanged();
 	onDamageChanged();
-	
+
 	local nodeWeapon = getDatabaseNode();
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
 
+	-- luacheck: globals type
 	local bRanged = (type.getValue() == 1);
 	label_range.setVisible(bRanged);
 	rangeincrement.setVisible(bRanged);
