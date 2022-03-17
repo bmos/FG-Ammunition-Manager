@@ -3,7 +3,7 @@
 -- attribution and copyright information.
 --
 
--- luacheck: globals action
+--	luacheck: globals action
 function action(draginfo)
 	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(window.getDatabaseNode());
 	rAttack.modifier = getValue();

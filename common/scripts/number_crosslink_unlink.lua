@@ -59,7 +59,7 @@ function onValueChanged()
 	end
 end
 
--- luacheck: globals onLinkUpdated
+--	luacheck: globals onLinkUpdated
 function onLinkUpdated()
 	if sLink and not bLocked then
 		bLocked = true;
@@ -74,7 +74,7 @@ function onLinkUpdated()
 	end
 end
 
--- luacheck: globals setLink
+--	luacheck: globals setLink
 function setLink(dbnode, bLock)
 	if sLink then
 		DB.removeHandler(sLink, "onUpdate", onLinkUpdated);
