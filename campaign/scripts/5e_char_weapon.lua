@@ -27,7 +27,7 @@ local function onAttackAction_new(draginfo, ...)
 	-- end bmos only allowing attacks when ammo is sufficient
 end
 
--- luacheck: globals onDamageAction
+--	luacheck: globals onDamageAction
 function onDamageAction(draginfo)
 	local nodeWeapon = getDatabaseNode();
 	local nodeChar = nodeWeapon.getChild("...")
@@ -58,7 +58,7 @@ function onDamageAction(draginfo)
 	return true;
 end
 
--- luacheck: globals onDataChanged
+--	luacheck: globals onDataChanged
 function onDataChanged()
 	if super and super.onDataChanged then
 		super.onDataChanged();
