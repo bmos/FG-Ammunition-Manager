@@ -191,8 +191,7 @@ function calculateMargin(nDC, nTotal)
 	end
 end
 
-local function onAttack_pfrpg(rSource, rTarget, rRoll)
-	--	luacheck: push
+local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
 	local bIsSourcePC = ActorManager.isPC(rSource);
@@ -229,7 +228,6 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 			table.insert(rAction.aMessages, string.format(sFormat, nDefEffectsBonus));
 		end
 	end
-	--	luacheck: pop
 
 	-- for compatibility with mirror image handler, add this here in your onAttack function
 	if MirrorImageHandler then
@@ -241,7 +239,6 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	end
 	-- end compatibility with mirror image handler
 
-	--	luacheck: push
 	-- Get the crit threshold
 	rAction.nCrit = 20;
 	local sAltCritRange = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
@@ -341,7 +338,6 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	if ((rRoll.sType == "critconfirm") or not rAction.bCritThreat) and (nMissChance > 0) then
 		table.insert(rAction.aMessages, "[MISS CHANCE " .. nMissChance .. "%]");
 	end
-	--	luacheck: pop
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
@@ -358,9 +354,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	end
 	--	end bmos adding hit margin tracking
 
-	--	luacheck: push
 	Comm.deliverChatMessage(rMessage);
-	--	luacheck: pop
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
@@ -369,7 +363,6 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
-	--	luacheck: push
 	if rAction.sResult == "crit" then
 		ActionAttack.setCritState(rSource, rTarget);
 	end
@@ -468,11 +461,9 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll)
 	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
 		ActionAttack.notifyApplyHRFC("Critical Hit");
 	end
-	--	luacheck: pop
 end
 
-local function onAttack_4e(rSource, rTarget, rRoll)
-	--	luacheck: push
+local function onAttack_4e(rSource, rTarget, rRoll) -- luacheck: ignore
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
 	local rAction = {};
@@ -539,7 +530,6 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 		rAction.sResult = "crit";
 		table.insert(rAction.aMessages, "[CHECK FOR CRITICAL]");
 	end
-	--	luacheck: pop
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
@@ -556,16 +546,13 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	end
 	--	end bmos adding hit margin tracking
 
-	--	luacheck: push
 	Comm.deliverChatMessage(rMessage);
-	--	luacheck: pop
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
-	--	luacheck: push
 	if rTarget then
 		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
 	end
@@ -599,14 +586,12 @@ local function onAttack_4e(rSource, rTarget, rRoll)
 	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
 		ActionAttack.notifyApplyHRFC("Critical Hit");
 	end
-	--	luacheck: pop
 end
 
 local function decrementAmmo_5e()
 end
 
-local function onAttack_5e(rSource, rTarget, rRoll)
-	--	luacheck: push
+local function onAttack_5e(rSource, rTarget, rRoll) -- luacheck: ignore
 	ActionsManager2.decodeAdvantage(rRoll);
 
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
@@ -654,7 +639,6 @@ local function onAttack_5e(rSource, rTarget, rRoll)
 			table.insert(rAction.aMessages, "[MISS]");
 		end
 	end
-	--	luacheck: pop
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
@@ -663,11 +647,9 @@ local function onAttack_5e(rSource, rTarget, rRoll)
 	end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
-	--	luacheck: push
 	if not rTarget then
 		rMessage.text = rMessage.text .. " " .. table.concat(rAction.aMessages, " ");
 	end
-	--	luacheck: pop
 
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
@@ -677,16 +659,13 @@ local function onAttack_5e(rSource, rTarget, rRoll)
 	end
 	--	end bmos adding hit margin tracking
 
-	--	luacheck: push
 	Comm.deliverChatMessage(rMessage);
-	--	luacheck: pop
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult, true) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
-	--	luacheck: push
 	if rTarget then
 		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, " "));
 	end
@@ -713,7 +692,6 @@ local function onAttack_5e(rSource, rTarget, rRoll)
 	if rAction.sResult == "crit" and ((sOptionHRFC == "both") or (sOptionHRFC == "criticalhit")) then
 		ActionAttack.notifyApplyHRFC("Critical Hit");
 	end
-	--	luacheck: pop
 end
 
 -- Function Overrides
