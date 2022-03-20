@@ -2,6 +2,8 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
+--	luacheck: globals onLinkUpdated isReadOnly nolinkwidget addBitmapWidget
+
 local bLocked = false;
 local sLink = nil;
 local widget = nil;
@@ -59,7 +61,6 @@ function onValueChanged()
 	end
 end
 
---	luacheck: globals onLinkUpdated
 function onLinkUpdated()
 	if sLink and not bLocked then
 		bLocked = true;

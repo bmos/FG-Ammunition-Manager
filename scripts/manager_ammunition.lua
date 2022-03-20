@@ -115,7 +115,7 @@ local function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemain
 	end
 end
 
-local sRuleset = User.getRulesetName();
+local sRuleset;
 local function isInfiniteAmmo(rSource, nodeWeapon)
 	local bInfiniteAmmo = DB.getValue(nodeWeapon, 'type', 0) ~= 1;
 	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
@@ -696,6 +696,7 @@ end
 
 -- Function Overrides
 function onInit()
+	sRuleset = User.getRulesetName();
 	-- replace result handlers
 	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
 		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' };

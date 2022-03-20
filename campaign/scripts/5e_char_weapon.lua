@@ -63,7 +63,6 @@ function onDataChanged()
 	if super and super.onDataChanged then
 		super.onDataChanged();
 	end
-	if button_reload then button_reload.setVisible(DB.getValue(nodeWeapon, 'type', 0) ~= 0); end
 
 	local nodeWeapon = getDatabaseNode();
 	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil

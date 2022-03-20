@@ -7,10 +7,6 @@
 		<script file="campaign/scripts/5e_char_weapon.lua" />
 		<sheetdata>
 			<buttonfield name="isloaded">
-				<!-- <anchored width="27" height="10">
-					<top parent="button_reload" anchor="bottom" offset="1" />
-					<left offset="2" />
-				</anchored> -->
 				<anchored width="27" height="10">
 					<top parent="name" anchor="bottom" offset="11" />
 					<left offset="2" />

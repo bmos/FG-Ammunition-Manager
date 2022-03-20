@@ -3,6 +3,8 @@
 -- attribution and copyright information.
 --
 
+-- luacheck: globals itemsheetname itemsheetaltname
+
 local function setListValue_new(sValue)
 	setValue(sValue);
 
@@ -24,7 +26,7 @@ local function setListValue_new(sValue)
 	if nodeOldNode then nodeOldNode.delete() end
 
 	setTooltipText(sValue);
-	refreshSelectionDisplay();
+	super.refreshSelectionDisplay();
 end
 
 local function isAmmo(nodeItem, sTypeField)
@@ -66,5 +68,5 @@ function onInit()
 			end
 		end
 	end
-	addItems(aAutoFill);
+	super.addItems(aAutoFill);
 end
