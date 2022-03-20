@@ -3,7 +3,7 @@
 --
 
 --	This table exists so people can add search terms for weapons that should have a load button.
---	luacheck: globals tLoadWeapons
+--	luacheck: globals tLoadWeapons MirrorImageHandler
 tLoadWeapons = { 'loadaction' }
 
 ---	This function finds the correct node for a weapon's ammunition.
@@ -115,6 +115,7 @@ local function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemain
 	end
 end
 
+local sRuleset = User.getRulesetName();
 local function isInfiniteAmmo(rSource, nodeWeapon)
 	local bInfiniteAmmo = DB.getValue(nodeWeapon, 'type', 0) ~= 1;
 	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
@@ -129,7 +130,6 @@ local function isInfiniteAmmo(rSource, nodeWeapon)
 end
 
 --	luacheck: globals getAmmoRemaining
-local sRuleset
 function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 	local bInfiniteAmmo = isInfiniteAmmo(rSource, nodeWeapon)
 
@@ -696,7 +696,6 @@ end
 
 -- Function Overrides
 function onInit()
-	sRuleset = User.getRulesetName();
 	-- replace result handlers
 	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
 		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' };
