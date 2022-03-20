@@ -3,6 +3,8 @@
 -- attribution and copyright information.
 --
 
+-- luacheck: globals ammo count
+
 function onDoubleClick(x, y, ...)
 	if super and super.onDoubleClick then
 		super.onDoubleClick(x, y, ...);

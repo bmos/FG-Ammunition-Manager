@@ -2,20 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
-function onInit()
-	registerMenuItem(Interface.getString("menu_deleteweapon"), "delete", 4);
-	registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 4, 3);
-
-	local sNode = getDatabaseNode().getPath();
-	DB.addHandler(sNode, "onChildUpdate", onDataChanged);
-	onDataChanged();
-end
-
-function onClose()
-	local sNode = getDatabaseNode().getPath();
-	DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
-end
-
 --	luacheck: globals hasLoadAction
 function hasLoadAction(nodeWeapon)
 	local bHasLoadAction
@@ -43,8 +29,8 @@ function automateAmmo(nodeWeapon)
 end
 
 function onDataChanged()
-	onLinkChanged();
-	onDamageChanged();
+	super.onLinkChanged();
+	super.onDamageChanged();
 
 	local nodeWeapon = getDatabaseNode();
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
@@ -57,7 +43,6 @@ function onDataChanged()
 	rangeincrement.setVisible(bRanged);
 
 	isloaded.setVisible(bRanged and hasLoadAction(nodeWeapon));
-	if button_reload then button_reload.setVisible(bRanged) end
 	label_ammo.setVisible(bRanged);
 	maxammo.setVisible(bRanged);
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
@@ -71,4 +56,18 @@ function onDataChanged()
 	else
 		Debug.chat("WARNING: NO AMMUNITION SET ON ITEM", DB.getValue(nodeWeapon, 'name'))
 	end
+end
+
+function onInit()
+	super.registerMenuItem(Interface.getString("menu_deleteweapon"), "delete", 4);
+	super.registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 4, 3);
+
+	local sNode = getDatabaseNode().getPath();
+	DB.addHandler(sNode, "onChildUpdate", onDataChanged);
+	onDataChanged();
+end
+
+function onClose()
+	local sNode = getDatabaseNode().getPath();
+	DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
 end
