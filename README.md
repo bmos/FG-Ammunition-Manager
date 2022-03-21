@@ -23,7 +23,8 @@ This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
 
 * If used with my [Item Durability](https://github.com/bmos/FG-PFRPG-Item-Durability) extension for Pathfinder and 3.5E, natural 1s rolled with a weapon with "fragile" in the properties field will be broken automatically. If the weapon is already broken, the weapon will be destroyed instead.
 
-* If used with [Advanced Effects for Pathfinder and 3.5E](https://forge.fantasygrounds.com/shop/items/33/view) or [5E Advanced Effects](https://forge.fantasygrounds.com/shop/items/68/view), "Action Only" effects attached to equipped ammmunition used in an attack will be included in the roll. This allowed things like "Magic Arrow; ATK: 1 enhancement" to be added to the arrow effects list and it will only be used to modify the attack when the archer uses those arrows (even if equipped constantly).
+* If used with [Advanced Effects for Pathfinder and 3.5E](https://forge.fantasygrounds.com/shop/items/33/view) or [5E Advanced Effects](https://forge.fantasygrounds.com/shop/items/68/view), "Action Only" effects attached to equipped ammmunition used in an attack will be included in the roll.
+This allowed things like "Magic Arrow; ATK: 1 enhancement" to be added to the arrow effects list and it will only be used to modify the attack when the archer uses **those** arrows (even if those arrows are equipped constantly in the inventory).
 
 * Enabling the "Chat: Show weapon name in results" option will add the weapon name to attack results in chat such as "Attack [16] -> [at Goblin] with Shortsword [HIT]" instead of "Attack [16] -> [at Goblin] [HIT]".
 
