@@ -3,18 +3,31 @@
 -- attribution and copyright information.
 --
 
+local function getWeaponUsage(nodeWeapon)
+	local _,sShortcut = DB.getValue(nodeWeapon, 'shortcut', '');
+	if sShortcut and sShortcut ~= '' then
+		local nodeLinkedWeapon = DB.findNode(sShortcut)
+		if nodeLinkedWeapon then
+			return DB.getValue(nodeLinkedWeapon, 'usage', 1)
+		end
+	end
+	return 1
+end
+
 local function reduceItemCount(nodeWeapon, nAmmo)
-	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon);
+	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
 	if nodeAmmo then
 		local nCount = DB.getValue(nodeAmmo, "count", 0)
 		if (nAmmo > 0) and (nCount > 0) then
-			local nReload = (nCount - nAmmo)
+			local nUsage = getWeaponUsage(nodeWeapon)
+			local nReload = nCount - nAmmo * nUsage
 			if nReload > 0 then
 				DB.setValue(nodeWeapon, 'ammo', 'number', 0)
 				DB.setValue(nodeAmmo, 'count', 'number', nReload)
 			else
-				DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo - nCount)
-				DB.setValue(nodeAmmo, 'count', 'number', 0)
+				local nAvailableUses = math.floor(nCount / nUsage)
+				DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo - nAvailableUses)
+				DB.setValue(nodeAmmo, 'count', 'number', nCount - nAvailableUses * nUsage)
 			end
 		end
 	end
