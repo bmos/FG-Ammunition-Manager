@@ -2,7 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
-
 function onClickRelease()
 	local rActor = ActorManager.resolveActor(getDatabaseNode().getChild('....'));
 	local nodeWeapon = window.getDatabaseNode();

@@ -2,9 +2,7 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
-
 -- luacheck: globals itemsheetname itemsheetaltname
-
 local function setListValue_new(sValue)
 	setValue(sValue);
 
@@ -12,12 +10,12 @@ local function setListValue_new(sValue)
 	local nodeWeapon = getDatabaseNode().getParent();
 	local nodeInventory = nodeWeapon.getChild('...inventorylist');
 	if nodeInventory then
-		for _,nodeItem in pairs(nodeInventory.getChildren()) do
+		for _, nodeItem in pairs(nodeInventory.getChildren()) do
 			local sName = ItemManager.getDisplayName(nodeItem, true);
 			if sValue == '' then
-				DB.setValue(nodeWeapon, "ammoshortcut", "windowreference", "item", "");
+				DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '');
 			elseif sValue == sName then
-				DB.setValue(nodeWeapon, "ammoshortcut", "windowreference", "item", "....inventorylist." .. nodeItem.getName());
+				DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '....inventorylist.' .. nodeItem.getName());
 			end
 		end
 	end
@@ -31,9 +29,7 @@ end
 
 local function isAmmo(nodeItem, sTypeField)
 	local bThrown = false;
-	if User.getRulesetName() == "5E" then
-		bThrown = DB.getValue(getDatabaseNode().getParent(), 'type', 0) == 2;
-	end
+	if User.getRulesetName() == '5E' then bThrown = DB.getValue(getDatabaseNode().getParent(), 'type', 0) == 2; end
 	if sTypeField and nodeItem.getChild(sTypeField) then
 		local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower();
 		if bThrown then
@@ -46,9 +42,7 @@ end
 
 function onInit()
 	if super then
-		if super.onInit then
-			super.onInit();
-		end
+		if super.onInit then super.onInit(); end
 		super.setListValue = setListValue_new;
 	end
 
@@ -57,13 +51,11 @@ function onInit()
 
 	local nodeInventory = getDatabaseNode().getChild('....inventorylist');
 	if nodeInventory then
-		for _,nodeItem in pairs(nodeInventory.getChildren()) do
+		for _, nodeItem in pairs(nodeInventory.getChildren()) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
 				local sName = ItemManager.getDisplayName(nodeItem, true);
 				if sName ~= '' then
-					if isAmmo(nodeItem, itemsheetname[1]) or isAmmo(nodeItem, itemsheetaltname[1]) then
-						table.insert(aAutoFill, sName);
-					end
+					if isAmmo(nodeItem, itemsheetname[1]) or isAmmo(nodeItem, itemsheetaltname[1]) then table.insert(aAutoFill, sName); end
 				end
 			end
 		end

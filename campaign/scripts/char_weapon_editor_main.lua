@@ -1,33 +1,26 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
-
 function onInit()
-	if super and super.onInit then
-		super.onInit();
-	end
+	if super and super.onInit then super.onInit(); end
 	local sNode = getDatabaseNode().getPath();
-	DB.addHandler(sNode, "onChildUpdate", onDataChanged);
+	DB.addHandler(sNode, 'onChildUpdate', onDataChanged);
 	onDataChanged();
 end
 
 function onClose()
-	if super and super.onClose then
-		super.onClose();
-	end
+	if super and super.onClose then super.onClose(); end
 	local sNode = getDatabaseNode().getPath();
-	DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
+	DB.removeHandler(sNode, 'onChildUpdate', onDataChanged);
 end
 
 function onDataChanged()
-	if super and super.onDataChanged then
-		super.onDataChanged();
-	end
+	if super and super.onDataChanged then super.onDataChanged(); end
 	local nodeWeapon = getDatabaseNode();
 	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1;
 
 	local bThrown = false;
-	if User.getRulesetName() == "5E" then bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2; end
+	if User.getRulesetName() == '5E' then bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2; end
 
 	header_ammo.setVisible(bRanged or bThrown);
 	ammopicker.setVisible(bRanged or bThrown);

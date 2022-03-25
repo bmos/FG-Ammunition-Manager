@@ -2,13 +2,9 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
-
 -- luacheck: globals ammo count
-
 function onDoubleClick(x, y, ...)
-	if super and super.onDoubleClick then
-		super.onDoubleClick(x, y, ...);
-	end
+	if super and super.onDoubleClick then super.onDoubleClick(x, y, ...); end
 
 	local nodeWeapon = window.getDatabaseNode();
 	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon);
@@ -23,11 +19,11 @@ function onDoubleClick(x, y, ...)
 			if nReload > 0 then
 				DB.setValue(nodeWeapon, ammo[1], 'number', 0)
 				DB.setValue(nodeAmmo, count[1], 'number', nReload)
-				ChatManager.Message(Interface.getString("char_actions_reload_full"), true, rActor);
+				ChatManager.Message(Interface.getString('char_actions_reload_full'), true, rActor);
 			else
 				DB.setValue(nodeWeapon, ammo[1], 'number', nAmmo - nCount)
 				DB.setValue(nodeAmmo, count[1], 'number', 0)
-				ChatManager.Message(Interface.getString("char_actions_reload_partial"), true, rActor);
+				ChatManager.Message(Interface.getString('char_actions_reload_partial'), true, rActor);
 			end
 		end
 	end

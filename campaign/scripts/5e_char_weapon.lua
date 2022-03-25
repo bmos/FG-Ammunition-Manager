@@ -2,7 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
-
 local onAttackAction_old
 local function onAttackAction_new(draginfo, ...)
 	local nodeWeapon = getDatabaseNode();
@@ -17,7 +16,7 @@ local function onAttackAction_new(draginfo, ...)
 			if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
 			return onAttackAction_old(draginfo, ...);
 		else
-			ChatManager.Message(Interface.getString("char_message_atkwithnoammo"), true, rActor);
+			ChatManager.Message(Interface.getString('char_message_atkwithnoammo'), true, rActor);
 			if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
 		end
 	else
@@ -30,7 +29,7 @@ end
 --	luacheck: globals onDamageAction
 function onDamageAction(draginfo)
 	local nodeWeapon = getDatabaseNode();
-	local nodeChar = nodeWeapon.getChild("...")
+	local nodeChar = nodeWeapon.getChild('...')
 
 	-- Build basic damage action record
 	local rAction = CharWeaponManager.buildDamageAction(nodeChar, nodeWeapon);
@@ -40,7 +39,7 @@ function onDamageAction(draginfo)
 
 	-- Celestian adding itemPath to rActor so that when effects
 	-- are checked we can compare against action only effects
-	local _, sRecord = DB.getValue(nodeWeapon, "shortcut", "", "");
+	local _, sRecord = DB.getValue(nodeWeapon, 'shortcut', '', '');
 	rActor.itemPath = sRecord;
 	-- end Adanced Effects piece ---
 
@@ -48,9 +47,7 @@ function onDamageAction(draginfo)
 	-- add this in the onDamageAction function of other effects to maintain compatibility
 	if AmmunitionManager then
 		local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor)
-		if nodeAmmo then
-			rActor.ammoPath = nodeAmmo.getPath()
-		end
+		if nodeAmmo then rActor.ammoPath = nodeAmmo.getPath() end
 	end
 	-- end bmos adding ammoPath
 
@@ -60,9 +57,7 @@ end
 
 --	luacheck: globals onDataChanged
 function onDataChanged()
-	if super and super.onDataChanged then
-		super.onDataChanged();
-	end
+	if super and super.onDataChanged then super.onDataChanged(); end
 
 	local nodeWeapon = getDatabaseNode();
 	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil
@@ -84,19 +79,15 @@ function onInit()
 			onAttackAction_old = super.onAttackAction;
 			super.onAttackAction = onAttackAction_new;
 		end
-		if super.onInit then
-			super.onInit();
-		end
+		if super.onInit then super.onInit(); end
 	end
 	local nodeWeapon = getDatabaseNode();
-	DB.addHandler(nodeWeapon.getPath(), "onChildUpdate", onDataChanged);
+	DB.addHandler(nodeWeapon.getPath(), 'onChildUpdate', onDataChanged);
 	onDataChanged();
 end
 
 function onClose()
-	if super and super.onClose then
-		super.onClose();
-	end
+	if super and super.onClose then super.onClose(); end
 	local nodeWeapon = getDatabaseNode();
-	DB.removeHandler(nodeWeapon.getPath(), "onChildUpdate", onDataChanged);
+	DB.removeHandler(nodeWeapon.getPath(), 'onChildUpdate', onDataChanged);
 end

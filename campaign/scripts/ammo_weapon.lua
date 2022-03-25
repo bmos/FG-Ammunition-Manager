@@ -1,15 +1,17 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
-
 --	luacheck: globals hasLoadAction
 function hasLoadAction(nodeWeapon)
 	local bHasLoadAction
 	--	luacheck: globals type
 	local bRanged = (type.getValue() == 1);
 	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
-	for _,v in pairs(AmmunitionManager.tLoadWeapons) do
-		if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
+	for _, v in pairs(AmmunitionManager.tLoadWeapons) do
+		if string.find(sWeaponName, v) then
+			bHasLoadAction = true;
+			break
+		end
 	end
 
 	return (bRanged and bHasLoadAction)
@@ -54,20 +56,20 @@ function onDataChanged()
 			maxammo.setLink()
 		end
 	else
-		Debug.chat("WARNING: NO AMMUNITION SET ON ITEM", DB.getValue(nodeWeapon, 'name'))
+		Debug.chat('WARNING: NO AMMUNITION SET ON ITEM', DB.getValue(nodeWeapon, 'name'))
 	end
 end
 
 function onInit()
-	super.registerMenuItem(Interface.getString("menu_deleteweapon"), "delete", 4);
-	super.registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 4, 3);
+	super.registerMenuItem(Interface.getString('menu_deleteweapon'), 'delete', 4);
+	super.registerMenuItem(Interface.getString('list_menu_deleteconfirm'), 'delete', 4, 3);
 
 	local sNode = getDatabaseNode().getPath();
-	DB.addHandler(sNode, "onChildUpdate", onDataChanged);
+	DB.addHandler(sNode, 'onChildUpdate', onDataChanged);
 	onDataChanged();
 end
 
 function onClose()
 	local sNode = getDatabaseNode().getPath();
-	DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
+	DB.removeHandler(sNode, 'onChildUpdate', onDataChanged);
 end
