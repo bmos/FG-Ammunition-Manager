@@ -36,6 +36,7 @@ function getAmmoNode(nodeWeapon)
 					end
 				end
 			end
+			Debug.console(Interface.getString('debug_ammo_itemnotfound'));
 		else
 			Debug.console(Interface.getString('debug_ammo_noinventoryfound'));
 		end
