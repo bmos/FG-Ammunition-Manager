@@ -27,20 +27,21 @@ local function setListValue_new(sValue)
 	super.refreshSelectionDisplay();
 end
 
-local function isAmmo(nodeItem, sTypeField)
-	local bThrown = false;
-	if User.getRulesetName() == '5E' then bThrown = DB.getValue(getDatabaseNode().getParent(), 'type', 0) == 2; end
-	if sTypeField and nodeItem.getChild(sTypeField) then
-		local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower();
-		if bThrown then
-			return (sItemType:match('weapon') ~= nil);
-		else
-			return (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil);
+function onInit()
+
+	local function isAmmo(nodeItem, sTypeField)
+		local bThrown = false;
+		if User.getRulesetName() == '5E' then bThrown = DB.getValue(getDatabaseNode().getParent(), 'type', 0) == 2; end
+		if sTypeField and nodeItem.getChild(sTypeField) then
+			local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower();
+			if bThrown then
+				return (sItemType:match('weapon') ~= nil);
+			else
+				return (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil);
+			end
 		end
 	end
-end
 
-function onInit()
 	if super then
 		if super.onInit then super.onInit(); end
 		super.setListValue = setListValue_new;

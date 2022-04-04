@@ -1,18 +1,6 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
-function onInit()
-	if super and super.onInit then super.onInit(); end
-	local sNode = getDatabaseNode().getPath();
-	DB.addHandler(sNode, 'onChildUpdate', onDataChanged);
-	onDataChanged();
-end
-
-function onClose()
-	if super and super.onClose then super.onClose(); end
-	local sNode = getDatabaseNode().getPath();
-	DB.removeHandler(sNode, 'onChildUpdate', onDataChanged);
-end
 
 function onDataChanged()
 	if super and super.onDataChanged then super.onDataChanged(); end
@@ -43,4 +31,17 @@ function onDataChanged()
 	else
 		missedshots.setLink();
 	end
+end
+
+function onInit()
+	if super and super.onInit then super.onInit(); end
+	local sNode = getDatabaseNode().getPath();
+	DB.addHandler(sNode, 'onChildUpdate', onDataChanged);
+	onDataChanged();
+end
+
+function onClose()
+	if super and super.onClose then super.onClose(); end
+	local sNode = getDatabaseNode().getPath();
+	DB.removeHandler(sNode, 'onChildUpdate', onDataChanged);
 end

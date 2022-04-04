@@ -36,18 +36,19 @@ function getAmmoNode(nodeWeapon)
 	end
 end
 
--- examine weapon properties to check if fragile
-local function isFragile(nodeWeapon)
-	local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower();
-	local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0;
-	local bIsMasterwork = sWeaponProperties:find('masterwork') or false;
-	local bIsBone = sWeaponProperties:find('bone') or false;
-	local bIsMagic = DB.getValue(nodeWeapon, 'bonus', 0) > 0;
-	return (bIsFragile and not bIsMagic and (not bIsMasterwork or bIsBone))
-end
-
 --	if weapon is fragile, set as broken or destroyed and post a chat message.
 local function breakWeapon(rSource, nodeWeapon, sWeaponName)
+
+	-- examine weapon properties to check if fragile
+	local function isFragile(nodeWeapon)
+		local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower();
+		local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0;
+		local bIsMasterwork = sWeaponProperties:find('masterwork') or false;
+		local bIsBone = sWeaponProperties:find('bone') or false;
+		local bIsMagic = DB.getValue(nodeWeapon, 'bonus', 0) > 0;
+		return (bIsFragile and not bIsMagic and (not bIsMasterwork or bIsBone))
+	end
+
 	if nodeWeapon and isFragile(nodeWeapon) then
 		local nBroken = DB.getValue(nodeWeapon, 'broken', 0);
 		local nItemHitpoints = DB.getValue(nodeWeapon, 'hitpoints', 0);
@@ -75,36 +76,6 @@ function getWeaponName(s)
 	sWeaponName = StringManager.trim(sWeaponName);
 
 	return sWeaponName or ''
-end
-
---	luacheck: globals countMissedShots
-function countMissedShots(nodeWeapon, nodeAmmoLink, sResult, bCountAll)
-	if nodeAmmoLink then
-		if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
-			DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.getValue(nodeAmmoLink, 'missedshots', 0) + 1);
-		end
-	else
-		if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
-			DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
-		end
-	end
-end
-
-local function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
-	if nodeAmmoLink then
-		if nAmmoRemaining == 0 then
-			ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
-			DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining);
-		else
-			DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining);
-		end
-	else
-		if nAmmoRemaining <= 0 then
-			ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
-		end
-		local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
-		DB.setValue(nodeWeapon, 'ammo', 'number', nMaxAmmo - nAmmoRemaining);
-	end
 end
 
 local sRuleset;
@@ -142,6 +113,36 @@ end
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
 --	luacheck: globals ammoTracker
 function ammoTracker(rSource, sDesc, sResult, bCountAll)
+
+	local function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
+		if nodeAmmoLink then
+			if nAmmoRemaining == 0 then
+				ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+				DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining);
+			else
+				DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining);
+			end
+		else
+			if nAmmoRemaining <= 0 then
+				ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+			end
+			local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
+			DB.setValue(nodeWeapon, 'ammo', 'number', nMaxAmmo - nAmmoRemaining);
+		end
+	end
+
+	local function countMissedShots(nodeWeapon, nodeAmmoLink)
+		if nodeAmmoLink then
+			if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
+				DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.getValue(nodeAmmoLink, 'missedshots', 0) + 1);
+			end
+		else
+			if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
+				DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
+			end
+		end
+	end
+
 	local sWeaponName = getWeaponName(sDesc)
 	if not sDesc:match('%[CONFIRM%]') and sWeaponName ~= '' then
 		local nodeWeaponList = ActorManager.getCreatureNode(rSource).getChild('.weaponlist');
@@ -159,7 +160,7 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 					local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 					if not bInfiniteAmmo then
 						writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
-						countMissedShots(nodeWeapon, nodeAmmoLink, sResult, bCountAll)
+						countMissedShots(nodeWeapon, nodeAmmoLink)
 					end
 				end
 			end
