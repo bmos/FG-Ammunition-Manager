@@ -7,8 +7,8 @@
 function onReloadAction()
 
 	local function reduceItemCount(nodeWeapon, nAmmo)
-	
-		local function getWeaponUsage(nodeWeapon)
+
+		local function getWeaponUsage()
 			local _, sShortcut = DB.getValue(nodeWeapon, 'shortcut', '');
 			if sShortcut and sShortcut ~= '' then
 				local nodeLinkedWeapon = DB.findNode(sShortcut)
@@ -16,12 +16,12 @@ function onReloadAction()
 			end
 			return 1
 		end
-	
+
 		local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
 		if nodeAmmo then
 			local nCount = DB.getValue(nodeAmmo, 'count', 0)
 			if (nAmmo > 0) and (nCount > 0) then
-				local nUsage = getWeaponUsage(nodeWeapon)
+				local nUsage = getWeaponUsage()
 				local nReload = nCount - nAmmo * nUsage
 				if nReload > 0 then
 					DB.setValue(nodeWeapon, 'ammo', 'number', 0)
