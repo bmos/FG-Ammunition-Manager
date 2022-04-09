@@ -431,14 +431,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 		end
 	end
 
-	-- HANDLE FUMBLE/CRIT HOUSE RULES
-	local sOptionHRFC = OptionsManager.getOption('HRFC');
-	if rAction.sResult == 'fumble' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'fumble')) then
-		ActionAttack.notifyApplyHRFC('Fumble');
-	end
-	if rAction.sResult == 'crit' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'criticalhit')) then
-		ActionAttack.notifyApplyHRFC('Critical Hit');
-	end
+	ActionAttack.onPostAttackResolve(rRoll);
 end
 
 local function onAttack_4e(rSource, rTarget, rRoll) -- luacheck: ignore
