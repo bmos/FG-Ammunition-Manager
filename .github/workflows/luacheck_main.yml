@@ -1,8 +1,8 @@
 on:
   push:
     paths:
-    # Only run if pushed commits include a change to a Lua (.lua) file.
-      - '**.lua'
+      - '**.lua' # Only run if pushed commits include a change to a Lua (.lua) file.
+      - 'extension.xml'
   pull_request:
     # Only run if pull request includes a change to a Lua (.lua) file.
     paths:
@@ -14,18 +14,13 @@ on:
 name: Run Luacheck on Default Branch
 
 jobs:
-  luacheck:
+  getnames:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.repository.default_branch }}
-
-      - name: Install Lua/LuaJIT
-        uses: leafo/gh-actions-lua@v9
-        with:
-          luaVersion: 5.1
 
         # Determine extension name
 
@@ -36,7 +31,7 @@ jobs:
           xml-file: 'extension.xml'
           xpath: '//properties//name'
 
-      - name: Remove Extension Name Prefix
+      - name: Format Extension Name
         id: removenameprefix
         uses: ashley-taylor/regex-property-action@1.2
         with:
@@ -44,32 +39,28 @@ jobs:
           regex: '.*:\s'
           replacement: ''
 
-      - name: Remove Ruleset Names from Extension Name
-        id: removerulesetname
+      - id: shortenextname
         uses: ashley-taylor/regex-property-action@1.2
         with:
           value: ${{ steps.removenameprefix.outputs.value }}
           regex: ',.*'
           replacement: ''
 
-      - name: Remove Extension Name Parenthetical
-        id: removenameparenthetical
+      - id: removenameparenthetical
         uses: ashley-taylor/regex-property-action@1.2
         with:
-          value: ${{ steps.removerulesetname.outputs.value }}
+          value: ${{ steps.shortenextname.outputs.value }}
           regex: '\(.*\)'
           replacement: ''
 
-      - name: Remove Extension Name Punctuation
-        id: removenamepunctuation
+      - id: removenamepunctuation
         uses: ashley-taylor/regex-property-action@1.2
         with:
           value: ${{ steps.removenameparenthetical.outputs.value }}
-          regex: '[^A-Za-z0-9_]+'
+          regex: '[^A-Za-z0-9]+'
           replacement: ''
 
-      - name: Convert Case of Name
-        id: namelowercase
+      - id: namelowercase
         uses: ASzc/change-string-case-action@v2
         with:
           string: ${{ steps.removenamepunctuation.outputs.value }}
@@ -83,7 +74,7 @@ jobs:
           xml-file: 'extension.xml'
           xpath: '//properties//author'
 
-      - name: Remove Extension Name Prefix
+      - name: Format author name
         id: removeauthorprefix
         uses: ashley-taylor/regex-property-action@1.2
         with:
@@ -91,27 +82,49 @@ jobs:
           regex: '.*:\s'
           replacement: ''
 
-      - name: Remove Extension Name Parenthetical
-        id: removeauthorparenthetical
+      - id: shortenauthorname
         uses: ashley-taylor/regex-property-action@1.2
         with:
           value: ${{ steps.removeauthorprefix.outputs.value }}
+          regex: ',.*'
+          replacement: ''
+
+      - id: removeauthorparenthetical
+        uses: ashley-taylor/regex-property-action@1.2
+        with:
+          value: ${{ steps.shortenauthorname.outputs.value }}
           regex: '\(.*\)'
           replacement: ''
 
-      - name: Remove Extension Name Punctuation
-        id: removeauthorpunctuation
+      - id: removeauthorpunctuation
         uses: ashley-taylor/regex-property-action@1.2
         with:
           value: ${{ steps.removeauthorparenthetical.outputs.value }}
-          regex: '[^A-Za-z0-9_]+'
+          regex: '[^A-Za-z0-9]+'
           replacement: ''
 
-      - name: Convert Case of Author
-        id: authorlowercase
+      - id: authorlowercase
         uses: ASzc/change-string-case-action@v2
         with:
           string: ${{ steps.removeauthorpunctuation.outputs.value }}
+
+    outputs:
+      extension: ${{ steps.namelowercase.outputs.lowercase }}
+      author: ${{ steps.authorlowercase.outputs.lowercase }}
+
+  luacheck:
+    runs-on: ubuntu-latest
+    needs: getnames
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Install Lua/LuaJIT
+        uses: leafo/gh-actions-lua@v9
+        with:
+          luaVersion: 5.1
 
       # Process extension code
       - name: Running luacheck
@@ -119,5 +132,5 @@ jobs:
         with:
           files: '.'
           config: https://raw.githubusercontent.com/bmos/FG-luacheck/main/.luacheckrc
-          args: '--no-color --std +${{ steps.namelowercase.outputs.lowercase }}${{ steps.authorlowercase.outputs.lowercase }} --exclude-files .install/*'
+          args: '--no-color --std +${{ needs.getnames.outputs.extension }}${{ needs.getnames.outputs.author }} --exclude-files .install/*'
           annotate: 'warning'

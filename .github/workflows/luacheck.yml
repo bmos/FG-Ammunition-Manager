@@ -9,14 +9,112 @@ on:
 name: Run Luacheck on Latest Release
 
 jobs:
+  getnames:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+        # Determine extension name
+
+      - name: Get Extension Name from XML
+        id: getnamefromxml
+        uses: mavrosxristoforos/get-xml-info@1.1.0
+        with:
+          xml-file: 'extension.xml'
+          xpath: '//properties//name'
+
+      - name: Format Extension Name
+        id: removenameprefix
+        uses: ashley-taylor/regex-property-action@1.2
+        with:
+          value: ${{ steps.getnamefromxml.outputs.info }}
+          regex: '.*:\s'
+          replacement: ''
+
+      - id: shortenextname
+        uses: ashley-taylor/regex-property-action@1.2
+        with:
+          value: ${{ steps.removenameprefix.outputs.value }}
+          regex: ',.*'
+          replacement: ''
+
+      - id: removenameparenthetical
+        uses: ashley-taylor/regex-property-action@1.2
+        with:
+          value: ${{ steps.shortenextname.outputs.value }}
+          regex: '\(.*\)'
+          replacement: ''
+
+      - id: removenamepunctuation
+        uses: ashley-taylor/regex-property-action@1.2
+        with:
+          value: ${{ steps.removenameparenthetical.outputs.value }}
+          regex: '[^A-Za-z0-9]+'
+          replacement: ''
+
+      - id: namelowercase
+        uses: ASzc/change-string-case-action@v2
+        with:
+          string: ${{ steps.removenamepunctuation.outputs.value }}
+
+      # Determine extension author
+
+      - name: Get Extension Name from XML
+        id: getauthorfromxml
+        uses: mavrosxristoforos/get-xml-info@1.1.0
+        with:
+          xml-file: 'extension.xml'
+          xpath: '//properties//author'
+
+      - name: Format author name
+        id: removeauthorprefix
+        uses: ashley-taylor/regex-property-action@1.2
+        with:
+          value: ${{ steps.getauthorfromxml.outputs.info }}
+          regex: '.*:\s'
+          replacement: ''
+
+      - id: shortenauthorname
+        uses: ashley-taylor/regex-property-action@1.2
+        with:
+          value: ${{ steps.removeauthorprefix.outputs.value }}
+          regex: ',.*'
+          replacement: ''
+
+      - id: removeauthorparenthetical
+        uses: ashley-taylor/regex-property-action@1.2
+        with:
+          value: ${{ steps.shortenauthorname.outputs.value }}
+          regex: '\(.*\)'
+          replacement: ''
+
+      - id: removeauthorpunctuation
+        uses: ashley-taylor/regex-property-action@1.2
+        with:
+          value: ${{ steps.removeauthorparenthetical.outputs.value }}
+          regex: '[^A-Za-z0-9]+'
+          replacement: ''
+
+      - id: authorlowercase
+        uses: ASzc/change-string-case-action@v2
+        with:
+          string: ${{ steps.removeauthorpunctuation.outputs.value }}
+
+    outputs:
+      extension: ${{ steps.namelowercase.outputs.lowercase }}
+      author: ${{ steps.authorlowercase.outputs.lowercase }}
+
   luacheck:
     runs-on: ubuntu-latest
+    needs: getnames
     steps:
       - name: Checkout default branch
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ steps.previoustag.outputs.tag }}
 
       - name: Get Latest tag
         id: previoustag
@@ -32,97 +130,11 @@ jobs:
         with:
           luaVersion: 5.1
 
-        # Determine extension name
-
-      - name: Get Extension Name from XML
-        id: getnamefromxml
-        uses: mavrosxristoforos/get-xml-info@1.1.0
-        with:
-          xml-file: 'extension.xml'
-          xpath: '//properties//name'
-
-      - name: Remove Extension Name Prefix
-        id: removenameprefix
-        uses: ashley-taylor/regex-property-action@1.2
-        with:
-          value: ${{ steps.getnamefromxml.outputs.info }}
-          regex: '.*:\s'
-          replacement: ''
-
-      - name: Remove Ruleset Names from Extension Name
-        id: removerulesetname
-        uses: ashley-taylor/regex-property-action@1.2
-        with:
-          value: ${{ steps.removenameprefix.outputs.value }}
-          regex: ',.*'
-          replacement: ''
-
-      - name: Remove Extension Name Parenthetical
-        id: removenameparenthetical
-        uses: ashley-taylor/regex-property-action@1.2
-        with:
-          value: ${{ steps.removerulesetname.outputs.value }}
-          regex: '\(.*\)'
-          replacement: ''
-
-      - name: Remove Extension Name Punctuation
-        id: removenamepunctuation
-        uses: ashley-taylor/regex-property-action@1.2
-        with:
-          value: ${{ steps.removenameparenthetical.outputs.value }}
-          regex: '[^A-Za-z0-9_]+'
-          replacement: ''
-
-      - name: Convert Case of Name
-        id: namelowercase
-        uses: ASzc/change-string-case-action@v2
-        with:
-          string: ${{ steps.removenamepunctuation.outputs.value }}
-
-      # Determine extension author
-
-      - name: Get Extension Name from XML
-        id: getauthorfromxml
-        uses: mavrosxristoforos/get-xml-info@1.1.0
-        with:
-          xml-file: 'extension.xml'
-          xpath: '//properties//author'
-
-      - name: Remove Extension Name Prefix
-        id: removeauthorprefix
-        uses: ashley-taylor/regex-property-action@1.2
-        with:
-          value: ${{ steps.getauthorfromxml.outputs.info }}
-          regex: '.*:\s'
-          replacement: ''
-
-      - name: Remove Extension Name Parenthetical
-        id: removeauthorparenthetical
-        uses: ashley-taylor/regex-property-action@1.2
-        with:
-          value: ${{ steps.removeauthorprefix.outputs.value }}
-          regex: '\(.*\)'
-          replacement: ''
-
-      - name: Remove Extension Name Punctuation
-        id: removeauthorpunctuation
-        uses: ashley-taylor/regex-property-action@1.2
-        with:
-          value: ${{ steps.removeauthorparenthetical.outputs.value }}
-          regex: '[^A-Za-z0-9_]+'
-          replacement: ''
-
-      - name: Convert Case of Author
-        id: authorlowercase
-        uses: ASzc/change-string-case-action@v2
-        with:
-          string: ${{ steps.removeauthorpunctuation.outputs.value }}
-
       # Process extension code
       - name: Running luacheck
         uses: nebularg/actions-luacheck@v1
         with:
           files: '.'
           config: https://raw.githubusercontent.com/bmos/FG-luacheck/main/.luacheckrc
-          args: '--no-color --std +${{ steps.namelowercase.outputs.lowercase }}${{ steps.authorlowercase.outputs.lowercase }} --exclude-files .install/*'
+          args: '--no-color --std +${{ needs.getnames.outputs.extension }}${{ needs.getnames.outputs.author }} --exclude-files .install/*'
           annotate: 'warning'
