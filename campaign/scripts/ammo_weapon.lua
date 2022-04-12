@@ -1,6 +1,7 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
+
 --	luacheck: globals hasLoadAction
 function hasLoadAction(nodeWeapon)
 	local bHasLoadAction
@@ -30,6 +31,7 @@ function automateAmmo(nodeWeapon)
 	end
 end
 
+-- luacheck: globals onDataChanged
 function onDataChanged()
 	super.onLinkChanged();
 	super.onDamageChanged();

@@ -2,29 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
-local onAttackAction_old
-local function onAttackAction_new(draginfo, ...)
-	local nodeWeapon = getDatabaseNode();
-	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
-
-	-- only allow attacks when 'loading' weapons have been loaded
-	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil
-	local bIsLoaded = DB.getValue(nodeWeapon, 'isloaded', 0) == 1
-	if not bLoading or (bLoading and bIsLoaded) then
-		if (bInfiniteAmmo or nAmmo > 0) then
-			if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
-			return onAttackAction_old(draginfo, ...);
-		else
-			ChatManager.Message(Interface.getString('char_message_atkwithnoammo'), true, rActor);
-			if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
-		end
-	else
-		local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
-		ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor));
-	end
-	-- end bmos only allowing attacks when ammo is sufficient
-end
 
 --	luacheck: globals onDamageAction
 function onDamageAction(draginfo)
@@ -76,11 +53,37 @@ end
 function onInit()
 	if super then
 		if super.onAttackAction then
+
+			local onAttackAction_old
+			local function onAttackAction_new(draginfo, ...)
+				local nodeWeapon = getDatabaseNode();
+				local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
+				local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
+
+				-- only allow attacks when 'loading' weapons have been loaded
+				local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil
+				local bIsLoaded = DB.getValue(nodeWeapon, 'isloaded', 0) == 1
+				if not bLoading or (bLoading and bIsLoaded) then
+					if (bInfiniteAmmo or nAmmo > 0) then
+						if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
+						return onAttackAction_old(draginfo, ...);
+					else
+						ChatManager.Message(Interface.getString('char_message_atkwithnoammo'), true, rActor);
+						if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
+					end
+				else
+					local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
+					ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor));
+				end
+				-- end bmos only allowing attacks when ammo is sufficient
+			end
+
 			onAttackAction_old = super.onAttackAction;
 			super.onAttackAction = onAttackAction_new;
 		end
 		if super.onInit then super.onInit(); end
 	end
+
 	local nodeWeapon = getDatabaseNode();
 	DB.addHandler(nodeWeapon.getPath(), 'onChildUpdate', onDataChanged);
 	onDataChanged();
@@ -88,6 +91,7 @@ end
 
 function onClose()
 	if super and super.onClose then super.onClose(); end
+
 	local nodeWeapon = getDatabaseNode();
 	DB.removeHandler(nodeWeapon.getPath(), 'onChildUpdate', onDataChanged);
 end

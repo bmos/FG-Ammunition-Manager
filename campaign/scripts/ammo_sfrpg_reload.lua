@@ -39,9 +39,8 @@ function onReloadAction()
 	local rActor, _ = CharManager.getWeaponAttackRollStructures(nodeWeapon);
 
 	local nAmmo = DB.getValue(nodeWeapon, 'ammo', 0);
-	local nUses = DB.getValue(nodeWeapon, 'uses', 0);
 	if nAmmo > 0 then
-		if nUses == 1 then
+		if DB.getValue(nodeWeapon, 'uses', 0) == 1 then
 			ChatManager.Message(Interface.getString('char_message_ammodrawn'), true, rActor);
 			reduceItemCount(nodeWeapon, nAmmo);
 		else

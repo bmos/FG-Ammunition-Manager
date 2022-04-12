@@ -2,7 +2,8 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
---	luacheck: globals action
+
+--	luacheck: globals action getValue
 function action(draginfo)
 	local nodeWeapon = window.getDatabaseNode();
 	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
@@ -30,4 +31,5 @@ function action(draginfo)
 	return true;
 end
 
+--	luacheck: globals onDoubleClick
 function onDoubleClick() if not window.automateAmmo(window.getDatabaseNode()) then return action(); end end

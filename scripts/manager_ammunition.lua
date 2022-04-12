@@ -40,7 +40,7 @@ end
 local function breakWeapon(rSource, nodeWeapon, sWeaponName)
 
 	-- examine weapon properties to check if fragile
-	local function isFragile(nodeWeapon)
+	local function isFragile()
 		local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower();
 		local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0;
 		local bIsMasterwork = sWeaponProperties:find('masterwork') or false;
@@ -49,7 +49,7 @@ local function breakWeapon(rSource, nodeWeapon, sWeaponName)
 		return (bIsFragile and not bIsMagic and (not bIsMasterwork or bIsBone))
 	end
 
-	if nodeWeapon and isFragile(nodeWeapon) then
+	if nodeWeapon and isFragile() then
 		local nBroken = DB.getValue(nodeWeapon, 'broken', 0);
 		local nItemHitpoints = DB.getValue(nodeWeapon, 'hitpoints', 0);
 		local nItemDamage = DB.getValue(nodeWeapon, 'itemdamage', 0);
@@ -114,7 +114,7 @@ end
 --	luacheck: globals ammoTracker
 function ammoTracker(rSource, sDesc, sResult, bCountAll)
 
-	local function writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
+	local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
 		if nodeAmmoLink then
 			if nAmmoRemaining == 0 then
 				ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
@@ -159,7 +159,7 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 					local nodeAmmoLink = getAmmoNode(nodeWeapon)
 					local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 					if not bInfiniteAmmo then
-						writeAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
+						writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
 						countMissedShots(nodeWeapon, nodeAmmoLink)
 					end
 				end

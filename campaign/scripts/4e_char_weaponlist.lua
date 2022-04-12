@@ -38,7 +38,7 @@ function toggleDetail()
 		maxammo.setLink()
 		missedshots.setLink()
 	end
-	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
+	self.ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
 
 	local bShow = bRanged and (activatedetail.getValue() == 1);
 	ammunition_label.setVisible(bShow);
