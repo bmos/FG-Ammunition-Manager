@@ -10,7 +10,7 @@ function onDataChanged()
 	if User.getRulesetName() == '5E' then bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2; end
 
 	header_ammo.setVisible(bRanged);
-	ammopicker.setVisible(bRanged);
+	ammopicker.setComboBoxVisible(bRanged);
 	label_ammopicker.setVisible(bRanged);
 	recoverypercentage.setVisible(bRanged);
 	label_recoverypercentage.setVisible(bRanged);
