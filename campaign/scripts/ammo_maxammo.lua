@@ -2,7 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
-
 -- luacheck: globals ammo count onDoubleClick
 function onDoubleClick(x, y, ...)
 	if super and super.onDoubleClick then super.onDoubleClick(x, y, ...); end

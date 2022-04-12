@@ -1,7 +1,6 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
-
 --	luacheck: globals onLinkUpdated isReadOnly nolinkwidget addBitmapWidget onDrop onValueChanged setValue getValue setReadOnly
 local bLocked = false;
 local sLink = nil;

@@ -2,7 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
-
 --	luacheck: globals onDamageAction
 function onDamageAction(draginfo)
 	local nodeWeapon = getDatabaseNode();

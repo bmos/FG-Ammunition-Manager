@@ -425,9 +425,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 				bRemoveTarget = true;
 			end
 
-			if bRemoveTarget then
-				TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget));
-			end
+			if bRemoveTarget then TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget)); end
 		end
 	end
 
@@ -539,17 +537,13 @@ local function onAttack_4e(rSource, rTarget, rRoll) -- luacheck: ignore
 				bRemoveTarget = true;
 			end
 
-			if bRemoveTarget then
-				TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget));
-			end
+			if bRemoveTarget then TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget)); end
 		end
 	end
 
 	-- HANDLE FUMBLE/CRIT HOUSE RULES
 	local sOptionHRFC = OptionsManager.getOption('HRFC');
-	if rAction.sResult == 'fumble' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'fumble')) then
-		ActionAttack.notifyApplyHRFC('Fumble');
-	end
+	if rAction.sResult == 'fumble' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'fumble')) then ActionAttack.notifyApplyHRFC('Fumble'); end
 	if rAction.sResult == 'crit' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'criticalhit')) then
 		ActionAttack.notifyApplyHRFC('Critical Hit');
 	end
@@ -623,9 +617,7 @@ local function onAttack_5e(rSource, rTarget, rRoll) -- luacheck: ignore
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and ActorManager.isPC(rSource) then
-		AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult, true)
-	end
+	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult, true) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if rTarget then
@@ -640,17 +632,13 @@ local function onAttack_5e(rSource, rTarget, rRoll) -- luacheck: ignore
 	-- REMOVE TARGET ON MISS OPTION
 	if rTarget then
 		if (rAction.sResult == 'miss' or rAction.sResult == 'fumble') then
-			if rRoll.bRemoveOnMiss then
-				TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget));
-			end
+			if rRoll.bRemoveOnMiss then TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget)); end
 		end
 	end
 
 	-- HANDLE FUMBLE/CRIT HOUSE RULES
 	local sOptionHRFC = OptionsManager.getOption('HRFC');
-	if rAction.sResult == 'fumble' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'fumble')) then
-		ActionAttack.notifyApplyHRFC('Fumble');
-	end
+	if rAction.sResult == 'fumble' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'fumble')) then ActionAttack.notifyApplyHRFC('Fumble'); end
 	if rAction.sResult == 'crit' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'criticalhit')) then
 		ActionAttack.notifyApplyHRFC('Critical Hit');
 	end

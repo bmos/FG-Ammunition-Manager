@@ -2,7 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
-
 --	luacheck: globals action getValue
 function action(draginfo)
 	local nodeWeapon = window.getDatabaseNode();
@@ -22,9 +21,7 @@ function action(draginfo)
 		end
 	end
 
-	if not OptionsManager.isOption('RMMT', 'off') and #rRolls > 1 then
-		for _, v in ipairs(rRolls) do v.sDesc = v.sDesc .. ' [FULL]'; end
-	end
+	if not OptionsManager.isOption('RMMT', 'off') and #rRolls > 1 then for _, v in ipairs(rRolls) do v.sDesc = v.sDesc .. ' [FULL]'; end end
 
 	ActionsManager.performMultiAction(draginfo, rActor, 'attack', rRolls);
 
