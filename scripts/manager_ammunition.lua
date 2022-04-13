@@ -36,35 +36,6 @@ function getAmmoNode(nodeWeapon)
 	end
 end
 
---	if weapon is fragile, set as broken or destroyed and post a chat message.
-local function breakWeapon(rSource, nodeWeapon, sWeaponName)
-
-	-- examine weapon properties to check if fragile
-	local function isFragile()
-		local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower();
-		local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0;
-		local bIsMasterwork = sWeaponProperties:find('masterwork') or false;
-		local bIsBone = sWeaponProperties:find('bone') or false;
-		local bIsMagic = DB.getValue(nodeWeapon, 'bonus', 0) > 0;
-		return (bIsFragile and not bIsMagic and (not bIsMasterwork or bIsBone))
-	end
-
-	if nodeWeapon and isFragile() then
-		local nBroken = DB.getValue(nodeWeapon, 'broken', 0);
-		local nItemHitpoints = DB.getValue(nodeWeapon, 'hitpoints', 0);
-		local nItemDamage = DB.getValue(nodeWeapon, 'itemdamage', 0);
-		if nBroken == 0 then
-			DB.setValue(nodeWeapon, 'broken', 'number', 1);
-			DB.setValue(nodeWeapon, 'itemdamage', 'number', math.floor(nItemHitpoints / 2) + math.max(nItemDamage, 1));
-			ChatManager.Message(string.format(Interface.getString('char_actions_fragile_broken'), sWeaponName), true, rSource);
-		elseif nBroken == 1 then
-			DB.setValue(nodeWeapon, 'broken', 'number', 2);
-			DB.setValue(nodeWeapon, 'itemdamage', 'number', nItemHitpoints + math.max(nItemDamage, 1));
-			ChatManager.Message(string.format(Interface.getString('char_actions_fragile_destroyed'), sWeaponName), true, rSource);
-		end
-	end
-end
-
 --	luacheck: globals getWeaponName
 function getWeaponName(s)
 	local sWeaponName = s:gsub('%[ATTACK %(%u%)%]', '');
@@ -79,22 +50,23 @@ function getWeaponName(s)
 end
 
 local sRuleset;
-local function isInfiniteAmmo(rSource, nodeWeapon)
-	local bInfiniteAmmo = DB.getValue(nodeWeapon, 'type', 0) ~= 1;
-	if sRuleset == 'PFRPG' or sRuleset == '3.5E' then
-		bInfiniteAmmo = bInfiniteAmmo or EffectManager35E.hasEffectCondition(rSource, 'INFAMMO');
-	elseif sRuleset == '4E' then
-		bInfiniteAmmo = bInfiniteAmmo or EffectManager4E.hasEffectCondition(rSource, 'INFAMMO');
-	elseif sRuleset == '5E' then
-		local bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2
-		bInfiniteAmmo = (bInfiniteAmmo and not bThrown) or EffectManager5E.hasEffectCondition(rSource, 'INFAMMO');
-	end
-	return bInfiniteAmmo
-end
 
 --	luacheck: globals getAmmoRemaining
 function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
-	local bInfiniteAmmo = isInfiniteAmmo(rSource, nodeWeapon)
+	local function isInfiniteAmmo()
+		local bInfiniteAmmo = DB.getValue(nodeWeapon, 'type', 0) ~= 1;
+		if sRuleset == 'PFRPG' or sRuleset == '3.5E' then
+			bInfiniteAmmo = bInfiniteAmmo or EffectManager35E.hasEffectCondition(rSource, 'INFAMMO');
+		elseif sRuleset == '4E' then
+			bInfiniteAmmo = bInfiniteAmmo or EffectManager4E.hasEffectCondition(rSource, 'INFAMMO');
+		elseif sRuleset == '5E' then
+			local bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2
+			bInfiniteAmmo = (bInfiniteAmmo and not bThrown) or EffectManager5E.hasEffectCondition(rSource, 'INFAMMO');
+		end
+		return bInfiniteAmmo
+	end
+
+	local bInfiniteAmmo = isInfiniteAmmo()
 
 	local nAmmo = 0;
 	if not bInfiniteAmmo then
@@ -131,14 +103,37 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 		end
 	end
 
-	local function countMissedShots(nodeWeapon, nodeAmmoLink)
-		if nodeAmmoLink then
-			if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
-				DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.getValue(nodeAmmoLink, 'missedshots', 0) + 1);
-			end
-		else
-			if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
-				DB.setValue(nodeWeapon, 'missedshots', 'number', DB.getValue(nodeWeapon, 'missedshots', 0) + 1);
+	local function countMissedShots(nodeAmmoLink)
+		if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
+			DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.getValue(nodeAmmoLink, 'missedshots', 0) + 1);
+		end
+	end
+
+	--	if weapon is fragile, set as broken or destroyed and post a chat message.
+	local function breakWeapon(nodeWeapon, sWeaponName)
+
+		-- examine weapon properties to check if fragile
+		local function isFragile()
+			local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower();
+			local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0;
+			local bIsMasterwork = sWeaponProperties:find('masterwork') or false;
+			local bIsBone = sWeaponProperties:find('bone') or false;
+			local bIsMagic = DB.getValue(nodeWeapon, 'bonus', 0) > 0;
+			return (bIsFragile and not bIsMagic and (not bIsMasterwork or bIsBone))
+		end
+
+		if nodeWeapon and isFragile() then
+			local nBroken = DB.getValue(nodeWeapon, 'broken', 0);
+			local nItemHitpoints = DB.getValue(nodeWeapon, 'hitpoints', 0);
+			local nItemDamage = DB.getValue(nodeWeapon, 'itemdamage', 0);
+			if nBroken == 0 then
+				DB.setValue(nodeWeapon, 'broken', 'number', 1);
+				DB.setValue(nodeWeapon, 'itemdamage', 'number', math.floor(nItemHitpoints / 2) + math.max(nItemDamage, 1));
+				ChatManager.Message(string.format(Interface.getString('char_actions_fragile_broken'), sWeaponName), true, rSource);
+			elseif nBroken == 1 then
+				DB.setValue(nodeWeapon, 'broken', 'number', 2);
+				DB.setValue(nodeWeapon, 'itemdamage', 'number', nItemHitpoints + math.max(nItemDamage, 1));
+				ChatManager.Message(string.format(Interface.getString('char_actions_fragile_destroyed'), sWeaponName), true, rSource);
 			end
 		end
 	end
@@ -152,7 +147,7 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 				if sResult == 'fumble' then -- break fragile weapon on natural 1
 					local _, sWeaponNode = DB.getValue(nodeWeapon, 'shortcut', '')
 					local nodeWeaponLink = DB.findNode(sWeaponNode)
-					breakWeapon(rSource, nodeWeaponLink, sWeaponName)
+					breakWeapon(nodeWeaponLink, sWeaponName)
 				end
 				local bMelee = DB.getValue(nodeWeapon, 'type', 0) == 0
 				if (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) and not bMelee then
@@ -160,7 +155,7 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 					local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 					if not bInfiniteAmmo then
 						writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
-						countMissedShots(nodeWeapon, nodeAmmoLink)
+						countMissedShots(nodeAmmoLink or nodeWeapon)
 					end
 				end
 			end
