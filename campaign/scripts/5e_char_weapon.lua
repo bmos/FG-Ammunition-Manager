@@ -32,10 +32,10 @@ function onDamageAction(draginfo)
 end
 
 --	luacheck: globals onDataChanged
-function onDataChanged()
+function onDataChanged(nodeWeapon)
 	if super and super.onDataChanged then super.onDataChanged(); end
 
-	local nodeWeapon = getDatabaseNode();
+	nodeWeapon = nodeWeapon or getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil and not
 					                 EffectManager5E.hasEffectCondition(rActor, 'NOLOAD');
@@ -87,6 +87,12 @@ function onInit()
 
 	local nodeWeapon = getDatabaseNode();
 	DB.addHandler(nodeWeapon.getPath(), 'onChildUpdate', onDataChanged);
+
+	local nodeCT = ActorManager.getCTNode(ActorManager.resolveActor(nodeWeapon.getChild('...')))
+	DB.addHandler(DB.getPath(nodeCT, 'effects.*.label'), 'onUpdate', onDataChanged)
+	DB.addHandler(DB.getPath(nodeCT, 'effects.*.isactive'), 'onUpdate', onDataChanged)
+	DB.addHandler(DB.getPath(nodeCT, 'effects'), 'onChildDeleted', onDataChanged)
+
 	onDataChanged();
 end
 
@@ -95,4 +101,9 @@ function onClose()
 
 	local nodeWeapon = getDatabaseNode();
 	DB.removeHandler(nodeWeapon.getPath(), 'onChildUpdate', onDataChanged);
+
+	local nodeCT = ActorManager.getCTNode(ActorManager.resolveActor(nodeWeapon.getChild('...')))
+	DB.removeHandler(DB.getPath(nodeCT, 'effects.*.label'), 'onUpdate', onDataChanged)
+	DB.removeHandler(DB.getPath(nodeCT, 'effects.*.isactive'), 'onUpdate', onDataChanged)
+	DB.removeHandler(DB.getPath(nodeCT, 'effects'), 'onChildDeleted', onDataChanged)
 end
