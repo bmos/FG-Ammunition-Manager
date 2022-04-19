@@ -37,7 +37,7 @@ function onDataChanged()
 
 	local nodeWeapon = getDatabaseNode();
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil or
+	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil and not
 					                 EffectManager5E.hasEffectCondition(rActor, 'NOLOAD');
 	isloaded.setVisible(bLoading);
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
@@ -61,7 +61,7 @@ function onInit()
 				local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
 				-- only allow attacks when 'loading' weapons have been loaded
-				local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil or
+				local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil and not
 								                 EffectManager5E.hasEffectCondition(rActor, 'NOLOAD')
 				local bIsLoaded = DB.getValue(nodeWeapon, 'isloaded', 0) == 1
 				if not bLoading or (bLoading and bIsLoaded) then
