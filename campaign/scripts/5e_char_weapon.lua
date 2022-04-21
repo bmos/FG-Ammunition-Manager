@@ -59,7 +59,8 @@ function onInit()
 			local onAttackAction_old
 			local function onAttackAction_new(draginfo, ...)
 				local nodeWeapon = getDatabaseNode();
-				local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
+				local nodeChar = nodeWeapon.getChild('...')
+				local rActor = ActorManager.resolveActor(nodeChar)
 				local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
 				-- only allow attacks when 'loading' weapons have been loaded
