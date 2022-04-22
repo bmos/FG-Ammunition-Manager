@@ -56,8 +56,6 @@ function onDataChanged()
 		else
 			maxammo.setLink()
 		end
-	else
-		Debug.chat('WARNING: NO AMMUNITION SET ON ITEM', DB.getValue(nodeWeapon, 'name'))
 	end
 end
 
