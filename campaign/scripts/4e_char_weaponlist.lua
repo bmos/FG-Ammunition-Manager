@@ -40,8 +40,8 @@ function toggleDetail()
 	end
 	self.ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
 
-	local bShow = bRanged and (activatedetail.getValue() == 1);
-	ammunition_label.setVisible(bShow);
+	local bShow = bRanged and activatedetail and (activatedetail.getValue() == 1);
+	if ammunition_label then ammunition_label.setVisible(bShow); end
 	recoverypercentage.setVisible(bShow);
 	label_ammopercentof.setVisible(bShow);
 	missedshots.setVisible(bShow);
