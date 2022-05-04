@@ -38,15 +38,15 @@ function toggleDetail()
 		maxammo.setLink();
 		if missedshots then missedshots.setLink(); end
 	end
-	self.ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
+	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
 
 	local bShow = bRanged and activatedetail and (activatedetail.getValue() == 1);
 	if ammunition_label then ammunition_label.setVisible(bShow); end
-	recoverypercentage.setVisible(bShow);
-	label_ammopercentof.setVisible(bShow);
-	missedshots.setVisible(bShow);
-	recoverammo.setVisible(bShow);
-	ammopicker.setComboBoxVisible(bShow);
+	if recoverypercentage then recoverypercentage.setVisible(bShow); end
+	if label_ammopercentof then label_ammopercentof.setVisible(bShow); end
+	if missedshots then missedshots.setVisible(bShow); end
+	if recoverammo then recoverammo.setVisible(bShow); end
+	if ammopicker then ammopicker.setComboBoxVisible(bShow); end
 
 	-- re-build ammopicker list when opening details
 	if bShow then
