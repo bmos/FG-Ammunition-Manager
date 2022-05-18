@@ -216,7 +216,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 	-- for compatibility with mirror image handler, add this here in your onAttack function
 	if MirrorImageHandler then
 		-- Get the misfire threshold
-		local sMisfireRange = string.match(rRoll.sDesc, '%[MISFIRE (%d+)%]');
+		local sMisfireRange = string.match(rRoll.sDesc, "%[MISFIRE (%d+)%]");
 		if sMisfireRange then rAction.nMisfire = tonumber(sMisfireRange) or 0; end
 	end
 	-- end compatibility with mirror image handler
@@ -269,9 +269,9 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 		end
 
 		-- for compatibility with mirror image handler, add this here in your onAttack function
-	elseif MirrorImageHandler and rAction.nMisfire and rAction.nFirstDie <= rAction.nMisfire and rRoll.sType == 'attack' then
-		table.insert(rAction.aMessages, '[MISFIRE]');
-		rAction.sResult = 'miss';
+	elseif MirrorImageHandler and rAction.nMisfire and rAction.nFirstDie <= rAction.nMisfire and rRoll.sType == "attack" then
+		table.insert(rAction.aMessages, "[MISFIRE]");
+		rAction.sResult = "miss";
 		-- end compatibility with mirror image handler
 
 	elseif nDefenseVal then
@@ -369,7 +369,7 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 			bRollMissChance = true;
 
 			-- for compatibility with mirror image handler, add this here in your onAttack function
-		elseif MirrorImageHandler and (rAction.sResult == 'miss') and (nDefenseVal - rAction.nTotal <= 5) then
+		elseif MirrorImageHandler and (rAction.sResult == "miss") and (nDefenseVal - rAction.nTotal <= 5) then
 			bRollMissChance = true;
 			nMissChance = 0;
 			-- end compatibility with mirror image handler
@@ -393,16 +393,15 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 	elseif MirrorImageHandler and bRollMissChance then
 		local nMirrorImageCount = MirrorImageHandler.getMirrorImageCount(rTarget);
 		if nMirrorImageCount > 0 then
-			if rAction.sResult == 'hit' or rAction.sResult == 'crit' then
+			if rAction.sResult == "hit" or rAction.sResult == "crit" or rRoll.sType == "critconfirm" then
 				local rMirrorImageRoll = MirrorImageHandler.getMirrorImageRoll(nMirrorImageCount, rRoll.sDesc);
 				ActionsManager.roll(rSource, rTarget, rMirrorImageRoll);
-			elseif rRoll.sType ~= 'critconfirm' then
+			elseif rRoll.sType ~= "critconfirm" then
 				MirrorImageHandler.removeImage(rSource, rTarget);
-				table.insert(rAction.aMessages, '[MIRROR IMAGE REMOVED BY NEAR MISS]');
+				table.insert(rAction.aMessages, "[MIRROR IMAGE REMOVED BY NEAR MISS]");
 			end
 		end
 		-- end compatibility with mirror image handler
-
 	end
 
 	if rTarget then
