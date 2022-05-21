@@ -183,33 +183,36 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
 	local bIsSourcePC = ActorManager.isPC(rSource);
-	local bAllowCC = OptionsManager.isOption('HRCC', 'on') or (not bIsSourcePC and OptionsManager.isOption('HRCC', 'npc'));
+	local bAllowCC = OptionsManager.isOption("HRCC", "on") or (not bIsSourcePC and OptionsManager.isOption("HRCC", "npc"));
 
-	if rRoll.sDesc:match('%[CMB') then rRoll.sType = 'grapple'; end
+	if rRoll.sDesc:match("%[CMB") then
+		rRoll.sType = "grapple";
+	end
 
-	local rAction = {};
-	rAction.nTotal = ActionsManager.total(rRoll);
-	rAction.aMessages = {};
+	rRoll.nTotal = ActionsManager.total(rRoll);
+	rRoll.aMessages = {};
 
 	-- If we have a target, then calculate the defense we need to exceed
 	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance;
-	if rRoll.sType == 'critconfirm' then
-		local sDefenseVal = rRoll.sDesc:match(' %[AC (%d+)%]');
-		if sDefenseVal then nDefenseVal = tonumber(sDefenseVal); end
-		nMissChance = tonumber(rRoll.sDesc:match('%[MISS CHANCE (%d+)%%%]')) or 0;
-		rMessage.text = rMessage.text:gsub(' %[AC %d+%]', '');
-		rMessage.text = rMessage.text:gsub(' %[MISS CHANCE %d+%%%]', '');
+	if rRoll.sType == "critconfirm" then
+		local sDefenseVal = rRoll.sDesc:match(" %[AC (%d+)%]");
+		if sDefenseVal then
+			nDefenseVal = tonumber(sDefenseVal);
+		end
+		nMissChance = tonumber(rRoll.sDesc:match("%[MISS CHANCE (%d+)%%%]")) or 0;
+		rMessage.text = rMessage.text:gsub(" %[AC %d+%]", "");
+		rMessage.text = rMessage.text:gsub(" %[MISS CHANCE %d+%%%]", "");
 	else
 		nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus, nMissChance = ActorManager35E.getDefenseValue(rSource, rTarget, rRoll);
 		if nAtkEffectsBonus ~= 0 then
-			rAction.nTotal = rAction.nTotal + nAtkEffectsBonus;
-			local sFormat = '[' .. Interface.getString('effects_tag') .. ' %+d]';
-			table.insert(rAction.aMessages, string.format(sFormat, nAtkEffectsBonus));
+			rRoll.nTotal = rRoll.nTotal + nAtkEffectsBonus;
+			local sFormat = "[" .. Interface.getString("effects_tag") .. " %+d]";
+			table.insert(rRoll.aMessages, string.format(sFormat, nAtkEffectsBonus));
 		end
 		if nDefEffectsBonus ~= 0 then
 			nDefenseVal = nDefenseVal + nDefEffectsBonus;
-			local sFormat = '[' .. Interface.getString('effects_def_tag') .. ' %+d]';
-			table.insert(rAction.aMessages, string.format(sFormat, nDefEffectsBonus));
+			local sFormat = "[" .. Interface.getString("effects_def_tag") .. " %+d]";
+			table.insert(rRoll.aMessages, string.format(sFormat, nDefEffectsBonus));
 		end
 	end
 
@@ -217,118 +220,121 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 	if MirrorImageHandler then
 		-- Get the misfire threshold
 		local sMisfireRange = string.match(rRoll.sDesc, "%[MISFIRE (%d+)%]");
-		if sMisfireRange then rAction.nMisfire = tonumber(sMisfireRange) or 0; end
+		if sMisfireRange then rRoll.nMisfire = tonumber(sMisfireRange) or 0; end
 	end
 	-- end compatibility with mirror image handler
 
 	-- Get the crit threshold
-	rAction.nCrit = 20;
-	local sAltCritRange = string.match(rRoll.sDesc, '%[CRIT (%d+)%]');
+	rRoll.nCrit = 20;
+	local sAltCritRange = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
 	if sAltCritRange then
-		rAction.nCrit = tonumber(sAltCritRange) or 20;
-		if (rAction.nCrit <= 1) or (rAction.nCrit > 20) then rAction.nCrit = 20; end
+		rRoll.nCrit = tonumber(sAltCritRange) or 20;
+		if (rRoll.nCrit <= 1) or (rRoll.nCrit > 20) then
+			rRoll.nCrit = 20;
+		end
 	end
 
-	rAction.nFirstDie = 0;
-	if #(rRoll.aDice) > 0 then rAction.nFirstDie = rRoll.aDice[1].result or 0; end
-	rAction.bCritThreat = false;
-	if rAction.nFirstDie >= 20 then
-		rAction.bSpecial = true;
-		if rRoll.sType == 'critconfirm' then
-			rAction.sResult = 'crit';
-			table.insert(rAction.aMessages, '[CRITICAL HIT]');
-		elseif rRoll.sType == 'attack' then
+	rRoll.nFirstDie = 0;
+	if #(rRoll.aDice) > 0 then
+		rRoll.nFirstDie = rRoll.aDice[1].result or 0;
+	end
+	rRoll.bCritThreat = false;
+	if rRoll.nFirstDie >= 20 then
+		rRoll.bSpecial = true;
+		if rRoll.sType == "critconfirm" then
+			rRoll.sResult = "crit";
+			table.insert(rRoll.aMessages, "[CRITICAL HIT]");
+		elseif rRoll.sType == "attack" then
 			if bAllowCC then
-				rAction.sResult = 'hit';
-				rAction.bCritThreat = true;
-				table.insert(rAction.aMessages, '[AUTOMATIC HIT]');
+				rRoll.sResult = "hit";
+				rRoll.bCritThreat = true;
+				table.insert(rRoll.aMessages, "[AUTOMATIC HIT]");
 			else
-				rAction.sResult = 'crit';
-				table.insert(rAction.aMessages, '[CRITICAL HIT]');
+				rRoll.sResult = "crit";
+				table.insert(rRoll.aMessages, "[CRITICAL HIT]");
 			end
 		else
-			rAction.sResult = 'hit';
-			table.insert(rAction.aMessages, '[AUTOMATIC HIT]');
+			rRoll.sResult = "hit";
+			table.insert(rRoll.aMessages, "[AUTOMATIC HIT]");
 		end
-	elseif rAction.nFirstDie == 1 then
-		if rRoll.sType == 'critconfirm' then
-			table.insert(rAction.aMessages, '[CRIT NOT CONFIRMED]');
-			rAction.sResult = 'miss';
+	elseif rRoll.nFirstDie == 1 then
+		if rRoll.sType == "critconfirm" then
+			table.insert(rRoll.aMessages, "[CRIT NOT CONFIRMED]");
+			rRoll.sResult = "miss";
 		else
-
 			-- for compatibility with mirror image handler, add this here in your onAttack function
-			if MirrorImageHandler and rAction.nMisfire and rRoll.sType == 'attack' then
-				table.insert(rAction.aMessages, '[MISFIRE]');
-				rAction.sResult = 'miss';
+			if MirrorImageHandler and rRoll.nMisfire and rRoll.sType == "attack" then
+				table.insert(rRoll.aMessages, "[MISFIRE]");
+				rRoll.sResult = "miss";
 			else
 				-- end compatibility with mirror image handler
 
-				table.insert(rAction.aMessages, '[AUTOMATIC MISS]');
-				rAction.sResult = 'fumble';
+				table.insert(rRoll.aMessages, "[AUTOMATIC MISS]");
+				rRoll.sResult = "fumble";
 			end
 		end
 
 		-- for compatibility with mirror image handler, add this here in your onAttack function
-	elseif MirrorImageHandler and rAction.nMisfire and rAction.nFirstDie <= rAction.nMisfire and rRoll.sType == "attack" then
-		table.insert(rAction.aMessages, "[MISFIRE]");
-		rAction.sResult = "miss";
+	elseif MirrorImageHandler and rRoll.nMisfire and rRoll.nFirstDie <= rRoll.nMisfire and rRoll.sType == "attack" then
+		table.insert(rRoll.aMessages, "[MISFIRE]");
+		rRoll.sResult = "miss";
 		-- end compatibility with mirror image handler
 
 	elseif nDefenseVal then
-		if rAction.nTotal >= nDefenseVal then
-			if rRoll.sType == 'critconfirm' then
-				rAction.sResult = 'crit';
-				table.insert(rAction.aMessages, '[CRITICAL HIT]');
-			elseif rRoll.sType == 'attack' and rAction.nFirstDie >= rAction.nCrit then
+		if rRoll.nTotal >= nDefenseVal then
+			if rRoll.sType == "critconfirm" then
+				rRoll.sResult = "crit";
+				table.insert(rRoll.aMessages, "[CRITICAL HIT]");
+			elseif rRoll.sType == "attack" and rRoll.nFirstDie >= rRoll.nCrit then
 				if bAllowCC then
-					rAction.sResult = 'hit';
-					rAction.bCritThreat = true;
-					table.insert(rAction.aMessages, '[CRITICAL THREAT]');
+					rRoll.sResult = "hit";
+					rRoll.bCritThreat = true;
+					table.insert(rRoll.aMessages, "[CRITICAL THREAT]");
 				else
-					rAction.sResult = 'crit';
-					table.insert(rAction.aMessages, '[CRITICAL HIT]');
+					rRoll.sResult = "crit";
+					table.insert(rRoll.aMessages, "[CRITICAL HIT]");
 				end
 			else
-				rAction.sResult = 'hit';
-				table.insert(rAction.aMessages, '[HIT]');
+				rRoll.sResult = "hit";
+				table.insert(rRoll.aMessages, "[HIT]");
 			end
 		else
-			rAction.sResult = 'miss';
-			if rRoll.sType == 'critconfirm' then
-				table.insert(rAction.aMessages, '[CRIT NOT CONFIRMED]');
+			rRoll.sResult = "miss";
+			if rRoll.sType == "critconfirm" then
+				table.insert(rRoll.aMessages, "[CRIT NOT CONFIRMED]");
 			else
-				table.insert(rAction.aMessages, '[MISS]');
+				table.insert(rRoll.aMessages, "[MISS]");
 			end
 		end
-	elseif rRoll.sType == 'critconfirm' then
-		rAction.sResult = 'crit';
-		table.insert(rAction.aMessages, '[CHECK FOR CRITICAL]');
-	elseif rRoll.sType == 'attack' and rAction.nFirstDie >= rAction.nCrit then
+	elseif rRoll.sType == "critconfirm" then
+		rRoll.sResult = "crit";
+		table.insert(rRoll.aMessages, "[CHECK FOR CRITICAL]");
+	elseif rRoll.sType == "attack" and rRoll.nFirstDie >= rRoll.nCrit then
 		if bAllowCC then
-			rAction.sResult = 'hit';
-			rAction.bCritThreat = true;
+			rRoll.sResult = "hit";
+			rRoll.bCritThreat = true;
 		else
-			rAction.sResult = 'crit';
+			rRoll.sResult = "crit";
 		end
-		table.insert(rAction.aMessages, '[CHECK FOR CRITICAL]');
+		table.insert(rRoll.aMessages, "[CHECK FOR CRITICAL]");
 	end
 
-	if ((rRoll.sType == 'critconfirm') or not rAction.bCritThreat) and (nMissChance > 0) then
-		table.insert(rAction.aMessages, '[MISS CHANCE ' .. nMissChance .. '%]');
+	if ((rRoll.sType == "critconfirm") or not rRoll.bCritThreat) and (nMissChance > 0) then
+		table.insert(rRoll.aMessages, "[MISS CHANCE " .. nMissChance .. "%]");
 	end
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager and OptionsManager.isOption('ATKRESULTWEAPON', 'on') then
-		table.insert(rAction.aMessages, 'with ' .. AmmunitionManager.getWeaponName(rRoll.sDesc));
+		table.insert(rRoll.aMessages, 'with ' .. AmmunitionManager.getWeaponName(rRoll.sDesc));
 	end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager then
-		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rAction.nTotal)
-		if nHitMargin then table.insert(rAction.aMessages, '[BY ' .. nHitMargin .. '+]') end
+		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rRoll.nTotal)
+		if nHitMargin then table.insert(rRoll.aMessages, '[BY ' .. nHitMargin .. '+]') end
 	end
 	--	end bmos adding hit margin tracking
 
@@ -336,40 +342,46 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult); end
+	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult); end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
-	if rAction.sResult == 'crit' then ActionAttack.setCritState(rSource, rTarget); end
+	if rRoll.sResult == "crit" then
+		ActionAttack.setCritState(rSource, rTarget);
+	end
 
 	local bRollMissChance = false;
-	if rRoll.sType == 'critconfirm' then
+	if rRoll.sType == "critconfirm" then
 		bRollMissChance = true;
 	else
-		if rAction.bCritThreat then
-			local rCritConfirmRoll = { sType = 'critconfirm', aDice = { 'd20' }, bTower = rRoll.bTower, bSecret = rRoll.bSecret };
+		if rRoll.bCritThreat then
+			local rCritConfirmRoll = { sType = "critconfirm", aDice = {"d20"}, bTower = rRoll.bTower, bSecret = rRoll.bSecret };
 
-			local nCCMod = EffectManager35E.getEffectsBonus(rSource, { 'CC' }, true, nil, rTarget);
+			local nCCMod = EffectManager35E.getEffectsBonus(rSource, {"CC"}, true, nil, rTarget);
 			if nCCMod ~= 0 then
-				rCritConfirmRoll.sDesc = string.format('%s [CONFIRM %+d]', rRoll.sDesc, nCCMod);
+				rCritConfirmRoll.sDesc = string.format("%s [CONFIRM %+d]", rRoll.sDesc, nCCMod);
 			else
-				rCritConfirmRoll.sDesc = rRoll.sDesc .. ' [CONFIRM]';
+				rCritConfirmRoll.sDesc = rRoll.sDesc .. " [CONFIRM]";
 			end
-			if nMissChance > 0 then rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. ' [MISS CHANCE ' .. nMissChance .. '%]'; end
+			if nMissChance > 0 then
+				rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. " [MISS CHANCE " .. nMissChance .. "%]";
+			end
 			rCritConfirmRoll.nMod = rRoll.nMod + nCCMod;
 
-			if nDefenseVal then rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. ' [AC ' .. nDefenseVal .. ']'; end
+			if nDefenseVal then
+				rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. " [AC " .. nDefenseVal .. "]";
+			end
 
 			if nAtkEffectsBonus and nAtkEffectsBonus ~= 0 then
-				local sFormat = '[' .. Interface.getString('effects_tag') .. ' %+d]';
-				rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. ' ' .. string.format(sFormat, nAtkEffectsBonus);
+				local sFormat = "[" .. Interface.getString("effects_tag") .. " %+d]";
+				rCritConfirmRoll.sDesc = rCritConfirmRoll.sDesc .. " " .. string.format(sFormat, nAtkEffectsBonus);
 			end
 
 			ActionsManager.roll(rSource, { rTarget }, rCritConfirmRoll, true);
-		elseif (rAction.sResult ~= 'miss') and (rAction.sResult ~= 'fumble') then
+		elseif (rRoll.sResult ~= "miss") and (rRoll.sResult ~= "fumble") then
 			bRollMissChance = true;
 
 			-- for compatibility with mirror image handler, add this here in your onAttack function
-		elseif MirrorImageHandler and (rAction.sResult == "miss") and (nDefenseVal - rAction.nTotal <= 5) then
+		elseif MirrorImageHandler and (rRoll.sResult == "miss") and (nDefenseVal - rRoll.nTotal <= 5) then
 			bRollMissChance = true;
 			nMissChance = 0;
 			-- end compatibility with mirror image handler
@@ -393,33 +405,32 @@ local function onAttack_pfrpg(rSource, rTarget, rRoll) -- luacheck: ignore
 	elseif MirrorImageHandler and bRollMissChance then
 		local nMirrorImageCount = MirrorImageHandler.getMirrorImageCount(rTarget);
 		if nMirrorImageCount > 0 then
-			if rAction.sResult == "hit" or rAction.sResult == "crit" or rRoll.sType == "critconfirm" then
+			if rRoll.sResult == "hit" or rRoll.sResult == "crit" or rRoll.sType == "critconfirm" then
 				local rMirrorImageRoll = MirrorImageHandler.getMirrorImageRoll(nMirrorImageCount, rRoll.sDesc);
 				ActionsManager.roll(rSource, rTarget, rMirrorImageRoll);
 			elseif rRoll.sType ~= "critconfirm" then
 				MirrorImageHandler.removeImage(rSource, rTarget);
-				table.insert(rAction.aMessages, "[MIRROR IMAGE REMOVED BY NEAR MISS]");
+				table.insert(rRoll.aMessages, "[MIRROR IMAGE REMOVED BY NEAR MISS]");
 			end
 		end
 		-- end compatibility with mirror image handler
 	end
 
 	if rTarget then
-		ActionAttack.notifyApplyAttack(
-						rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, ' ')
-		);
+		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rRoll.nTotal, table.concat(rRoll.aMessages, " ")); -- luacheck: ignore
 
 		-- REMOVE TARGET ON MISS OPTION
-		if (rAction.sResult == 'miss' or rAction.sResult == 'fumble') and rRoll.sType ~= 'critconfirm' and
-						not string.match(rRoll.sDesc, '%[FULL%]') then
+		if (rRoll.sResult == "miss" or rRoll.sResult == "fumble") and rRoll.sType ~= "critconfirm" and not string.match(rRoll.sDesc, "%[FULL%]") then -- luacheck: ignore
 			local bRemoveTarget = false;
-			if OptionsManager.isOption('RMMT', 'on') then
+			if OptionsManager.isOption("RMMT", "on") then
 				bRemoveTarget = true;
 			elseif rRoll.bRemoveOnMiss then
 				bRemoveTarget = true;
 			end
 
-			if bRemoveTarget then TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget)); end
+			if bRemoveTarget then
+				TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget));
+			end
 		end
 	end
 
@@ -429,79 +440,82 @@ end
 local function onAttack_4e(rSource, rTarget, rRoll) -- luacheck: ignore
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
 
-	local rAction = {};
-	rAction.nTotal = ActionsManager.total(rRoll);
-	rAction.aMessages = {};
+	rRoll.nTotal = ActionsManager.total(rRoll);
+	rRoll.aMessages = {};
 
 	-- If we have a target, then calculate the defense we need to exceed
 	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus = ActorManager4E.getDefenseValue(rSource, rTarget, rRoll);
 	if nAtkEffectsBonus ~= 0 then
-		rAction.nTotal = rAction.nTotal + nAtkEffectsBonus;
-		local sFormat = '[' .. Interface.getString('effects_tag') .. ' %+d]'
-		table.insert(rAction.aMessages, string.format(sFormat, nAtkEffectsBonus));
+		rRoll.nTotal = rRoll.nTotal + nAtkEffectsBonus;
+		local sFormat = "[" .. Interface.getString("effects_tag") .. " %+d]"
+		table.insert(rRoll.aMessages, string.format(sFormat, nAtkEffectsBonus));
 	end
 	if nDefEffectsBonus ~= 0 then
 		nDefenseVal = nDefenseVal + nDefEffectsBonus;
-		local sFormat = '[' .. Interface.getString('effects_def_tag') .. ' %+d]'
-		table.insert(rAction.aMessages, string.format(sFormat, nDefEffectsBonus));
+		local sFormat = "[" .. Interface.getString("effects_def_tag") .. " %+d]"
+		table.insert(rRoll.aMessages, string.format(sFormat, nDefEffectsBonus));
 	end
 
 	-- Get the crit threshold
-	rAction.nCrit = 20;
-	local sAltCritRange = string.match(rRoll.sDesc, '%[CRIT (%d+)%]');
+	rRoll.nCrit = 20;
+	local sAltCritRange = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
 	if sAltCritRange then
-		rAction.nCrit = tonumber(sAltCritRange) or 20;
-		if (rAction.nCrit <= 1) or (rAction.nCrit > 20) then rAction.nCrit = 20; end
+		rRoll.nCrit = tonumber(sAltCritRange) or 20;
+		if (rRoll.nCrit <= 1) or (rRoll.nCrit > 20) then
+			rRoll.nCrit = 20;
+		end
 	end
 
-	rAction.nFirstDie = 0;
-	if #(rRoll.aDice) > 0 then rAction.nFirstDie = rRoll.aDice[1].result or 0; end
-	if rAction.nFirstDie >= 20 then
-		rAction.bSpecial = true;
+	rRoll.nFirstDie = 0;
+	if #(rRoll.aDice) > 0 then
+		rRoll.nFirstDie = rRoll.aDice[1].result or 0;
+	end
+	if rRoll.nFirstDie >= 20 then
+		rRoll.bSpecial = true;
 		if nDefenseVal then
-			if rAction.nTotal >= nDefenseVal then
-				rAction.sResult = 'crit';
-				table.insert(rAction.aMessages, '[CRITICAL HIT]');
+			if rRoll.nTotal >= nDefenseVal then
+				rRoll.sResult = "crit";
+				table.insert(rRoll.aMessages, "[CRITICAL HIT]");
 			else
-				rAction.sResult = 'hit';
-				table.insert(rAction.aMessages, '[AUTOMATIC HIT]');
+				rRoll.sResult = "hit";
+				table.insert(rRoll.aMessages, "[AUTOMATIC HIT]");
 			end
 		else
-			table.insert(rAction.aMessages, '[AUTOMATIC HIT, CHECK FOR CRITICAL]');
+			table.insert(rRoll.aMessages, "[AUTOMATIC HIT, CHECK FOR CRITICAL]");
 		end
-	elseif rAction.nFirstDie == 1 then
-		rAction.sResult = 'fumble';
-		table.insert(rAction.aMessages, '[AUTOMATIC MISS]');
+	elseif rRoll.nFirstDie == 1 then
+		rRoll.sResult = "fumble";
+		table.insert(rRoll.aMessages, "[AUTOMATIC MISS]");
 	elseif nDefenseVal then
-		if rAction.nTotal >= nDefenseVal then
-			if rAction.nFirstDie >= rAction.nCrit then
-				rAction.sResult = 'crit';
-				table.insert(rAction.aMessages, '[CRITICAL HIT]');
+		if rRoll.nTotal >= nDefenseVal then
+			if rRoll.nFirstDie >= rRoll.nCrit then
+				rRoll.sResult = "crit";
+				table.insert(rRoll.aMessages, "[CRITICAL HIT]");
 			else
-				rAction.sResult = 'hit';
-				table.insert(rAction.aMessages, '[HIT]');
+				rRoll.sResult = "hit";
+				table.insert(rRoll.aMessages, "[HIT]");
 			end
 		else
-			rAction.sResult = 'miss';
-			table.insert(rAction.aMessages, '[MISS]');
+			rRoll.sResult = "miss";
+			table.insert(rRoll.aMessages, "[MISS]");
 		end
-	elseif rAction.nFirstDie >= rAction.nCrit then
-		rAction.sResult = 'crit';
-		table.insert(rAction.aMessages, '[CHECK FOR CRITICAL]');
+	elseif rRoll.nFirstDie >= rRoll.nCrit then
+		rRoll.sResult = "crit";
+		table.insert(rRoll.aMessages, "[CHECK FOR CRITICAL]");
 	end
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager and OptionsManager.isOption('ATKRESULTWEAPON', 'on') then
-		table.insert(rAction.aMessages, 'with ' .. getWeaponName(rRoll.sDesc))
+		table.insert(rRoll.aMessages, 'with ' .. getWeaponName(rRoll.sDesc))
 	end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager then
-		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rAction.nTotal);
-		if nHitMargin then table.insert(rAction.aMessages, '[BY ' .. nHitMargin .. '+]') end
+		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rRoll.nTotal);
+		if nHitMargin then table.insert(rRoll.aMessages, '[BY ' .. nHitMargin .. '+]') end
 	end
 	--	end bmos adding hit margin tracking
 
@@ -509,38 +523,35 @@ local function onAttack_4e(rSource, rTarget, rRoll) -- luacheck: ignore
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult) end
+	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if rTarget then
-		ActionAttack.notifyApplyAttack(
-						rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, ' ')
-		);
+		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rRoll.nTotal, table.concat(rRoll.aMessages, " ")); -- luacheck: ignore
 	end
 
 	-- TRACK CRITICAL STATE
-	if rAction.sResult == 'crit' then ActionAttack.setCritState(rSource, rTarget); end
+	if rRoll.sResult == "crit" then
+		ActionAttack.setCritState(rSource, rTarget);
+	end
 
 	-- REMOVE TARGET ON MISS OPTION
 	if rTarget then
-		if (rAction.sResult == 'miss') or (rAction.sResult == 'fumble') then
+		if (rRoll.sResult == "miss") or (rRoll.sResult == "fumble") then
 			local bRemoveTarget = false;
-			if OptionsManager.isOption('RMMT', 'on') then
+			if OptionsManager.isOption("RMMT", "on") then
 				bRemoveTarget = true;
-			elseif string.match(rRoll.sDesc, '%[RM%]') then
+			elseif string.match(rRoll.sDesc, "%[RM%]") then
 				bRemoveTarget = true;
 			end
 
-			if bRemoveTarget then TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget)); end
+			if bRemoveTarget then
+				TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget));
+			end
 		end
 	end
 
-	-- HANDLE FUMBLE/CRIT HOUSE RULES
-	local sOptionHRFC = OptionsManager.getOption('HRFC');
-	if rAction.sResult == 'fumble' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'fumble')) then ActionAttack.notifyApplyHRFC('Fumble'); end
-	if rAction.sResult == 'crit' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'criticalhit')) then
-		ActionAttack.notifyApplyHRFC('Critical Hit');
-	end
+	ActionAttack.onPostAttackResolve(rRoll);
 end
 
 local function decrementAmmo_5e() end
@@ -549,61 +560,66 @@ local function onAttack_5e(rSource, rTarget, rRoll) -- luacheck: ignore
 	ActionsManager2.decodeAdvantage(rRoll);
 
 	local rMessage = ActionsManager.createActionMessage(rSource, rRoll);
-	rMessage.text = string.gsub(rMessage.text, ' %[MOD:[^]]*%]', '');
+	rMessage.text = string.gsub(rMessage.text, " %[MOD:[^]]*%]", "");
 
-	local rAction = {};
-	rAction.nTotal = ActionsManager.total(rRoll);
-	rAction.aMessages = {};
+	rRoll.nTotal = ActionsManager.total(rRoll);
+	rRoll.aMessages = {};
 
 	local nDefenseVal, nAtkEffectsBonus, nDefEffectsBonus = ActorManager5E.getDefenseValue(rSource, rTarget, rRoll);
 	if nAtkEffectsBonus ~= 0 then
-		rAction.nTotal = rAction.nTotal + nAtkEffectsBonus;
-		local sFormat = '[' .. Interface.getString('effects_tag') .. ' %+d]'
-		table.insert(rAction.aMessages, string.format(sFormat, nAtkEffectsBonus));
+		rRoll.nTotal = rRoll.nTotal + nAtkEffectsBonus;
+		local sFormat = "[" .. Interface.getString("effects_tag") .. " %+d]"
+		table.insert(rRoll.aMessages, string.format(sFormat, nAtkEffectsBonus));
 	end
 	if nDefEffectsBonus ~= 0 then
 		nDefenseVal = nDefenseVal + nDefEffectsBonus;
-		local sFormat = '[' .. Interface.getString('effects_def_tag') .. ' %+d]'
-		table.insert(rAction.aMessages, string.format(sFormat, nDefEffectsBonus));
+		local sFormat = "[" .. Interface.getString("effects_def_tag") .. " %+d]"
+		table.insert(rRoll.aMessages, string.format(sFormat, nDefEffectsBonus));
 	end
 
-	local sCritThreshold = string.match(rRoll.sDesc, '%[CRIT (%d+)%]');
+	local sCritThreshold = string.match(rRoll.sDesc, "%[CRIT (%d+)%]");
 	local nCritThreshold = tonumber(sCritThreshold) or 20;
-	if nCritThreshold < 2 or nCritThreshold > 20 then nCritThreshold = 20; end
+	if nCritThreshold < 2 or nCritThreshold > 20 then
+		nCritThreshold = 20;
+	end
 
-	rAction.nFirstDie = 0;
-	if #(rRoll.aDice) > 0 then rAction.nFirstDie = rRoll.aDice[1].result or 0; end
-	if rAction.nFirstDie >= nCritThreshold then
-		rAction.bSpecial = true;
-		rAction.sResult = 'crit';
-		table.insert(rAction.aMessages, '[CRITICAL HIT]');
-	elseif rAction.nFirstDie == 1 then
-		rAction.sResult = 'fumble';
-		table.insert(rAction.aMessages, '[AUTOMATIC MISS]');
+	rRoll.nFirstDie = 0;
+	if #(rRoll.aDice) > 0 then
+		rRoll.nFirstDie = rRoll.aDice[1].result or 0;
+	end
+	if rRoll.nFirstDie >= nCritThreshold then
+		rRoll.bSpecial = true;
+		rRoll.sResult = "crit";
+		table.insert(rRoll.aMessages, "[CRITICAL HIT]");
+	elseif rRoll.nFirstDie == 1 then
+		rRoll.sResult = "fumble";
+		table.insert(rRoll.aMessages, "[AUTOMATIC MISS]");
 	elseif nDefenseVal then
-		if rAction.nTotal >= nDefenseVal then
-			rAction.sResult = 'hit';
-			table.insert(rAction.aMessages, '[HIT]');
+		if rRoll.nTotal >= nDefenseVal then
+			rRoll.sResult = "hit";
+			table.insert(rRoll.aMessages, "[HIT]");
 		else
-			rAction.sResult = 'miss';
-			table.insert(rAction.aMessages, '[MISS]');
+			rRoll.sResult = "miss";
+			table.insert(rRoll.aMessages, "[MISS]");
 		end
 	end
 
 	--	bmos adding weapon name to chat
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager and OptionsManager.isOption('ATKRESULTWEAPON', 'on') then
-		table.insert(rAction.aMessages, 'with ' .. AmmunitionManager.getWeaponName(rRoll.sDesc))
+		table.insert(rRoll.aMessages, 'with ' .. AmmunitionManager.getWeaponName(rRoll.sDesc))
 	end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
-	if not rTarget then rMessage.text = rMessage.text .. ' ' .. table.concat(rAction.aMessages, ' '); end
+	if not rTarget then
+		rMessage.text = rMessage.text .. " " .. table.concat(rRoll.aMessages, " ");
+	end
 
 	--	bmos adding hit margin tracking
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
 	if AmmunitionManager then
-		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rAction.nTotal);
-		if nHitMargin then table.insert(rAction.aMessages, '[BY ' .. nHitMargin .. '+]') end
+		local nHitMargin = AmmunitionManager.calculateMargin(nDefenseVal, rRoll.nTotal);
+		if nHitMargin then table.insert(rRoll.aMessages, '[BY ' .. nHitMargin .. '+]') end
 	end
 	--	end bmos adding hit margin tracking
 
@@ -611,31 +627,28 @@ local function onAttack_5e(rSource, rTarget, rRoll) -- luacheck: ignore
 
 	--	bmos adding automatic ammunition ticker and chat messaging
 	--	for compatibility with ammunition tracker, add this here in your onAttack function
-	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rAction.sResult, true) end
+	if AmmunitionManager and ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult, true) end
 	--	end bmos adding automatic ammunition ticker and chat messaging
 
 	if rTarget then
-		ActionAttack.notifyApplyAttack(
-						rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rAction.nTotal, table.concat(rAction.aMessages, ' ')
-		);
+		ActionAttack.notifyApplyAttack(rSource, rTarget, rRoll.bTower, rRoll.sType, rRoll.sDesc, rRoll.nTotal, table.concat(rRoll.aMessages, " ")); -- luacheck: ignore
 	end
 
 	-- TRACK CRITICAL STATE
-	if rAction.sResult == 'crit' then ActionAttack.setCritState(rSource, rTarget); end
+	if rRoll.sResult == "crit" then
+		ActionAttack.setCritState(rSource, rTarget);
+	end
 
 	-- REMOVE TARGET ON MISS OPTION
 	if rTarget then
-		if (rAction.sResult == 'miss' or rAction.sResult == 'fumble') then
-			if rRoll.bRemoveOnMiss then TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget)); end
+		if (rRoll.sResult == "miss" or rRoll.sResult == "fumble") then
+			if rRoll.bRemoveOnMiss then
+				TargetingManager.removeTarget(ActorManager.getCTNodeName(rSource), ActorManager.getCTNodeName(rTarget));
+			end
 		end
 	end
 
-	-- HANDLE FUMBLE/CRIT HOUSE RULES
-	local sOptionHRFC = OptionsManager.getOption('HRFC');
-	if rAction.sResult == 'fumble' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'fumble')) then ActionAttack.notifyApplyHRFC('Fumble'); end
-	if rAction.sResult == 'crit' and ((sOptionHRFC == 'both') or (sOptionHRFC == 'criticalhit')) then
-		ActionAttack.notifyApplyHRFC('Critical Hit');
-	end
+	ActionAttack.onPostAttackResolve(rRoll);
 end
 
 -- Function Overrides
