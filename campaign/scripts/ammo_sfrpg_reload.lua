@@ -35,22 +35,22 @@ end
 
 --	luacheck: globals onReloadAction
 function onReloadAction()
-	local nodeWeapon = getDatabaseNode();
-	local rActor, _ = CharManager.getWeaponAttackRollStructures(nodeWeapon);
+	-- local nodeWeapon = getDatabaseNode();
+	-- local rActor, _ = CharManager.getWeaponAttackRollStructures(nodeWeapon);
 
-	local nAmmo = DB.getValue(nodeWeapon, "ammo",0);
-	local nUses = DB.getValue(nodeWeapon, "uses",0);
-	if nAmmo > 0 then
-		if nUses == 1 then
-			ChatManager.Message(Interface.getString("char_message_ammodrawn"), true, rActor);
-			reduceItemCount(nodeWeapon, nAmmo);
-		else
-			ChatManager.Message(Interface.getString("char_message_reloadammo"), true, rActor);
-			reduceItemCount(nodeWeapon, nAmmo);
-		end
-	else
-		ChatManager.Message(Interface.getString("char_message_ammofull"), true, rActor);
-	end
+	-- local nAmmo = DB.getValue(nodeWeapon, "ammo",0);
+	-- local nUses = DB.getValue(nodeWeapon, "uses",0);
+	-- if nAmmo > 0 then
+	-- 	if nUses == 1 then
+	-- 		ChatManager.Message(Interface.getString("char_message_ammodrawn"), true, rActor);
+	-- 		reduceItemCount(nodeWeapon, nAmmo);
+	-- 	else
+	-- 		ChatManager.Message(Interface.getString("char_message_reloadammo"), true, rActor);
+	-- 		reduceItemCount(nodeWeapon, nAmmo);
+	-- 	end
+	-- else
+	-- 	ChatManager.Message(Interface.getString("char_message_ammofull"), true, rActor);
+	-- end
 
 	return true;
 end
