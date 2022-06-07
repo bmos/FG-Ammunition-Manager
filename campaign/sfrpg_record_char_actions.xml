@@ -8,6 +8,7 @@
 		<sheetdata>
 			<basicnumber name="uses">
 				<tooltip textres="weapon_tooltip_reloadammo" />
+				<script file="common/scripts/number_crosslink_unlink.lua" />
 			</basicnumber>				
 		</sheetdata>
 	</windowclass>
