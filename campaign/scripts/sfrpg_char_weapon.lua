@@ -97,7 +97,7 @@ function onDataChanged()
 	-- isloaded.setVisible(bRanged and hasLoadAction(nodeWeapon));
 	label_ammo.setVisible(bRanged);
 	uses.setVisible(bRanged);
-	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink);
+	ammocounter.setVisible(bRanged and not bInfiniteAmmo);
 
 	local sSpecial = DB.getValue(nodeWeapon, "special",""):lower();
 	if string.find(sSpecial, "unwieldy") then

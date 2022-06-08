@@ -4,12 +4,18 @@
 
 <root>
 	<windowclass name="char_weapon" merge="join">
-		<script file="campaign/scripts/ammo_sfrpg_reload.lua" />
+		<script file="campaign/scripts/sfrpg_char_weapon.lua" />
 		<sheetdata>
 			<basicnumber name="uses">
 				<tooltip textres="weapon_tooltip_reloadammo" />
 				<script file="common/scripts/number_crosslink_unlink.lua" />
-			</basicnumber>				
+			</basicnumber>
+			<state_charammocounter name="ammocounter">
+				<sourcefields>
+					<maximum>ammo_max</maximum>
+				</sourcefields>
+				<!-- <script file="common/scripts/number_crosslink_unlink.lua" /> -->
+			</state_charammocounter>			
 		</sheetdata>
 	</windowclass>
 	
