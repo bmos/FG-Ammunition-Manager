@@ -3,10 +3,17 @@
 -- attribution and copyright information.
 --
 
+local function getShortcutNode(node, shortcutName)
+	local _,sRecord = DB.getValue(node, shortcutName, '', '');
+	if sRecord and sShortcut ~= '' then
+		return CharManager.resolveRefNode(sRecord)
+	end
+end
+
 local function getWeaponUsage(nodeWeapon)
 	local _,sShortcut = DB.getValue(nodeWeapon, 'shortcut', '');
 	if sShortcut and sShortcut ~= '' then
-		local nodeLinkedWeapon = DB.findNode(sShortcut)
+		local nodeLinkedWeapon = CharManager.resolveRefNode(sShortcut)
 		if nodeLinkedWeapon then
 			return DB.getValue(nodeLinkedWeapon, 'usage', 1)
 		end
@@ -33,6 +40,16 @@ local function reduceItemCount(nodeWeapon, nAmmo)
 	end
 end
 
+function onAmmoCountChanged()
+	local nodeWeapon = getDatabaseNode();
+	local usage = getWeaponUsage(nodeWeapon)
+	local uses = DB.getValue(nodeWeapon, 'uses', 1)
+	local currentAmmo = current_ammo.getValue()
+	local ammoUsed = math.max(0, uses - math.floor(currentAmmo / usage))
+	
+	DB.setValue(nodeWeapon, 'ammo', 'number', ammoUsed)
+end
+
 --	luacheck: globals onReloadAction
 function onReloadAction()
 	-- local nodeWeapon = getDatabaseNode();
@@ -51,6 +68,8 @@ function onReloadAction()
 	-- else
 	-- 	ChatManager.Message(Interface.getString("char_message_ammofull"), true, rActor);
 	-- end
+
+	Interface.openWindow("char_weapon_editor", getDatabaseNode());
 
 	return true;
 end
@@ -86,18 +105,22 @@ function onDataChanged()
 	super.onDamageChanged();
 
 	local nodeWeapon = getDatabaseNode();
+	local nodeWeaponSource = getShortcutNode(nodeWeapon, "shortcut");
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
 
 	--	luacheck: globals type
 	local bRanged = (type.getValue() == 1);
+	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
+	local bDrawnCapacity = (DB.getValue(nodeWeaponSource, "capacity", ""):lower() == "drawn")
+	
 	label_range.setVisible(bRanged);
 	rangeincrement.setVisible(bRanged);
 	-- isloaded.setVisible(bRanged and hasLoadAction(nodeWeapon));
 	label_ammo.setVisible(bRanged);
-	uses.setVisible(bRanged);
-	ammocounter.setVisible(bRanged and not bInfiniteAmmo);
+	-- uses.setVisible(bRanged and not nodeAmmoLink);
+	current_ammo.setVisible(bRanged);
+	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not bDrawnCapacity);
 
 	local sSpecial = DB.getValue(nodeWeapon, "special",""):lower();
 	if string.find(sSpecial, "unwieldy") then
@@ -114,13 +137,19 @@ function onDataChanged()
 		attack1.setVisible(false);
 	end
 
-	
+	local sSpecial = DB.getValue(nodeWeapon, "special",""):lower();	
+	if string.find(sSpecial, "powered") then
+		label_ammo.setVisible(true);
+		-- uses.setVisible(not nodeAmmoLink);
+		current_ammo.setVisible(true);
+		ammocounter.setVisible(true);
+	end
 
-	if uses.setLink then
+	if current_ammo.setLink then
 		if nodeAmmoLink then
-			uses.setLink(nodeAmmoLink.getChild('count'))
+			current_ammo.setLink(nodeAmmoLink.getChild('count'))
 		else
-			uses.setLink()
+			current_ammo.setLink()
 		end
 	else
 		Debug.chat("WARNING: NO AMMUNITION SET ON ITEM", DB.getValue(nodeWeapon, 'name'))

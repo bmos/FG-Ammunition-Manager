@@ -40,6 +40,10 @@ function onDrop(_, _, draginfo)
 end
 
 function onValueChanged()
+	if super and super.onValueChanged then
+		super.onValueChanged()
+	end
+
 	if sLink then
 		if not bLocked then
 			bLocked = true;

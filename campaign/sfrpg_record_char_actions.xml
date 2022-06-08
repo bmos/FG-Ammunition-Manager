@@ -7,15 +7,19 @@
 		<script file="campaign/scripts/sfrpg_char_weapon.lua" />
 		<sheetdata>
 			<basicnumber name="uses">
+				<invisible />
+			</basicnumber>
+			<basicnumber name="current_ammo">
+				<anchored to="label_ammo" position="righthigh" width="30" height="20" />
+				<font>charstarship-sheetnumber</font>
+				<min>0</min>
 				<tooltip textres="weapon_tooltip_reloadammo" />
+				<script file="campaign/scripts/sfrpg_current_ammo.lua" />
 				<script file="common/scripts/number_crosslink_unlink.lua" />
 			</basicnumber>
 			<state_charammocounter name="ammocounter">
-				<sourcefields>
-					<maximum>ammo_max</maximum>
-				</sourcefields>
-				<!-- <script file="common/scripts/number_crosslink_unlink.lua" /> -->
-			</state_charammocounter>			
+				<anchored to="label_ammo" position="righthigh" offset="33,0" />
+			</state_charammocounter>		
 		</sheetdata>
 	</windowclass>
 	
@@ -28,6 +32,76 @@
 			<minimum width="400" height="388" />
 			<dynamic />
 		</sizelimits>
+	</windowclass>
+
+	<windowclass name="char_weapon_reload">
+		<frame>recordsheet</frame>
+		<placement>
+			<size width="400" height="350" />
+		</placement>
+		<sizelimits>
+			<minimum width="400" height="350" />
+			<dynamic />
+		</sizelimits>
+		<nodelete />
+		<playercontrol />
+		<tooltip control="name" />
+		<sheetdata>
+			<windowtitlebar name="title">
+				<resource>weapon_title</resource>
+			</windowtitlebar>
+			
+			<frame_record_editor name="contentframe" />
+
+			<subwindow_record name="main">
+				<class>char_weapon_reload_main</class>
+				<activate />
+			</subwindow_record>
+			<scrollbar_record>
+				<target>main</target>
+			</scrollbar_record>
+
+			<resize_recordsheet />
+			<close_recordsheet />
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="char_weapon_reload_main">
+		<sheetdata>
+			<anchor_column name="columnanchor" />
+			<!-- Ammo -->
+			<header_column name="header_ammo">
+				<insertbefore>header_damage</insertbefore>
+				<static textres="weapon_header_ammo" />
+				<center />
+			</header_column>
+			<combobox name="ammopicker">
+				<frame>
+					<hidereadonly />
+				</frame>
+				<center />
+				<listdirection>down</listdirection>
+				<listmaxsize>15</listmaxsize>
+				<nodrag />
+				<nodrop />
+				<noreset />
+				<anchored height="20">
+					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
+					<left offset="5" />
+					<right offset="-5" />
+				</anchored>
+				<default textres="none" />
+				<itemsheetname>type</itemsheetname>
+				<itemsheetaltname>subtype</itemsheetaltname>
+				<script file="campaign/scripts/ammo_ammopicker.lua" />
+			</combobox>
+			<label_fieldtop name="label_ammopicker">
+				<anchored to="ammopicker" />
+				<static textres="weapon_label_ammopicker" />
+				<readonly />
+				<center />
+			</label_fieldtop>
+		</sheetdata>
 	</windowclass>
 
 	<windowclass name="char_weapon_editor_main" merge="join">
