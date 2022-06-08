@@ -6,6 +6,18 @@
 	<windowclass name="char_weapon" merge="join">
 		<script file="campaign/scripts/sfrpg_char_weapon.lua" />
 		<sheetdata>
+			<number_charweaponattacktotal name="attack1">
+				<script file="campaign/scripts/sfrpg_char_weaponattack.lua" />
+			</number_charweaponattacktotal>
+
+			<number_charweaponattacktotal name="attack0">
+				<script file="campaign/scripts/sfrpg_char_weaponattack.lua" />
+			</number_charweaponattacktotal>
+			<number_charweaponsingleattack name="attack">
+				<invisible />
+				<script file="campaign/scripts/sfrpg_char_weaponattack.lua" />
+			</number_charweaponsingleattack>
+			
 			<basicnumber name="uses">
 				<invisible />
 			</basicnumber>
@@ -19,7 +31,7 @@
 			</basicnumber>
 			<state_charammocounter name="ammocounter">
 				<anchored to="label_ammo" position="righthigh" offset="33,0" />
-			</state_charammocounter>		
+			</state_charammocounter>	
 		</sheetdata>
 	</windowclass>
 	

@@ -4,11 +4,37 @@
 
 <root>
 	<windowclass name="charmini_weapon" merge="join">
-		<script file="campaign/scripts/charmini_weapon.lua" />
+		<script file="campaign/scripts/sfrpg_char_weapon.lua" />
 		<sheetdata>
+			<!-- <number_charweaponattacktotal name="attack1">
+				<script file="campaign/scripts/sfrpg_char_weaponattack.lua" />
+			</number_charweaponattacktotal>
+			<number_charweaponattacktotal name="attack2">
+				<script file="campaign/scripts/sfrpg_char_weaponattack.lua" />
+			</number_charweaponattacktotal> -->
+
+			<number_charweaponattacktotal name="attack0">
+				<script file="campaign/scripts/sfrpg_char_weaponattack.lua" />				
+			</number_charweaponattacktotal>
+			<number_charweaponsingleattack name="attack">
+				<invisible />
+				<script file="campaign/scripts/sfrpg_char_weaponattack.lua" />			
+			</number_charweaponsingleattack>
+
 			<basicnumber name="uses">
+				<invisible />
+			</basicnumber>
+			<basicnumber name="current_ammo">
+				<anchored to="label_ammo" position="righthigh" width="30" height="20" />
+				<font>charstarship-sheetnumber</font>
+				<min>0</min>
 				<tooltip textres="weapon_tooltip_reloadammo" />
-			</basicnumber>				
+				<script file="campaign/scripts/sfrpg_current_ammo.lua" />
+				<script file="common/scripts/number_crosslink_unlink.lua" />
+			</basicnumber>
+			<state_charammocounter name="ammocounter">
+				<anchored to="uses" position="righthigh" offset="33,0" />
+			</state_charammocounter>			
 		</sheetdata>
 	</windowclass>
 </root>

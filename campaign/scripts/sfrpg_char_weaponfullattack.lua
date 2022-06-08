@@ -94,6 +94,7 @@ end
 
 function action(draginfo)
     local nValue = getValue();
+	Debug.chat("FullAttack", nValue)
     local nodeWeapon = window.getDatabaseNode();
     local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
     local rRolls = {};

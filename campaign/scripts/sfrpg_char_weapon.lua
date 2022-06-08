@@ -10,68 +10,15 @@ local function getShortcutNode(node, shortcutName)
 	end
 end
 
-local function getWeaponUsage(nodeWeapon)
-	local _,sShortcut = DB.getValue(nodeWeapon, 'shortcut', '');
-	if sShortcut and sShortcut ~= '' then
-		local nodeLinkedWeapon = CharManager.resolveRefNode(sShortcut)
-		if nodeLinkedWeapon then
-			return DB.getValue(nodeLinkedWeapon, 'usage', 1)
-		end
-	end
-	return 1
-end
-
-local function reduceItemCount(nodeWeapon, nAmmo)
-	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
-	if nodeAmmo then
-		local nCount = DB.getValue(nodeAmmo, "count", 0)
-		if (nAmmo > 0) and (nCount > 0) then
-			local nUsage = getWeaponUsage(nodeWeapon)
-			local nReload = nCount - nAmmo * nUsage
-			if nReload > 0 then
-				DB.setValue(nodeWeapon, 'ammo', 'number', 0)
-				DB.setValue(nodeAmmo, 'count', 'number', nReload)
-			else
-				local nAvailableUses = math.floor(nCount / nUsage)
-				DB.setValue(nodeWeapon, 'ammo', 'number', nAmmo - nAvailableUses)
-				DB.setValue(nodeAmmo, 'count', 'number', nCount - nAvailableUses * nUsage)
-			end
-		end
-	end
-end
-
 function onAmmoCountChanged()
-	local nodeWeapon = getDatabaseNode();
-	local usage = getWeaponUsage(nodeWeapon)
+	local nodeWeapon = getDatabaseNode()
+	local nodeLinkedWeapon = getShortcutNode(nodeWeapon, 'shortcut')
+	local usage = DB.getValue(nodeLinkedWeapon, 'usage', 1)
 	local uses = DB.getValue(nodeWeapon, 'uses', 1)
 	local currentAmmo = current_ammo.getValue()
 	local ammoUsed = math.max(0, uses - math.floor(currentAmmo / usage))
 	
 	DB.setValue(nodeWeapon, 'ammo', 'number', ammoUsed)
-end
-
---	luacheck: globals onReloadAction
-function onReloadAction()
-	-- local nodeWeapon = getDatabaseNode();
-	-- local rActor, _ = CharManager.getWeaponAttackRollStructures(nodeWeapon);
-
-	-- local nAmmo = DB.getValue(nodeWeapon, "ammo",0);
-	-- local nUses = DB.getValue(nodeWeapon, "uses",0);
-	-- if nAmmo > 0 then
-	-- 	if nUses == 1 then
-	-- 		ChatManager.Message(Interface.getString("char_message_ammodrawn"), true, rActor);
-	-- 		reduceItemCount(nodeWeapon, nAmmo);
-	-- 	else
-	-- 		ChatManager.Message(Interface.getString("char_message_reloadammo"), true, rActor);
-	-- 		reduceItemCount(nodeWeapon, nAmmo);
-	-- 	end
-	-- else
-	-- 	ChatManager.Message(Interface.getString("char_message_ammofull"), true, rActor);
-	-- end
-
-	Interface.openWindow("char_weapon_editor", getDatabaseNode());
-
-	return true;
 end
 
 --	luacheck: globals hasLoadAction
@@ -156,16 +103,4 @@ function onDataChanged()
 	end
 end
 
-function onInit()
-	super.registerMenuItem(Interface.getString("menu_deleteweapon"), "delete", 4);
-	super.registerMenuItem(Interface.getString("list_menu_deleteconfirm"), "delete", 4, 3);
-
-	local sNode = getDatabaseNode().getPath();
-	DB.addHandler(sNode, "onChildUpdate", onDataChanged);
-	onDataChanged();
-end
-
-function onClose()
-	local sNode = getDatabaseNode().getPath();
-	DB.removeHandler(sNode, "onChildUpdate", onDataChanged);
-end
+super.onDataChanged = onDataChanged
