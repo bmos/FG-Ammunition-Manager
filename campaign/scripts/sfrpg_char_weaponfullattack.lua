@@ -3,65 +3,6 @@
 -- attribution and copyright information.
 --
 
-local widgets = {};
-local offsetx = 0;
-local offsety = 0;
-
-function onInit()
-    offsetx = tonumber(icons[1].offsetx[1]);
-    offsety = tonumber(icons[1].offsety[1]);
-
-    updateWidgets();
-    updateAttackFields();
-end
-
-function onValueChanged()
-    updateWidgets();
-    updateAttackFields();
-end
-
-function updateWidgets()
-    for k, v in ipairs(widgets) do
-        v.destroy();
-    end
-    widgets = {};
-
-    local wt = window[icons[1].container[1]];
-    local c = getValue();
-
-    local w, h = getSize();
-
-    for i = 1, c do
-        local widget = wt.addBitmapWidget(icons[1].icon[1]);
-        widget.setSize(10, 10);
-
-        local ox = offsetx;
-        if (i % 2) == 1 then
-            ox = ox - 8;
-        else
-            ox = ox + 8;
-        end
-        local oy = offsety;
-        if i <= 2 then
-            oy = oy - 5;
-        else
-            oy = oy + 5;
-        end
-        widget.setPosition("center", ox, oy);
-
-        widgets[i] = widget;
-    end
-end
-
-function updateAttackFields()
-    local c = getValue();
-
-    if not isReadOnly() then
-        window.attack1.setVisible(c >= 1);
-        window.attack2.setVisible(c >= 2);
-    end
-end
-
 local function getWeaponUsage(nodeWeapon)
 	local _,sShortcut = DB.getValue(nodeWeapon, 'shortcut', '');
 	if sShortcut and sShortcut ~= '' then
@@ -94,7 +35,6 @@ end
 
 function action(draginfo)
     local nValue = getValue();
-	Debug.chat("FullAttack", nValue)
     local nodeWeapon = window.getDatabaseNode();
     local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
     local rRolls = {};
@@ -183,10 +123,4 @@ function action(draginfo)
     return true;
 end
 
-function onDragStart(button, x, y, draginfo)
-    return action(draginfo);
-end
-
-function onDoubleClick(x,y)
-    return action(draginfo);
-end
+super.action = action
