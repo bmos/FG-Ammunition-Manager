@@ -102,38 +102,40 @@ function automateAmmo(nodeWeapon)
 	end
 end
 
-local function getWeaponUsage(nodeWeapon)
-	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(nodeWeapon, 'shortcut')
-	if nodeLinkedWeapon then
-		return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1
-	end
-	return 1
-end
 
-local function useWeaponAmmo(rActor, nodeWeapon)
-	local sSpecial = DB.getValue(nodeWeapon, "special",""):lower()
-	if string.find(sSpecial, "powered") then
-		return true
-	end
-    local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
-	local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmo)
-	if bInfiniteAmmo then
-		return true
-	end
-	if nAmmoCount == 0 then
-		return false
-	end
-	local weaponUsage = getWeaponUsage(nodeWeapon)
-	if  nAmmoCount >= weaponUsage then
-		local remainingAmmo = nAmmoCount - weaponUsage
-		DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)
-	else
-		return false;
-	end
-    return true
-end
 
 function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
+	local function getWeaponUsage()
+		local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(nodeWeapon, 'shortcut')
+		if nodeLinkedWeapon then
+			return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1
+		end
+		return 1
+	end
+	
+	local function useWeaponAmmo()
+		local sSpecial = DB.getValue(nodeWeapon, "special",""):lower()
+		if string.find(sSpecial, "powered") then
+			return true
+		end
+		local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
+		local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmo)
+		if bInfiniteAmmo then
+			return true
+		end
+		if nAmmoCount == 0 then
+			return false
+		end
+		local weaponUsage = getWeaponUsage()
+		if  nAmmoCount >= weaponUsage then
+			local remainingAmmo = nAmmoCount - weaponUsage
+			DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)
+		else
+			return false;
+		end
+		return true
+	end
+
 	local sDesc = ""
 	local nProf = DB.getValue(nodeWeapon, "prof", 0)
 	if nProf == 1 then
@@ -168,7 +170,7 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 	local bAttack = true
 	local rRolls = {};
 	for i = 1, nAttacksCount do
-		if not useWeaponAmmo(rActor, nodeWeapon) then
+		if not useWeaponAmmo() then
             if i == 1 then
                 ChatManager.Message(Interface.getString("char_message_atkwithnoammo"), true, rActor)
                 bAttack = false
