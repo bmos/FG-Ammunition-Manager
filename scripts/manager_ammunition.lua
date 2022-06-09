@@ -175,6 +175,15 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	end
 end
 
+--	luacheck: globals getShortcutNode
+function getShortcutNode(node, shortcutName)
+	shortcutName = shortcutName or 'shortcut'
+	local _,sRecord = DB.getValue(node, shortcutName, '', '');
+	if sRecord and sShortcut ~= '' then
+		return CharManager.resolveRefNode(sRecord)
+	end
+end
+
 --	calculate how much attacks hit/miss by
 --	luacheck: globals calculateMargin
 function calculateMargin(nDC, nTotal)

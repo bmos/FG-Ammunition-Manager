@@ -7,7 +7,7 @@
 		<script file="campaign/scripts/sfrpg_char_weapon.lua" />
 		<sheetdata>
 			<number_charweaponfullattack name="attacks">
-				<!-- <script file="campaign/scripts/sfrpg_char_weaponattack.lua" /> -->
+				<script file="campaign/scripts/sfrpg_char_weaponfullattack.lua" />
 			</number_charweaponfullattack>
 			<number_charweaponattacktotal name="attack1">
 				<script file="campaign/scripts/sfrpg_char_weaponattack.lua" />

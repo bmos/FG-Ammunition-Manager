@@ -3,17 +3,6 @@
 -- attribution and copyright information.
 --
 
-local function getWeaponUsage(nodeWeapon)
-	local _,sShortcut = DB.getValue(nodeWeapon, 'shortcut', '');
-	if sShortcut and sShortcut ~= '' then
-		local nodeLinkedWeapon = CharManager.resolveRefNode(sShortcut)
-		if nodeLinkedWeapon then
-			return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1))
-		end
-	end
-	return 1
-end
-
 function useWeaponAmmo(nodeWeapon)
 	local sSpecial = DB.getValue(nodeWeapon, "special",""):lower()
 	if string.find(sSpecial, "powered") then
@@ -22,7 +11,8 @@ function useWeaponAmmo(nodeWeapon)
     local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
     if nodeAmmo then
         local ammoCount = DB.getValue(nodeAmmo, "count", 0)
-        local weaponUsage = getWeaponUsage(nodeWeapon)
+        local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(nodeWeapon, 'shortcut')
+        local weaponUsage = tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1))
         if  ammoCount >= weaponUsage then
             local remainingAmmo = ammoCount - weaponUsage
             DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)

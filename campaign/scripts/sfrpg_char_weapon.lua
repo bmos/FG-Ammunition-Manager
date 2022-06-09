@@ -3,16 +3,9 @@
 -- attribution and copyright information.
 --
 
-local function getShortcutNode(node, shortcutName)
-	local _,sRecord = DB.getValue(node, shortcutName, '', '');
-	if sRecord and sShortcut ~= '' then
-		return CharManager.resolveRefNode(sRecord)
-	end
-end
-
 function onAmmoCountChanged()
 	local nodeWeapon = getDatabaseNode()
-	local nodeLinkedWeapon = getShortcutNode(nodeWeapon, 'shortcut')
+	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(nodeWeapon, 'shortcut')
 	local usage = DB.getValue(nodeLinkedWeapon, 'usage', 1)
 	local uses = DB.getValue(nodeWeapon, 'uses', 1)
 	local currentAmmo = current_ammo.getValue()
@@ -52,7 +45,7 @@ function onDataChanged()
 	super.onDamageChanged();
 
 	local nodeWeapon = getDatabaseNode();
-	local nodeWeaponSource = getShortcutNode(nodeWeapon, "shortcut");
+	local nodeWeaponSource = AmmunitionManager.getShortcutNode(nodeWeapon, "shortcut");
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
 	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 
