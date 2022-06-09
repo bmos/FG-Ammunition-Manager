@@ -4,32 +4,33 @@
 --
 
 local function getWeaponUsage(nodeWeapon)
-	local _,sShortcut = DB.getValue(nodeWeapon, 'shortcut', '');
-	if sShortcut and sShortcut ~= '' then
-		local nodeLinkedWeapon = CharManager.resolveRefNode(sShortcut)
-		if nodeLinkedWeapon then
-			return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1))
-		end
+	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(nodeWeapon, 'shortcut')
+	if nodeLinkedWeapon then
+		return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1
 	end
 	return 1
 end
 
-local function useWeaponAmmo(nodeWeapon)
+local function useWeaponAmmo(rActor, nodeWeapon)
 	local sSpecial = DB.getValue(nodeWeapon, "special",""):lower()
 	if string.find(sSpecial, "powered") then
 		return true
 	end
     local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
-    if nodeAmmo then
-        local ammoCount = DB.getValue(nodeAmmo, "count", 0)
-        local weaponUsage = getWeaponUsage(nodeWeapon)
-        if  ammoCount >= weaponUsage then
-            local remainingAmmo = ammoCount - weaponUsage
-            DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)
-        else
-            return false;
-        end
-    end
+	local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmo)
+	if bInfiniteAmmo then
+		return true
+	end
+	if nAmmoCount == 0 then
+		return false
+	end
+	local weaponUsage = getWeaponUsage(nodeWeapon)
+	if  nAmmoCount >= weaponUsage then
+		local remainingAmmo = nAmmoCount - weaponUsage
+		DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)
+	else
+		return false;
+	end
     return true
 end
 
@@ -69,7 +70,7 @@ function action(draginfo)
 	end
 
 	-- Decrement ammo
-	if useWeaponAmmo(nodeWeapon) then
+	if useWeaponAmmo(rActor, nodeWeapon) then
 		ActionsManager.performAction(draginfo, rActor, rRoll);
 	else
 		ChatManager.Message(Interface.getString("char_message_atkwithnoammo"), true, rActor);
