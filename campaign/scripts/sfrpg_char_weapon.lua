@@ -81,6 +81,11 @@ function onDataChanged()
 	end
 
 	if bNoFull then
+		if getClass() == "charmini_weapon" then
+			attacks.setVisible(false);
+			attackicons.setVisible(false);
+			attack2.setVisible(false);
+		end
 		attack1.setVisible(false);
 	end
 
