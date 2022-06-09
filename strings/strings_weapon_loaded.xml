@@ -6,6 +6,7 @@
 	<!-- Debug Messages -->
 	<string name="debug_ammo_noammoshortcutfound">Ammunition Manager: Weapon's ammoshortcut node was not found. Searching inventory instead.</string>
 	<string name="debug_ammo_noinventoryfound">Ammunition Manager: Couldn't locate character inventory. Aborting ammunition search.</string>
+	<string name="debug_ammo_itemnotfound">Ammunition Manager: Couldn't locate linked ammunition item. Ammunition not being tracked.</string>
 	<!-- Tooltips -->
 	<string name="tooltip_actions_loaded">Loaded</string>
 	<string name="tooltip_actions_unloaded">Not Loaded</string>

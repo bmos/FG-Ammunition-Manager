@@ -28,5 +28,7 @@ This allowed things like "Magic Arrow; ATK: 1 enhancement" to be added to the ar
 
 * Enabling the "Chat: Show weapon name in results" option will add the weapon name to attack results in chat such as "Attack [16] -> [at Goblin] with Shortsword [HIT]" instead of "Attack [16] -> [at Goblin] [HIT]".
 
+* NOTE: Some modules contain entries like "Arrows (20)". If you have quantity 1 of "Arrows (20)" and select this as your weapon, it will reduce you to quantity 0 of "Arrows (20)". You should instead (in this example) change it to quantity 20 of "Arrow" and divide the weight by 20 as well. I'm not sure why the module authors often ignore this detail, but this is how to work around it.
+
 # Video Demonstration (click for video)
 [<img src="https://i.ytimg.com/vi_webp/yW0JeWRxnx8/hqdefault.webp">](https://www.youtube.com/watch?v=yW0JeWRxnx8)
