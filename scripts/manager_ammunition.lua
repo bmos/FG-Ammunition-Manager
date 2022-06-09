@@ -6,6 +6,15 @@
 --	luacheck: globals tLoadWeapons MirrorImageHandler
 tLoadWeapons = { 'loadaction' }
 
+--	luacheck: globals getShortcutNode
+function getShortcutNode(node, shortcutName)
+	shortcutName = shortcutName or 'shortcut'
+	local _,sRecord = DB.getValue(node, shortcutName, '', '');
+	if sRecord and sShortcut ~= '' then
+		return DB.findNode(sRecord)
+	end
+end
+
 ---	This function finds the correct node for a weapon's ammunition.
 --	It first checks for a path saved in ammoshortcut. If found, databasenode record is returned.
 --	If no path is found, it checks to see if the ammo name is known.
@@ -14,9 +23,9 @@ tLoadWeapons = { 'loadaction' }
 --	If no match is found, nothing is returned.
 --	luacheck: globals getAmmoNode
 function getAmmoNode(nodeWeapon)
-	local _,sAmmoShortcut = DB.getValue(nodeWeapon, 'ammoshortcut', '');
-	if sAmmoShortcut and sAmmoShortcut ~= '' then
-		return DB.findNode(sAmmoShortcut)
+	local ammoNode = getShortcutNode(nodeWeapon, 'ammoshortcut')
+	if ammoNode then
+		return ammoNode
 	end
 
 	-- if ammoshortcut does not provide a good node, try searching the inventory.
@@ -172,15 +181,6 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 				end
 			end
 		end
-	end
-end
-
---	luacheck: globals getShortcutNode
-function getShortcutNode(node, shortcutName)
-	shortcutName = shortcutName or 'shortcut'
-	local _,sRecord = DB.getValue(node, shortcutName, '', '');
-	if sRecord and sShortcut ~= '' then
-		return CharManager.resolveRefNode(sRecord)
 	end
 end
 
