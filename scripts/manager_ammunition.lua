@@ -664,7 +664,6 @@ function onInit()
 	-- replace result handlers
 	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
 		EffectManagerRuleset = EffectManager35E
-
 		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' };
 		ActionsManager.unregisterResultHandler('attack');
 		ActionsManager.registerResultHandler('attack', onAttack_pfrpg);
