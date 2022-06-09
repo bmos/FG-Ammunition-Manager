@@ -65,17 +65,6 @@ function onDataChanged()
 end
 super.onDataChanged = onDataChanged
 
-function onAmmoCountChanged()
-	local nodeWeapon = getDatabaseNode()
-	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(nodeWeapon, 'shortcut')
-	local usage = DB.getValue(nodeLinkedWeapon, 'usage', 1)
-	local uses = DB.getValue(nodeWeapon, 'uses', 1)
-	local currentAmmo = current_ammo.getValue()
-	local ammoUsed = math.max(0, uses - math.floor(currentAmmo / usage))
-	
-	DB.setValue(nodeWeapon, 'ammo', 'number', ammoUsed)
-end
-
 --	luacheck: globals hasLoadAction
 function hasLoadAction(nodeWeapon)
 	local bHasLoadAction

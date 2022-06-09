@@ -11,5 +11,15 @@ function onDoubleClick(x,y)
 end
 
 function onValueChanged()
-    window.onAmmoCountChanged()
+    if super and super.onValueChanged then
+        super.onValueChanged()
+    end
+    local nodeWeapon = window.getDatabaseNode()
+	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(nodeWeapon, 'shortcut')
+	local usage = DB.getValue(nodeLinkedWeapon, 'usage', 1)
+	local uses = DB.getValue(nodeWeapon, 'uses', 1)
+	local currentAmmo = getValue()
+	local ammoUsed = math.max(0, uses - math.floor(currentAmmo / usage))
+
+	DB.setValue(nodeWeapon, 'ammo', 'number', ammoUsed)
 end
