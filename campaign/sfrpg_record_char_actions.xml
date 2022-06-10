@@ -35,17 +35,6 @@
 			</state_charammocounter>	
 		</sheetdata>
 	</windowclass>
-	
-	<windowclass name="char_weapon_editor" merge="join">
-		<frame>recordsheet</frame>
-		<placement>
-			<size width="400" height="388" />
-		</placement>
-		<sizelimits>
-			<minimum width="400" height="388" />
-			<dynamic />
-		</sizelimits>
-	</windowclass>
 
 	<windowclass name="char_weapon_reload">
 		<frame>recordsheet</frame>
@@ -116,6 +105,17 @@
 			</label_fieldtop>
 		</sheetdata>
 	</windowclass>
+	
+	<windowclass name="char_weapon_editor" merge="join">
+		<frame>recordsheet</frame>
+		<placement>
+			<size width="400" height="388" />
+		</placement>
+		<sizelimits>
+			<minimum width="400" height="388" />
+			<dynamic />
+		</sizelimits>
+	</windowclass>
 
 	<windowclass name="char_weapon_editor_main" merge="join">
 		<sheetdata>
@@ -125,6 +125,17 @@
 				<static textres="weapon_header_ammo" />
 				<center />
 			</header_column>
+			<label_column name="label_ammopicker_enabled">
+				<static textres="char_label_weapon_ammopicker_enabled" />
+			</label_column>
+			<button_checkbox name="ammopicker_enabled">
+				<anchored width="20" height="20">
+					<top parent="label_ammopicker_enabled"  />
+					<left parent="label_ammopicker_enabled" anchor="right" relation="relative" offset="5" />
+				</anchored>
+				<default>1</default>
+			</button_checkbox>
+			<!--
 			<combobox name="ammopicker">
 				<frame>
 					<hidereadonly />
@@ -151,6 +162,7 @@
 				<readonly />
 				<center />
 			</label_fieldtop>
+			-->
 		</sheetdata>
 	</windowclass>
 </root>

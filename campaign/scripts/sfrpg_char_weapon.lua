@@ -14,6 +14,7 @@ function onDataChanged()
 
 	--	luacheck: globals type
 	local bRanged = (type.getValue() == 1);
+	local bLinkedAmmoEnabled = (DB.getValue(nodeWeapon, "ammopicker_enabled", 0) == 1);
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
 	local bDrawnCapacity = (DB.getValue(nodeWeaponSource, "capacity", ""):lower() == "drawn")
 	
@@ -21,8 +22,8 @@ function onDataChanged()
 	rangeincrement.setVisible(bRanged);
 	-- isloaded.setVisible(bRanged and hasLoadAction(nodeWeapon));
 	label_ammo.setVisible(bRanged);
-	-- uses.setVisible(bRanged and not nodeAmmoLink);
-	current_ammo.setVisible(bRanged);
+	uses.setVisible(bRanged and not bLinkedAmmoEnabled);
+	current_ammo.setVisible(bRanged and bLinkedAmmoEnabled);
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not bDrawnCapacity);
 
 	local sSpecial = DB.getValue(nodeWeapon, "special",""):lower();

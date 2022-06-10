@@ -5,4 +5,5 @@
 <root>
 	<!-- Fields -->
 	<string name="char_label_weaponammo">Ammo</string>
+	<string name="char_label_weapon_ammopicker_enabled">Use Linked Ammunition</string>
 </root>
