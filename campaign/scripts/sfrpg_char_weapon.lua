@@ -53,24 +53,12 @@ function onDataChanged()
 		ammocounter.setVisible(true);
 	end
 
-	if current_ammo.setLink then
-		if nodeAmmoLink then
-			current_ammo.setLink(nodeAmmoLink.getChild('count'))
-		else
-			current_ammo.setLink()
-		end
+	if nodeAmmoLink then
+		current_ammo.setLink(nodeAmmoLink.getChild('count'))
+		ammocounter.setLink(nodeAmmoLink.getChild('count'))
 	else
-		Debug.chat("WARNING: NO AMMUNITION SET ON ITEM", DB.getValue(nodeWeapon, 'name'))
-	end
-
-	if ammocounter.setLink then
-		if nodeAmmoLink then
-			ammocounter.setLink(nodeAmmoLink.getChild('count'))
-		else
-			ammocounter.setLink()
-		end
-	else
-		Debug.chat("WARNING: NO AMMUNITION SET ON ITEM", DB.getValue(nodeWeapon, 'name'))
+		current_ammo.setLink()
+		ammocounter.setLink()
 	end
 end
 super.onDataChanged = onDataChanged
