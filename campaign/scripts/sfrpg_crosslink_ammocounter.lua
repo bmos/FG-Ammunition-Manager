@@ -27,11 +27,10 @@ function onClose() if sLink then DB.removeHandler(sLink, 'onUpdate', onLinkUpdat
 -- end
 
 function onValueChanged()
-	Debug.chat("onValueChanged")
 	if sLink then
 		if not bLocked then
 			bLocked = true
-			
+
 			if sLink and not isReadOnly() then DB.setValue(sLink, 'number', (getMaxValue() - getCurrentValue()) * window.getWeaponUsage()) end
 
 			-- if self.update then self.update() end
@@ -44,7 +43,6 @@ function onValueChanged()
 end
 
 function onLinkUpdated()
-	Debug.chat("onLinkUpdated")
 	if sLink and not bLocked then
 		bLocked = true
 
