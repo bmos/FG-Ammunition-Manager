@@ -62,6 +62,16 @@ function onDataChanged()
 	else
 		Debug.chat("WARNING: NO AMMUNITION SET ON ITEM", DB.getValue(nodeWeapon, 'name'))
 	end
+
+	if ammocounter.setLink then
+		if nodeAmmoLink then
+			ammocounter.setLink(nodeAmmoLink.getChild('count'))
+		else
+			ammocounter.setLink()
+		end
+	else
+		Debug.chat("WARNING: NO AMMUNITION SET ON ITEM", DB.getValue(nodeWeapon, 'name'))
+	end
 end
 super.onDataChanged = onDataChanged
 
@@ -91,17 +101,15 @@ function automateAmmo(nodeWeapon)
 	end
 end
 
-
+function getWeaponUsage()
+	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(getDatabaseNode(), 'shortcut')
+	if nodeLinkedWeapon then
+		return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1
+	end
+	return 1
+end
 
 function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
-	local function getWeaponUsage()
-		local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(nodeWeapon, 'shortcut')
-		if nodeLinkedWeapon then
-			return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1
-		end
-		return 1
-	end
-	
 	local function useWeaponAmmo()
 		local sSpecial = DB.getValue(nodeWeapon, "special",""):lower()
 		if string.find(sSpecial, "powered") then

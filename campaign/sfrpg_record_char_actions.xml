@@ -31,6 +31,7 @@
 			</basicnumber>
 			<state_charammocounter name="ammocounter">
 				<anchored to="label_ammo" position="righthigh" offset="33,0" />
+				<script file="campaign/scripts/sfrpg_crosslink_ammocounter.lua" />
 			</state_charammocounter>	
 		</sheetdata>
 	</windowclass>
