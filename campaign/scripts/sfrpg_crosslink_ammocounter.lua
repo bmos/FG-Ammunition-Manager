@@ -1,7 +1,7 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
---	luacheck: globals onLinkUpdated isReadOnly onDrop onValueChanged setValue getValue setReadOnly
+--	luacheck: globals onLinkUpdated isReadOnly onValueChanged setValue getValue setReadOnly
 local bLocked = false
 local sLink = nil
 
@@ -15,17 +15,6 @@ end
 
 function onClose() if sLink then DB.removeHandler(sLink, 'onUpdate', onLinkUpdated) end end
 
--- function onDrop(_, _, draginfo)
--- 	if Session.IsHost then
--- 		if draginfo.getType() ~= 'number' then return false end
-
--- 		if self.handleDrop then
--- 			self.handleDrop(draginfo)
--- 			return true
--- 		end
--- 	end
--- end
-
 function onValueChanged()
 	if sLink then
 		if not bLocked then
@@ -33,12 +22,8 @@ function onValueChanged()
 
 			if sLink and not isReadOnly() then DB.setValue(sLink, 'number', (getMaxValue() - getCurrentValue()) * window.getWeaponUsage()) end
 
-			-- if self.update then self.update() end
-
 			bLocked = false
 		end
-	else
-		-- if self.update then self.update() end
 	end
 end
 
