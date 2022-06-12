@@ -3,6 +3,7 @@
 -- attribution and copyright information.
 --
 
+--	luacheck: globals onDataChanged
 function onDataChanged()
 	super.onLinkChanged();
 	super.onDamageChanged();
@@ -90,6 +91,7 @@ function automateAmmo(nodeWeapon)
 	end
 end
 
+--	luacheck: globals getWeaponUsage
 function getWeaponUsage()
 	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(getDatabaseNode(), 'shortcut')
 	if nodeLinkedWeapon then
@@ -98,6 +100,7 @@ function getWeaponUsage()
 	return 1
 end
 
+--	luacheck: globals generateAttackRolls
 function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 	local function useWeaponAmmo()
 		local sSpecial = DB.getValue(nodeWeapon, "special",""):lower()

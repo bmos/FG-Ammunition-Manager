@@ -1,3 +1,8 @@
+--
+-- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
+--
+
+--	luacheck: globals onDoubleClick
 function onDoubleClick(x,y)
     -- Reloading
     local nodeWeapon = window.getDatabaseNode()
