@@ -9,7 +9,7 @@ tLoadWeapons = { 'loadaction' }
 function getShortcutNode(node, shortcutName)
 	shortcutName = shortcutName or 'shortcut'
 	local _,sRecord = DB.getValue(node, shortcutName, '', '');
-	if sRecord and sShortcut ~= '' then
+	if sRecord and sRecord ~= '' then
 		return DB.findNode(sRecord)
 	end
 end
