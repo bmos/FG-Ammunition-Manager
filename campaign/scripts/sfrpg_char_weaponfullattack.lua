@@ -6,12 +6,12 @@
 --	luacheck: globals action
 function action(draginfo)
     local nodeWeapon = window.getDatabaseNode();
-	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
-	rAttack.modifier = DB.getValue(nodeWeapon, "attack1", 0);
+    local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
+    rAttack.modifier = DB.getValue(nodeWeapon, "attack1", 0);
     local nAttackCount = getValue()
 
-	local rRolls, bAttack = window.generateAttackRolls(rActor, nodeWeapon, rAttack, nAttackCount)
-	if bAttack then
+    local rRolls, bAttack = window.generateAttackRolls(rActor, nodeWeapon, rAttack, nAttackCount)
+    if bAttack then
         ActionsManager.performMultiAction(draginfo, rActor, "attack", rRolls);
     end
 
