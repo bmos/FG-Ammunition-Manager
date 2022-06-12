@@ -48,10 +48,10 @@ function onDataChanged()
 	end
 
 	if string.find(sSpecial, "powered") then
-		label_ammo.setVisible(true);
-		uses.setVisible(not bLinkedAmmoEnabled);
-		current_ammo.setVisible(bLinkedAmmoEnabled);
-		ammocounter.setVisible(true);
+		label_ammo.setVisible(true)
+		uses.setVisible(not bLinkedAmmoEnabled)
+		current_ammo.setVisible(bLinkedAmmoEnabled)
+		ammocounter.setVisible(true)
 	end
 
 	if nodeAmmoLink then
