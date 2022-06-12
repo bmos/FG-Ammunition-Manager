@@ -38,6 +38,7 @@ function onDataChanged()
 	end
 
 	if bNoFull then
+		--	luacheck: globals getClass
 		if getClass() == "charmini_weapon" then
 			attacks.setVisible(false);
 			attackicons.setVisible(false);
@@ -46,11 +47,10 @@ function onDataChanged()
 		attack1.setVisible(false);
 	end
 
-	local sSpecial = DB.getValue(nodeWeapon, "special",""):lower();	
 	if string.find(sSpecial, "powered") then
 		label_ammo.setVisible(true);
-		-- uses.setVisible(not nodeAmmoLink);
-		current_ammo.setVisible(true);
+		uses.setVisible(not bLinkedAmmoEnabled);
+		current_ammo.setVisible(bLinkedAmmoEnabled);
 		ammocounter.setVisible(true);
 	end
 
