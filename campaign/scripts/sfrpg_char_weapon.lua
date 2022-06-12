@@ -132,12 +132,10 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
         local nCharLevel = DB.getValue(nodeWeapon.getParent().getParent(), "level", 0);
         local nBAB = DB.getValue(nodeWeapon.getParent().getParent(), "attackbonus.base", 0);
         local bLowBAB = (nBAB <= nCharLevel - 3);
-        local nFocusBonus = 0;
+        local nFocusBonus = 1;
 
         if bLowBAB then
             nFocusBonus = 2;
-        else
-            nFocusBonus = 1;
         end
 
         sDesc = sDesc .. " [WEAPON FOCUS +" .. nFocusBonus .. "]";
