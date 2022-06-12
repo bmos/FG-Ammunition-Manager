@@ -28,14 +28,13 @@ function onDataChanged()
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not bDrawnCapacity);
 
 	local sSpecial = DB.getValue(nodeWeapon, "special",""):lower();
+	local bNoFull = false
 	if string.find(sSpecial, "unwieldy") then
 		bNoFull = true
 	elseif string.find(sSpecial, "explode") then
 		bNoFull = true
 	elseif string.find(sSpecial, "thrown") and bRanged then
 		bNoFull = true
-	else
-		bNoFull = false
 	end
 
 	if bNoFull then
