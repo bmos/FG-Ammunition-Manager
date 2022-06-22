@@ -193,9 +193,4 @@ function onInit()
 
 	onPostAttackResolve_old = ActionAttack.onPostAttackResolve
 	ActionAttack.onPostAttackResolve = onPostAttackResolve_new
-
-	OptionsManager.registerOption2(
-					'ATKRESULTWEAPON', false, 'option_header_game', 'opt_lab_atkresultweaponname', 'option_entry_cycler',
-					{ labels = 'option_val_on', values = 'on', baselabel = 'option_val_off', baseval = 'off', default = 'off' }
-	);
 end
