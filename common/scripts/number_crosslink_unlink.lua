@@ -67,10 +67,10 @@ function setLink(dbnode, bLock)
 	if dbnode then
 		sLink = dbnode.getPath();
 
- 		--[[if not nolinkwidget then
+		if not nolinkwidget then
 			widget = addBitmapWidget('field_linked');
 			widget.setPosition('bottomright', 0, -2);
-		end ]]
+		end
 
 		if bLock == true then setReadOnly(true); end
 
