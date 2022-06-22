@@ -5,6 +5,15 @@
 --	luacheck: globals tLoadWeapons MirrorImageHandler
 tLoadWeapons = { 'loadaction' }
 
+--	luacheck: globals getShortcutNode
+function getShortcutNode(node, shortcutName)
+	shortcutName = shortcutName or 'shortcut'
+	local _,sRecord = DB.getValue(node, shortcutName, '', '');
+	if sRecord and sRecord ~= '' then
+		return DB.findNode(sRecord)
+	end
+end
+
 ---	This function finds the correct node for a weapon's ammunition.
 --	It first checks for a path saved in ammoshortcut. If found, databasenode record is returned.
 --	If no path is found, it checks to see if the ammo name is known.
@@ -13,8 +22,10 @@ tLoadWeapons = { 'loadaction' }
 --	If no match is found, nothing is returned.
 --	luacheck: globals getAmmoNode
 function getAmmoNode(nodeWeapon)
-	local _, sAmmoShortcut = DB.getValue(nodeWeapon, 'ammoshortcut', '');
-	if sAmmoShortcut and sAmmoShortcut ~= '' then return DB.findNode(sAmmoShortcut) end
+	local ammoNode = getShortcutNode(nodeWeapon, 'ammoshortcut')
+	if ammoNode then
+		return ammoNode
+	end
 
 	-- if ammoshortcut does not provide a good node, try searching the inventory.
 	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '');
@@ -50,20 +61,16 @@ function getWeaponName(s)
 end
 
 local sRuleset;
-
+local EffectManagerRuleset;
 --	luacheck: globals getAmmoRemaining
 function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 	local function isInfiniteAmmo()
 		local bInfiniteAmmo = DB.getValue(nodeWeapon, 'type', 0) ~= 1;
-		if sRuleset == 'PFRPG' or sRuleset == '3.5E' then
-			bInfiniteAmmo = bInfiniteAmmo or EffectManager35E.hasEffectCondition(rSource, 'INFAMMO');
-		elseif sRuleset == '4E' then
-			bInfiniteAmmo = bInfiniteAmmo or EffectManager4E.hasEffectCondition(rSource, 'INFAMMO');
-		elseif sRuleset == '5E' then
+		if sRuleset == "5E" then
 			local bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2
-			bInfiniteAmmo = (bInfiniteAmmo and not bThrown) or EffectManager5E.hasEffectCondition(rSource, 'INFAMMO');
+			bInfiniteAmmo = (bInfiniteAmmo and not bThrown)
 		end
-		return bInfiniteAmmo
+		return bInfiniteAmmo or EffectManagerRuleset.hasEffectCondition(rSource, 'INFAMMO')
 	end
 
 	local bInfiniteAmmo = isInfiniteAmmo()
@@ -655,21 +662,26 @@ end
 function onInit()
 	sRuleset = User.getRulesetName();
 	-- replace result handlers
-	if sRuleset == 'PFRPG' or sRuleset == '3.5E' then
+	if sRuleset == "PFRPG" or sRuleset == "3.5E" then
+		EffectManagerRuleset = EffectManager35E
 		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' };
 		ActionsManager.unregisterResultHandler('attack');
 		ActionsManager.registerResultHandler('attack', onAttack_pfrpg);
 		ActionAttack.onAttack = onAttack_pfrpg;
-	elseif sRuleset == '4E' then
+	elseif sRuleset == "4E" then
+		EffectManagerRuleset = EffectManager4E
 		tLoadWeapons = { 'loadaction', 'ballista' };
 		ActionsManager.unregisterResultHandler('attack');
 		ActionsManager.registerResultHandler('attack', onAttack_4e);
 		ActionAttack.onAttack = onAttack_4e;
-	elseif sRuleset == '5E' then
-		ActionsManager.unregisterResultHandler('attack');
-		ActionsManager.registerResultHandler('attack', onAttack_5e);
+	elseif sRuleset == "5E" then
+		EffectManagerRuleset = EffectManager5E
+		ActionsManager.unregisterResultHandler("attack");
+		ActionsManager.registerResultHandler("attack", onAttack_5e);
 		ActionAttack.onAttack = onAttack_5e;
 		CharWeaponManager.decrementAmmo = decrementAmmo_5e
+	elseif sRuleset == "SFRPG" then
+		EffectManagerRuleset = EffectManagerSFRPG
 	end
 
 	OptionsManager.registerOption2(

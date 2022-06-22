@@ -28,6 +28,7 @@ function onDrop(_, _, draginfo)
 end
 
 function onValueChanged()
+
 	if sLink then
 		if not bLocked then
 			bLocked = true;
@@ -75,5 +76,7 @@ function setLink(dbnode, bLock)
 
 		DB.addHandler(sLink, 'onUpdate', onLinkUpdated);
 		onLinkUpdated();
+	elseif User.getRulesetName() == 'SFRPG' then
+		setValue(0)
 	end
 end
