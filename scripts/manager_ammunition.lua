@@ -27,22 +27,27 @@ function getAmmoNode(nodeWeapon)
 		return ammoNode
 	end
 
-	-- if ammoshortcut does not provide a good node, try searching the inventory.
-	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '');
-	if sAmmo ~= '' then
-		Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'));
-		local nodeInventory = nodeWeapon.getChild('...inventorylist');
-		if nodeInventory.getName() == 'inventorylist' then
-			for _, nodeItem in pairs(nodeInventory.getChildren()) do
-				if ItemManager.getIDState(nodeItem) then
-					if DB.getValue(nodeItem, 'name', '') == sAmmo then return nodeItem; end
-				else
-					if DB.getValue(nodeItem, 'nonid_name', '') == sAmmo then return nodeItem; end
+	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1;
+	if User.getRulesetName() == '5E' then bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2; end
+
+	-- if ammoshortcut does not provide a good node and weapon is ranged, try searching the inventory.
+	if bRanged then
+		local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '');
+		if sAmmo ~= '' then
+			Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'));
+			local nodeInventory = nodeWeapon.getChild('...inventorylist');
+			if nodeInventory.getName() == 'inventorylist' then
+				for _, nodeItem in pairs(nodeInventory.getChildren()) do
+					if ItemManager.getIDState(nodeItem) then
+						if DB.getValue(nodeItem, 'name', '') == sAmmo then return nodeItem; end
+					else
+						if DB.getValue(nodeItem, 'nonid_name', '') == sAmmo then return nodeItem; end
+					end
 				end
+				Debug.console(Interface.getString('debug_ammo_itemnotfound'));
+			else
+				Debug.console(Interface.getString('debug_ammo_noinventoryfound'));
 			end
-			Debug.console(Interface.getString('debug_ammo_itemnotfound'));
-		else
-			Debug.console(Interface.getString('debug_ammo_noinventoryfound'));
 		end
 	end
 end
