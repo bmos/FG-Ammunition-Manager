@@ -174,15 +174,14 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	end
 end
 
-local function decrementAmmo_5e() end
+local function noDecrementAmmo() end
 
 -- Function Overrides
 
 local onPostAttackResolve_old
 local function onPostAttackResolve_new(rSource, rTarget, rRoll, rMessage, ...)
-	if ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult, true) end
-
-	onPostAttackResolve_old(rSource, rTarget, rRoll, rMessage, ...)
+	onPostAttackResolve_old(rSource, rTarget, rRoll, rMessage, ...);
+	if ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult, true); end
 end
 
 function onInit()
@@ -193,9 +192,9 @@ function onInit()
 	elseif sRuleset == "4E" then
 		tLoadWeapons = { 'loadaction', 'ballista' };
 	elseif sRuleset == "5E" then
-		CharWeaponManager.decrementAmmo = decrementAmmo_5e
+		CharWeaponManager.decrementAmmo = noDecrementAmmo;
 	end
 
-	onPostAttackResolve_old = ActionAttack.onPostAttackResolve
-	ActionAttack.onPostAttackResolve = onPostAttackResolve_new
+	onPostAttackResolve_old = ActionAttack.onPostAttackResolve;
+	ActionAttack.onPostAttackResolve = onPostAttackResolve_new;
 end
