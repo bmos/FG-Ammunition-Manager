@@ -1,8 +1,8 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
---	luacheck: globals onLinkUpdated isReadOnly onValueChanged setValue getValue setReadOnly
-local bLocked = false
+--	luacheck: globals onLinkUpdated isReadOnly onValueChanged setValue getValue setReadOnly setCurrentValue
+--	luacheck: globals getCurrentValue getMaxValue
 local sLink = nil
 
 function onInit()
