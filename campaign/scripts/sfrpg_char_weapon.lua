@@ -18,7 +18,7 @@ function onDataChanged()
     local bLinkedAmmoEnabled = (DB.getValue(nodeWeapon, "ammopicker_enabled", 0) == 1);
     local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
     local bDrawnCapacity = (DB.getValue(nodeWeaponSource, "capacity", ""):lower() == "drawn")
-    
+
     label_range.setVisible(bRanged);
     rangeincrement.setVisible(bRanged);
     -- isloaded.setVisible(bRanged and hasLoadAction(nodeWeapon));
