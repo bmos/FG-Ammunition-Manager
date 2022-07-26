@@ -5,6 +5,14 @@
 --	luacheck: globals tLoadWeapons MirrorImageHandler
 tLoadWeapons = { 'loadaction' }
 
+--	luacheck: globals calculateMargin
+function calculateMargin(nDC, nTotal)
+	Debug.console("AmmunitionManager.calculateMargin - DEPRECATED - 2022-07-13 - Use AttackMargins.calculateMargin");
+	if AttackMargins and AttackMargins.calculateMargin then
+		AttackMargins.calculateMargin(nDC, nTotal)
+	end
+end
+
 --	luacheck: globals getShortcutNode
 function getShortcutNode(node, shortcutName)
 	shortcutName = shortcutName or 'shortcut'
