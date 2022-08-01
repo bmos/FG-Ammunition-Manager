@@ -72,11 +72,14 @@ function setLink(dbnode, bLock)
 			widget.setPosition('bottomright', 0, -2);
 		end
 
-		if bLock == true then setReadOnly(true); end
+		if bLock then setReadOnly(true); end
 
 		DB.addHandler(sLink, 'onUpdate', onLinkUpdated);
+
 		onLinkUpdated();
 	elseif User.getRulesetName() == 'SFRPG' then
+		DB.removeHandler(sLink, 'onUpdate', onLinkUpdated);
+
 		setValue(0)
 	end
 end
