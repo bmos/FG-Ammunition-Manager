@@ -3,7 +3,7 @@
 --
 --	luacheck: globals onLinkUpdated isReadOnly onValueChanged setValue getValue setReadOnly setCurrentValue
 --	luacheck: globals getCurrentValue getMaxValue
-local sLink = nil
+local sLink, bLocked
 
 function onInit()
     if super and super.onInit then super.onInit() end
@@ -40,7 +40,7 @@ function onLinkUpdated()
 end
 
 --	luacheck: globals setLink
-function setLink(dbnode, bLock)
+function setLink(dbnode)
     if sLink then
         DB.removeHandler(sLink, 'onUpdate', onLinkUpdated)
         sLink = nil
@@ -49,11 +49,13 @@ function setLink(dbnode, bLock)
     if dbnode then
         sLink = dbnode.getPath()
 
-        if bLock == true then setReadOnly(true) end
+        setReadOnly(true)
 
         DB.addHandler(sLink, 'onUpdate', onLinkUpdated)
+
         onLinkUpdated()
     else
+        setReadOnly(false)
         setCurrentValue(getMaxValue())
     end
 end

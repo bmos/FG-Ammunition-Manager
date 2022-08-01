@@ -57,7 +57,7 @@ function onLinkUpdated()
 end
 
 --	luacheck: globals setLink
-function setLink(dbnode, bLock)
+function setLink(dbnode)
 	if sLink then
 		DB.removeHandler(sLink, 'onUpdate', onLinkUpdated);
 		sLink = nil;
@@ -72,13 +72,12 @@ function setLink(dbnode, bLock)
 			widget.setPosition('bottomright', 0, -2);
 		end
 
-		if bLock then setReadOnly(true); end
+		setReadOnly(true)
 
 		DB.addHandler(sLink, 'onUpdate', onLinkUpdated);
 
 		onLinkUpdated();
 	else
-		setReadOnly()
-		setValue(0)
+		setReadOnly(false)
 	end
 end
