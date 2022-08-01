@@ -77,9 +77,8 @@ function setLink(dbnode, bLock)
 		DB.addHandler(sLink, 'onUpdate', onLinkUpdated);
 
 		onLinkUpdated();
-	elseif User.getRulesetName() == 'SFRPG' then
-		DB.removeHandler(sLink, 'onUpdate', onLinkUpdated);
-
+	else
+		setReadOnly()
 		setValue(0)
 	end
 end
