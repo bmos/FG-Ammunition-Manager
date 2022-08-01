@@ -25,7 +25,7 @@ function onDataChanged()
 			DB.setValue(nodeAmmoLink, 'missedshots', 'number', 0)
 			nodeAmmoMisses = nodeAmmoLink.getChild('missedshots')
 		end
-		missedshots.setLink(nodeAmmoMisses);
+		missedshots.setLink(nodeAmmoMisses, true);
 	else
 		missedshots.setLink();
 	end

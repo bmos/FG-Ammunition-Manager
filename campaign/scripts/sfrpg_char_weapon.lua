@@ -55,8 +55,8 @@ function onDataChanged()
     end
 
     if nodeAmmoLink then
-        current_ammo.setLink(nodeAmmoLink.getChild('count'))
-        ammocounter.setLink(nodeAmmoLink.getChild('count'))
+        current_ammo.setLink(nodeAmmoLink.getChild('count'), true)
+        ammocounter.setLink(nodeAmmoLink.getChild('count'), true)
     else
         current_ammo.setLink()
         ammocounter.setLink()

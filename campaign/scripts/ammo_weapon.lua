@@ -52,7 +52,7 @@ function onDataChanged()
 
 	if maxammo.setLink then
 		if nodeAmmoLink then
-			maxammo.setLink(nodeAmmoLink.getChild('count'))
+			maxammo.setLink(nodeAmmoLink.getChild('count'), true)
 		else
 			maxammo.setLink()
 		end

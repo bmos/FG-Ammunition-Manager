@@ -32,8 +32,8 @@ function toggleDetail()
 
 	ammo_label.setVisible(bRanged);
 	if nodeAmmoLink then
-		if maxammo then maxammo.setLink(nodeAmmoLink.getChild('count')); end
-		if missedshots then missedshots.setLink(nodeAmmoLink.getChild('missedshots')); end
+		if maxammo then maxammo.setLink(nodeAmmoLink.getChild('count'), true); end
+		if missedshots then missedshots.setLink(nodeAmmoLink.getChild('missedshots'), true); end
 	else
 		if maxammo then maxammo.setLink(); end
 		if missedshots then missedshots.setLink(); end
