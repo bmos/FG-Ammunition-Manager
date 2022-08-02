@@ -49,13 +49,10 @@ function setLink(dbnode)
     if dbnode then
         sLink = dbnode.getPath()
 
-        setReadOnly(true)
-
         DB.addHandler(sLink, 'onUpdate', onLinkUpdated)
 
         onLinkUpdated()
     else
-        setReadOnly(false)
         setCurrentValue(getMaxValue())
     end
 end
