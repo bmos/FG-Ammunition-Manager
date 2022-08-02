@@ -79,5 +79,8 @@ function setLink(dbnode)
 		onLinkUpdated();
 	else
 		setReadOnly(false)
+		if User.getRulesetName() == 'SFRPG' then
+			setValue(0)
+		end
 	end
 end
