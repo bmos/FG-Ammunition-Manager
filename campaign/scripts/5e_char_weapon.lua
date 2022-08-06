@@ -31,6 +31,15 @@ function onDamageAction(draginfo)
 	return true;
 end
 
+local function isLoading(nodeWeapon)
+	local sProps = DB.getValue(nodeWeapon, 'properties', ''):lower()
+
+	local bCrossbow = DB.getValue(nodeWeapon, 'name', 'weapon'):lower():find('crossbow') and
+		CharManager.hasFeature(nodeWeapon.getChild('...'), 'crossbow expert');
+
+	return sProps:find('loading') and not sProps:find('noload') and not bCrossbow
+end
+
 --	luacheck: globals onDataChanged
 function onDataChanged(nodeWeapon)
 	if super and super.onDataChanged then super.onDataChanged(); end
@@ -38,9 +47,7 @@ function onDataChanged(nodeWeapon)
 	nodeWeapon = nodeWeapon or getDatabaseNode();
 	local nodeChar = nodeWeapon.getChild('...')
 	local rActor = ActorManager.resolveActor(nodeChar);
-	local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil and
-					                 not (CharManager.hasFeature(nodeChar, 'crossbow expert') and
-									                 DB.getValue(nodeWeapon, 'name', ''):lower():find('crossbow'));
+	local bLoading = isLoading(nodeWeapon);
 	isloaded.setVisible(bLoading);
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon);
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
@@ -64,9 +71,7 @@ function onInit()
 				local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
 				-- only allow attacks when 'loading' weapons have been loaded
-				local bLoading = DB.getValue(nodeWeapon, 'properties', ''):lower():find('loading') ~= nil and
-								                 not (CharManager.hasFeature(nodeChar, 'crossbow expert') and
-												                 DB.getValue(nodeWeapon, 'name', ''):lower():find('crossbow'));
+				local bLoading = isLoading(nodeWeapon);
 				local bIsLoaded = DB.getValue(nodeWeapon, 'isloaded', 0) == 1
 				if not bLoading or (bLoading and bIsLoaded) then
 					if (bInfiniteAmmo or nAmmo > 0) then
