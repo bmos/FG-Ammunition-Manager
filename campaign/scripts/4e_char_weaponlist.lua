@@ -14,8 +14,9 @@ function hasLoadAction()
 			break
 		end
 	end
+	local bNoLoad = sWeaponProperties:find('load free') or sWeaponProperties:match('noload');
 
-	return (bHasLoadAction and not sWeaponProperties:find('load free'))
+	return (bHasLoadAction and not bNoLoad)
 end
 
 --	luacheck: globals toggleDetail

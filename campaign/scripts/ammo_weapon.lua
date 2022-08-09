@@ -13,8 +13,9 @@ function hasLoadAction(nodeWeapon)
 			break
 		end
 	end
+	local bNoLoad = string.lower(DB.getValue(nodeWeapon, 'properties', '')):match('noload');
 
-	return (bRanged and bHasLoadAction)
+	return (bRanged and bHasLoadAction and not bNoLoad)
 end
 
 --	luacheck: globals automateAmmo
