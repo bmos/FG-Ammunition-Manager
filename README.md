@@ -32,3 +32,5 @@ This allowed things like "Magic Arrow; ATK: 1 enhancement" to be added to the ar
 
 # Video Demonstration (click for video)
 [<img src="https://i.ytimg.com/vi_webp/i_vmW9WVkbM/hqdefault.webp">](https://www.youtube.com/watch?v=i_vmW9WVkbM)
+# Video Demonstration - Starfinder (click for video)
+[<img src="https://i.ytimg.com/vi_webp/i_vmW9WVkbM/hqdefault.webp">](https://www.youtube.com/watch?v=i_vmW9WVkbM)
