@@ -13,7 +13,7 @@ function hasLoadAction(nodeWeapon)
 			break
 		end
 	end
-	local bNoLoad = string.lower(DB.getValue(nodeWeapon, 'properties', '')):match('noload');
+	local bNoLoad = string.lower(DB.getValue(nodeWeapon, 'properties', '')):find('noload');
 
 	return (bRanged and bHasLoadAction and not bNoLoad)
 end

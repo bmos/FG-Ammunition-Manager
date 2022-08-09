@@ -73,7 +73,7 @@ function hasLoadAction(nodeWeapon)
     for _,v in pairs(AmmunitionManager.tLoadWeapons) do
         if string.find(sWeaponName, v) then bHasLoadAction = true; break; end
     end
-	local bNoLoad = string.lower(DB.getValue(nodeWeapon, 'properties', '')):match('noload');
+	local bNoLoad = string.lower(DB.getValue(nodeWeapon, 'properties', '')):find('noload');
 
     return (bRanged and bHasLoadAction and not bNoLoad)
 end

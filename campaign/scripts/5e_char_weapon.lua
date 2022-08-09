@@ -37,7 +37,7 @@ local function isLoading(nodeWeapon)
 	local bCrossbow = DB.getValue(nodeWeapon, 'name', 'weapon'):lower():find('crossbow') and
 		CharManager.hasFeature(nodeWeapon.getChild('...'), 'crossbow expert');
 
-	return sProps:find('loading') and not sProps:find('noload') and not bCrossbow
+	return not bCrossbow and sProps:find('loading') and not sProps:find('noload')
 end
 
 --	luacheck: globals onDataChanged

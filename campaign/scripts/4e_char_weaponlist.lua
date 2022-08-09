@@ -14,7 +14,7 @@ function hasLoadAction()
 			break
 		end
 	end
-	local bNoLoad = sWeaponProperties:find('load free') or sWeaponProperties:match('noload');
+	local bNoLoad = sWeaponProperties:find('load free') or sWeaponProperties:find('noload');
 
 	return (bHasLoadAction and not bNoLoad)
 end
