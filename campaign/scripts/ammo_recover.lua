@@ -12,7 +12,7 @@ function onClickRelease()
 		local nAmmoRecovered = math.floor(nMisses * nPercent)
 		local messagedata = { text = '', sender = ActorManager.resolveActor(nodeWeapon.getChild('...')).sName, font = "emotefont" }
 		messagedata.text = string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered)
-		Comm.addChatMessage(messagedata)
+		Comm.deliverChatMessage(messagedata)
 
 		local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0)
 		local nExcess = nAmmoRecovered - nAmmoUsed
@@ -22,11 +22,9 @@ function onClickRelease()
 			if nodeAmmo then
 				local nCount = DB.getValue(nodeAmmo, 'count', 0)
 				DB.setValue(nodeAmmo, 'count', 'number', nCount + nExcess)
-				messagedata = { text = '', sender = ActorManager.resolveActor(nodeWeapon.getChild('...')).sName, font = "emotefont" }
 				messagedata.text = string.format(Interface.getString('char_actions_excessammunition_auto'), nExcess)
 				Comm.deliverChatMessage(messagedata)
 			else
-				messagedata = { text = '', font = "emotefont" }
 				messagedata.text = string.format(Interface.getString('char_actions_excessammunition'), nExcess)
 				Comm.deliverChatMessage(messagedata)
 			end

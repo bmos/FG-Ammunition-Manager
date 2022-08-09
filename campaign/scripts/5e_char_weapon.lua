@@ -69,6 +69,7 @@ function onInit()
 				local nodeChar = nodeWeapon.getChild('...')
 				local rActor = ActorManager.resolveActor(nodeChar)
 				local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
+				local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
 
 				-- only allow attacks when 'loading' weapons have been loaded
 				local bLoading = isLoading(nodeWeapon);
@@ -78,12 +79,15 @@ function onInit()
 						if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
 						return onAttackAction_old(draginfo, ...);
 					else
-						ChatManager.Message(Interface.getString('char_message_atkwithnoammo'), true, rActor);
+						messagedata.text = Interface.getString('char_message_atkwithnoammo')
+						Comm.deliverChatMessage(messagedata)
+
 						if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0); end
 					end
 				else
 					local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
-					ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor));
+					messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor)
+					Comm.deliverChatMessage(messagedata)
 				end
 				-- end bmos only allowing attacks when ammo is sufficient
 			end

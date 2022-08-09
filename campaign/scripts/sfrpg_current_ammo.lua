@@ -8,5 +8,8 @@ function onDoubleClick()
     local nodeWeapon = window.getDatabaseNode()
     Interface.openWindow("char_weapon_reload", nodeWeapon);
     local rActor = CharManager.getWeaponAttackRollStructures(nodeWeapon);
-    ChatManager.Message(Interface.getString("char_message_reloadammo"), true, rActor)
+
+    local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+    messagedata.text = Interface.getString('char_message_reloadammo')
+    Comm.deliverChatMessage(messagedata)
 end

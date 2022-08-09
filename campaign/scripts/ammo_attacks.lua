@@ -17,7 +17,9 @@ function action(draginfo)
 		if (bInfiniteAmmo or nAmmo >= i) then
 			table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack));
 		else
-			ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
+			local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+			messagedata.text = Interface.getString('char_actions_noammo')
+			Comm.deliverChatMessage(messagedata)
 		end
 	end
 

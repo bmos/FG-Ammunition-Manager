@@ -19,21 +19,14 @@
 							local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 							
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), true, rActor);
+							local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+							messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName)
+							Comm.deliverChatMessage(messagedata)
 							return true;
 						end
 					end
 					function onDoubleClick(x,y)
-						local rActor, _, _ = CharManager.getAdvancedRollStructures("attack", nil, window.getDatabaseNode());
-						local nodeWeapon = window.getDatabaseNode();
-
-						local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
-
-						if (bInfiniteAmmo or nAmmo &gt; 0) then	
-							if not automateAmmo(nodeWeapon) then return window.onAttackAction(); end
-						else
-							ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
-						end			
+						onDragStart(nil, x, y)
 					end			
 					function onDragStart(button, x, y, draginfo)
 						local rActor, _, _ = CharManager.getAdvancedRollStructures("attack", nil, window.getDatabaseNode());
@@ -44,7 +37,9 @@
 						if (bInfiniteAmmo or nAmmo &gt; 0) then	
 							if not automateAmmo(nodeWeapon) then return window.onAttackAction(draginfo); end
 						else
-							ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
+							local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+							messagedata.text = Interface.getString('char_actions_noammo')
+							Comm.deliverChatMessage(messagedata)
 						end			
 					end
 				</script>

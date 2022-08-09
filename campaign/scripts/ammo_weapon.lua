@@ -25,7 +25,10 @@ function automateAmmo(nodeWeapon)
 		local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 		local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 
-		ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), true, rActor);
+		local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+		messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName)
+		Comm.deliverChatMessage(messagedata)
+
 		return true;
 	end
 end

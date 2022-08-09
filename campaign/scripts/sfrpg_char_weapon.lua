@@ -85,7 +85,10 @@ function automateAmmo(nodeWeapon)
         local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
         local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 
-        ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), true, rActor);
+        local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+        messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName)
+        Comm.deliverChatMessage(messagedata)
+
         return true;
     end
 end
@@ -155,13 +158,16 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 
     local bAttack = true
     local rRolls = {};
+    local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
     for i = 1, nAttacksCount do
         if not useWeaponAmmo() then
             if i == 1 then
-                ChatManager.Message(Interface.getString("char_message_atkwithnoammo"), true, rActor)
+                messagedata.text = Interface.getString("char_message_atkwithnoammo")
+                Comm.deliverChatMessage(messagedata)
                 bAttack = false
             else
-                ChatManager.Message(Interface.getString("char_message_atkwithpartammo"), true, rActor)
+                messagedata.text = Interface.getString("char_message_atkwithpartammo")
+                Comm.deliverChatMessage(messagedata)
             end
             break
         end

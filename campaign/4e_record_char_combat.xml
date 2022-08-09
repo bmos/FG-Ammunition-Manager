@@ -17,7 +17,9 @@
 						if (bInfiniteAmmo or nAmmo &gt; 0) then	
 							ActionAttack.performRoll(draginfo, rActor, rAction, rFocus);
 						else
-							ChatManager.Message(Interface.getString('char_actions_noammo'), true, rActor);
+							local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+							messagedata.text = Interface.getString('char_actions_noammo')
+							Comm.deliverChatMessage(messagedata)
 						end
 
 						return true;
@@ -29,7 +31,9 @@
 							local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
 							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 
-							ChatManager.Message(string.format(Interface.getString('char_actions_notloaded'), sWeaponName), true, rActor);
+							local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+							messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName)
+							Comm.deliverChatMessage(messagedata)
 							return true;
 						end
 					end

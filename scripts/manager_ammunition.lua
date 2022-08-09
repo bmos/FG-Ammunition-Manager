@@ -106,16 +106,20 @@ end
 function ammoTracker(rSource, sDesc, sResult, bCountAll)
 
 	local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
+		local messagedata = { text = '', sender = ActorManager.resolveActor(nodeWeapon.getChild('...')).sName, font = "emotefont" }
 		if nodeAmmoLink then
 			if nAmmoRemaining == 0 then
-				ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+				messagedata.text = string.format(Interface.getString('char_actions_usedallammo'), sWeaponName)
+				Comm.deliverChatMessage(messagedata)
+
 				DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining);
 			else
 				DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining);
 			end
 		else
 			if nAmmoRemaining <= 0 then
-				ChatManager.Message(string.format(Interface.getString('char_actions_usedallammo'), sWeaponName), true, rSource);
+				messagedata.text = string.format(Interface.getString('char_actions_usedallammo'), sWeaponName)
+				Comm.deliverChatMessage(messagedata)
 			end
 			local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0);
 			DB.setValue(nodeWeapon, 'ammo', 'number', nMaxAmmo - nAmmoRemaining);
@@ -145,14 +149,17 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 			local nBroken = DB.getValue(nodeWeapon, 'broken', 0);
 			local nItemHitpoints = DB.getValue(nodeWeapon, 'hitpoints', 0);
 			local nItemDamage = DB.getValue(nodeWeapon, 'itemdamage', 0);
+			local messagedata = { text = '', sender = rSource.sName, font = "emotefont" }
 			if nBroken == 0 then
 				DB.setValue(nodeWeapon, 'broken', 'number', 1);
 				DB.setValue(nodeWeapon, 'itemdamage', 'number', math.floor(nItemHitpoints / 2) + math.max(nItemDamage, 1));
-				ChatManager.Message(string.format(Interface.getString('char_actions_fragile_broken'), sWeaponName), true, rSource);
+				messagedata.text = string.format(Interface.getString('char_actions_fragile_broken'), sWeaponName)
+				Comm.deliverChatMessage(messagedata)
 			elseif nBroken == 1 then
 				DB.setValue(nodeWeapon, 'broken', 'number', 2);
 				DB.setValue(nodeWeapon, 'itemdamage', 'number', nItemHitpoints + math.max(nItemDamage, 1));
-				ChatManager.Message(string.format(Interface.getString('char_actions_fragile_destroyed'), sWeaponName), true, rSource);
+				messagedata.text = string.format(Interface.getString('char_actions_fragile_destroyed'), sWeaponName)
+				Comm.deliverChatMessage(messagedata)
 			end
 		end
 	end

@@ -11,6 +11,9 @@ function onClickRelease()
 
 	if (getValue() == 0) and (bInfiniteAmmo or nAmmo > 0) then
 		local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
-		ChatManager.Message(string.format(Interface.getString('char_actions_load'), sWeaponName), true, rActor);
+
+		local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+		messagedata.text = string.format(Interface.getString('char_actions_load'), sWeaponName)
+		Comm.deliverChatMessage(messagedata)
 	end
 end
