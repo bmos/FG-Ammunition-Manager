@@ -9,7 +9,7 @@ This extension has been tested with [FantasyGrounds Unity](https://www.fantasygr
 This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
 
 # Features
-* Adds a checkbox to the left of the ammo label on the weapons section of the actions tab; this checkbox is only shown for some weapons (those with 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', or 'loadaction' in the weapon name). Loading these weapon will post a message to chat to help monitor the action-economy. Attacks attempted with these weapons without loading first will post a message to chat and the attack will not go through.
+* Adds a checkbox to the left of the ammo label on the weapons section of the actions tab; this checkbox is only shown for some weapons (those with 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', or 'loadaction' in the weapon name). Loading these weapon will post a message to chat to help monitor the action-economy. Attacks attempted with these weapons without loading first will post a message to chat and the attack will not go through. If you want to disable this on a per-weapon basis, add the weapon property 'noload.'
 
 * Opening the weapon details page from the actions tab will allow swapping between ammo types. When an ammo type is selected here it will hide the normal ammo tracker and use the inventory count directly.
 
@@ -31,4 +31,4 @@ This allowed things like "Magic Arrow; ATK: 1 enhancement" to be added to the ar
 * NOTE: Some modules contain entries like "Arrows (20)". If you have quantity 1 of "Arrows (20)" and select this as your weapon, it will reduce you to quantity 0 of "Arrows (20)". You should instead (in this example) change it to quantity 20 of "Arrow" and divide the weight by 20 as well. I'm not sure why the module authors often ignore this detail, but this is how to work around it.
 
 # Video Demonstration (click for video)
-[<img src="https://i.ytimg.com/vi_webp/yW0JeWRxnx8/hqdefault.webp">](https://www.youtube.com/watch?v=yW0JeWRxnx8)
+[<img src="https://i.ytimg.com/vi_webp/i_vmW9WVkbM/hqdefault.webp">](https://www.youtube.com/watch?v=i_vmW9WVkbM)
