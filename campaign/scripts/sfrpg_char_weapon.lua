@@ -15,7 +15,7 @@ function onDataChanged()
 
     --	luacheck: globals type
     local bRanged = (type.getValue() == 1);
-    local bLinkedAmmoEnabled = (DB.getValue(nodeWeapon, "ammopicker_enabled", 0) == 1);
+    local bLinkedAmmoEnabled = (DB.getValue(nodeWeapon, "ammopicker_enabled", 1) == 1);
     local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink);
     local bDrawnCapacity = (DB.getValue(nodeWeaponSource, "capacity", ""):lower() == "drawn")
 
