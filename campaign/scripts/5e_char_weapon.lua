@@ -2,6 +2,17 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
+
+--	luacheck: globals isLoading
+function isLoading(nodeWeapon)
+	local sProps = DB.getValue(nodeWeapon, 'properties', ''):lower()
+
+	local bCrossbow = DB.getValue(nodeWeapon, 'name', 'weapon'):lower():find('crossbow') and
+		CharManager.hasFeature(nodeWeapon.getChild('...'), 'crossbow expert');
+
+	return not bCrossbow and sProps:find('loading') and not sProps:find('noload')
+end
+
 --	luacheck: globals onDamageAction
 function onDamageAction(draginfo)
 	local nodeWeapon = getDatabaseNode();
@@ -29,15 +40,6 @@ function onDamageAction(draginfo)
 
 	ActionDamage.performRoll(draginfo, rActor, rAction);
 	return true;
-end
-
-local function isLoading(nodeWeapon)
-	local sProps = DB.getValue(nodeWeapon, 'properties', ''):lower()
-
-	local bCrossbow = DB.getValue(nodeWeapon, 'name', 'weapon'):lower():find('crossbow') and
-		CharManager.hasFeature(nodeWeapon.getChild('...'), 'crossbow expert');
-
-	return not bCrossbow and sProps:find('loading') and not sProps:find('noload')
 end
 
 --	luacheck: globals onDataChanged
