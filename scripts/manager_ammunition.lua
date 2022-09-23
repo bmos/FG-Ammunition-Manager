@@ -16,7 +16,7 @@ end
 --	luacheck: globals getShortcutNode
 function getShortcutNode(node, shortcutName)
 	shortcutName = shortcutName or 'shortcut'
-	local _,sRecord = DB.getValue(node, shortcutName, '', '');
+	local _,sRecord = DB.getValue(node, shortcutName, '');
 	if sRecord and sRecord ~= '' then
 		return DB.findNode(sRecord)
 	end
