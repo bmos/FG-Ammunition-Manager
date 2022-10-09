@@ -4,10 +4,10 @@
 --
 -- luacheck: globals ammo count onDoubleClick
 function onDoubleClick(x, y, ...)
-	if super and super.onDoubleClick then super.onDoubleClick(x, y, ...); end
+	if super and super.onDoubleClick then super.onDoubleClick(x, y, ...) end
 
-	local nodeWeapon = window.getDatabaseNode();
-	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon);
+	local nodeWeapon = window.getDatabaseNode()
+	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
 
 	if nodeAmmo then
 		local nCount = DB.getValue(nodeAmmo, count[1], 0)
@@ -15,8 +15,8 @@ function onDoubleClick(x, y, ...)
 
 		if (nAmmo > 0) and (nCount > 0) then
 			local nReload = (nCount - nAmmo)
-			local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
-			local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+			local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'))
+			local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
 			if nReload > 0 then
 				DB.setValue(nodeWeapon, ammo[1], 'number', 0)
 				DB.setValue(nodeAmmo, count[1], 'number', nReload)

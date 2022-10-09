@@ -4,31 +4,37 @@
 --
 --	luacheck: globals action getValue
 function action(draginfo)
-	local nodeWeapon = window.getDatabaseNode();
-	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon);
+	local nodeWeapon = window.getDatabaseNode()
+	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon)
 
-	local rRolls = {};
+	local rRolls = {}
 	for i = 1, getValue() do
-		rAttack.modifier = DB.getValue(nodeWeapon, 'attack' .. i, 0);
-		rAttack.order = i;
+		rAttack.modifier = DB.getValue(nodeWeapon, 'attack' .. i, 0)
+		rAttack.order = i
 
 		local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
-		if (bInfiniteAmmo or nAmmo >= i) then
-			table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack));
+		if bInfiniteAmmo or nAmmo >= i then
+			table.insert(rRolls, ActionAttack.getRoll(rActor, rAttack))
 		else
-			local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }
+			local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
 			messagedata.text = Interface.getString('char_actions_noammo')
 			Comm.deliverChatMessage(messagedata)
 		end
 	end
 
-	if not OptionsManager.isOption('RMMT', 'off') and #rRolls > 1 then for _, v in ipairs(rRolls) do v.sDesc = v.sDesc .. ' [FULL]'; end end
+	if not OptionsManager.isOption('RMMT', 'off') and #rRolls > 1 then
+		for _, v in ipairs(rRolls) do
+			v.sDesc = v.sDesc .. ' [FULL]'
+		end
+	end
 
-	ActionsManager.performMultiAction(draginfo, rActor, 'attack', rRolls);
+	ActionsManager.performMultiAction(draginfo, rActor, 'attack', rRolls)
 
-	return true;
+	return true
 end
 
 --	luacheck: globals onDoubleClick
-function onDoubleClick() if not window.automateAmmo(window.getDatabaseNode()) then return action(); end end
+function onDoubleClick()
+	if not window.automateAmmo(window.getDatabaseNode()) then return action() end
+end
