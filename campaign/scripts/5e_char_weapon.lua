@@ -42,7 +42,7 @@ function onDamageAction(draginfo)
 	return true
 end
 
---	luacheck: globals onDataChanged
+--	luacheck: globals onDataChanged maxammo.setLink
 function onDataChanged(nodeWeapon)
 	if super and super.onDataChanged then super.onDataChanged() end
 
