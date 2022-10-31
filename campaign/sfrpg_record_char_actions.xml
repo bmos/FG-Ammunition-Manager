@@ -95,7 +95,7 @@
 				<default textres="none" />
 				<itemsheetname>type</itemsheetname>
 				<itemsheetaltname>subtype</itemsheetaltname>
-				<script file="campaign/scripts/ammo_ammopicker.lua" />
+				<script file="campaign/scripts/sfrpg_ammopicker.lua" />
 			</combobox>
 			<label_fieldtop name="label_ammopicker">
 				<anchored to="ammopicker" />
