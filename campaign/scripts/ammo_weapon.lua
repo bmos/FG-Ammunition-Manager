@@ -34,7 +34,7 @@ function automateAmmo(nodeWeapon)
 	end
 end
 
--- luacheck: globals onDataChanged
+-- luacheck: globals onDataChanged maxammo.setLink
 function onDataChanged()
 	super.onLinkChanged()
 	super.onDamageChanged()

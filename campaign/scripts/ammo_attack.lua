@@ -4,6 +4,8 @@
 --
 --	luacheck: globals action getValue getName onDoubleClick
 function action(draginfo)
+	if window.automateAmmo(window.getDatabaseNode()) then return; end
+
 	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(window.getDatabaseNode())
 	rAttack.modifier = getValue()
 	rAttack.order = tonumber(string.sub(getName(), 7)) or 1
@@ -17,7 +19,8 @@ function action(draginfo)
 	end
 end
 
---	luacheck: globals onDoubleClick
-function onDoubleClick()
-	if not window.automateAmmo(window.getDatabaseNode()) then return action() end
+function onInit()
+	if super then
+		super.action = action
+	end
 end

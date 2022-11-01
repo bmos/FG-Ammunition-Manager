@@ -5,6 +5,8 @@
 --	luacheck: globals action getValue
 function action(draginfo)
 	local nodeWeapon = window.getDatabaseNode()
+	if window.automateAmmo(nodeWeapon) then return; end
+
 	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon)
 
 	local rRolls = {}
@@ -34,7 +36,8 @@ function action(draginfo)
 	return true
 end
 
---	luacheck: globals onDoubleClick
-function onDoubleClick()
-	if not window.automateAmmo(window.getDatabaseNode()) then return action() end
+function onInit()
+	if super then
+		super.action = action
+	end
 end

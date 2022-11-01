@@ -19,7 +19,7 @@ function hasLoadAction()
 	return (bHasLoadAction and not bNoLoad)
 end
 
---	luacheck: globals toggleDetail
+--	luacheck: globals toggleDetail maxammo.setLink
 function toggleDetail()
 	if super and super.toggleDetail then super.toggleDetail() end
 
