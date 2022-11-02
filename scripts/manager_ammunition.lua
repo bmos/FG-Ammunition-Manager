@@ -4,6 +4,7 @@
 --	This table exists so people can add search terms for weapons that should have a load button.
 --	luacheck: globals tLoadWeapons MirrorImageHandler
 tLoadWeapons = { 'loadaction' }
+tLoadWeaponProps = { 'loadaction' }
 
 --	luacheck: globals calculateMargin
 function calculateMargin(nDC, nTotal)
