@@ -48,17 +48,9 @@ local function populateAmmo()
 			local itemName = ItemManager.getDisplayName(itemNode, true)
 			if itemName ~= '' and loadedAmmoNode ~= itemNode and (isAmmo(itemNode, 'subtype') or isAmmo(itemNode, 'type')) then
 				super.add(itemName)
-				Debug.chat(itemNode.getPath())
 			end
 		end
 	end
-
-	
-	-- local maxAmmo, ammoType = parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
-	-- local ammoNode = dbnode.getParent()
-	-- local clonedNode = ammoNode.getParent().createChild()
-	-- local results = DB.copyNode(ammoNode, clonedNode)
-
 end
 
 local function moveInventoryAmmunition(weaponActionNode, newAmmunitionNode)
@@ -67,8 +59,9 @@ local function moveInventoryAmmunition(weaponActionNode, newAmmunitionNode)
 	local maxAmmo, ammoType = parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
 	local weaponName = ItemManager.getDisplayName(weaponInventoryNode, true)
 	if ammoType == 'charges' then
-		DB.deleteNode(loadedAmmoNode.getChild('location'))
+		DB.setValue(loadedAmmoNode, 'location', 'string', '')
 		DB.setValue(newAmmunitionNode, 'location', 'string', weaponName)
+		return newAmmunitionNode
 	else
 		local newAmmoCount = DB.getValue(newAmmunitionNode, 'count', 0)
 		if loadedAmmoNode then
@@ -77,18 +70,22 @@ local function moveInventoryAmmunition(weaponActionNode, newAmmunitionNode)
 			if newAmmoCount <= ammoNeeded then
 				DB.setValue(loadedAmmoNode, 'count', 'number', newAmmoCount)
 				DB.deleteNode(newAmmunitionNode)
+				return loadedAmmoNode
 			else
 				DB.setValue(loadedAmmoNode, 'count', 'number', ammoNeeded)
 				DB.setValue(newAmmunitionNode, 'count', 'number', newAmmoCount - ammoNeeded)
+				return loadedAmmoNode
 			end
 		else
 			if newAmmoCount <= maxAmmo then
 				DB.setValue(newAmmunitionNode, 'location', 'string', weaponName)
+				return newAmmunitionNode
 			else
 				local clonedNode = newAmmunitionNode.getParent().createChild()
 				clonedNode = DB.copyNode(newAmmunitionNode, clonedNode)
 				DB.setValue(clonedNode, 'count', 'number', maxAmmo)
 				DB.setValue(newAmmunitionNode, 'count', 'number', newAmmoCount - maxAmmo)
+				return clonedNode
 			end
 		end
 	end
@@ -110,8 +107,8 @@ function onInit()
 					if sValue == '' then
 						DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '')
 					elseif sValue == sName then
-						moveInventoryAmmunition(nodeWeapon, nodeItem)
-						DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '....inventorylist.' .. nodeItem.getName())
+						local loadedAmmo = moveInventoryAmmunition(nodeWeapon, nodeItem)
+						DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '....inventorylist.' .. loadedAmmo.getName())
 					end
 				end
 			end

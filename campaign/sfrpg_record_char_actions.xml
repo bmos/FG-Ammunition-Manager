@@ -71,13 +71,36 @@
 	<windowclass name="char_weapon_reload_main">
 		<sheetdata>
 			<anchor_column name="columnanchor" />
+			<!-- <hsc name="ammofilter">
+				<static><text>Ammunition</text></static>
+			</hsc> -->
 			<!-- Ammo -->
 			<header_column name="header_ammo">
 				<insertbefore>header_damage</insertbefore>
 				<static textres="weapon_header_ammo" />
 				<center />
 			</header_column>
-			<combobox name="ammopicker">
+			<windowlist name="ammunitionlist">
+				<frame>border</frame>
+				<anchored>
+					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
+					<left offset="15" />
+					<right offset="-20" />
+					<bottom offset="-15" />
+				</anchored>
+				<child></child>
+				<child><backcolor>1A40301E</backcolor></child>
+				<!-- <filter><control>header_ammo</control></filter>
+				<filteron><field>.subtype</field></filteron> -->
+				<datasource>...inventorylist</datasource>
+				<class>inv_ammoitem</class>
+				<script file="campaign/scripts/sfrpg_ammunitionlist.lua" />
+			</windowlist>
+			<scrollbar>
+				<anchored to="ammunitionlist" />
+				<target>ammunitionlist</target>
+			</scrollbar>
+			<!-- <combobox name="ammopicker">
 				<frame>
 					<hidereadonly />
 				</frame>
@@ -102,7 +125,66 @@
 				<static textres="weapon_label_ammopicker" />
 				<readonly />
 				<center />
-			</label_fieldtop>
+			</label_fieldtop> -->
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="inv_ammoitem">
+		<margins control="0,0,0,2" />
+		<sheetdata>
+			<hidden_record_isidentified name="isidentified">
+				<class>item</class>
+				<ignorehost />
+			</hidden_record_isidentified>
+
+			<number_charinv name="count">
+				<bounds>5,2,20,20</bounds>
+				<font>charstarship-sheetnumber</font>
+				<tabtarget next="name" />
+			</number_charinv>
+
+			<genericcontrol name="rightanchor">
+				<anchored width="0" height="0">
+					<top />
+					<right />
+				</anchored>
+				<invisible />
+			</genericcontrol>
+			<button_text_sm name="load">
+				<anchored width="40" height="20">
+					<top offset="2" />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="-5" />
+				</anchored>
+				<text>Load</text>
+			</button_text_sm>
+			<stringu name="subtype">
+				<anchored width="20" height="20">
+					<top offset="2" />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="-10" />
+				</anchored>
+				<invisible />
+			</stringu>
+			<string_charinvloc name="location">
+				<anchored width="80" height="20">
+					<top offset="2" />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="-10" />
+				</anchored>
+				<tabtarget next="weight" prev="nonid_name" />
+			</string_charinvloc>
+			<string_charinvname name="name">
+				<anchored position="insidetopleft" offset="35,2" height="20">
+					<right parent="rightanchor" anchor="left" relation="current" offset="-5" />
+				</anchored>
+				<tabtarget next="nonid_name" prev="count" />
+			</string_charinvname>
+			<string_charinvname name="nonid_name">
+				<anchored position="insidetopleft" offset="35,2" height="20">
+					<right parent="rightanchor" anchor="left" relation="current" offset="-5" />
+				</anchored>
+				<empty textres="library_recordtype_empty_nonid_item" />
+				<invisible />
+				<tabtarget next="location" prev="name" />
+			</string_charinvname>
 		</sheetdata>
 	</windowclass>
 	
