@@ -2,8 +2,9 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 --	This table exists so people can add search terms for weapons that should have a load button.
---	luacheck: globals tLoadWeapons MirrorImageHandler
+--	luacheck: globals tLoadWeapons tLoadWeaponProps
 tLoadWeapons = { 'loadaction' }
+tLoadWeaponProps = { 'loadaction' }
 
 --	luacheck: globals calculateMargin
 function calculateMargin(nDC, nTotal)

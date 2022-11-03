@@ -5,7 +5,10 @@
 --	luacheck: globals action getValue
 function action(draginfo)
 	local nodeWeapon = window.getDatabaseNode()
+
 	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon)
+
+	if window.automateAmmo(nodeWeapon) then return; end
 
 	local rRolls = {}
 	for i = 1, getValue() do
@@ -34,7 +37,11 @@ function action(draginfo)
 	return true
 end
 
---	luacheck: globals onDoubleClick
-function onDoubleClick()
-	if not window.automateAmmo(window.getDatabaseNode()) then return action() end
+function onInit()
+	if super and super.onInit then
+		super.onInit()
+	end
+	if super then
+		super.action = action
+	end
 end
