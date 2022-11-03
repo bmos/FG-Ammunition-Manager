@@ -69,7 +69,6 @@ function loadAmmo(ammoItem)
 	local loadedAmmo = moveInventoryAmmunition(nodeWeapon, nodeAmmoItem)
 	DB.setValue(nodeWeapon, 'ammopicker', 'string', ItemManager.getDisplayName(nodeAmmoItem, true))
 	DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '....inventorylist.' .. loadedAmmo.getName())
-
 	local rActor = CharManager.getWeaponAttackRollStructures(nodeWeapon)
 	local messagedata = {
 		text = Interface.getString('char_message_reloadammo'),
