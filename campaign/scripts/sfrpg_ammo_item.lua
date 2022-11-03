@@ -44,7 +44,7 @@ local function moveInventoryAmmunition(weaponActionNode, newAmmunitionNode)
 				DB.deleteNode(newAmmunitionNode)
 				return loadedAmmoNode
 			else
-				DB.setValue(loadedAmmoNode, 'count', 'number', ammoNeeded)
+				DB.setValue(loadedAmmoNode, 'count', 'number', maxAmmo)
 				DB.setValue(newAmmunitionNode, 'count', 'number', newAmmoCount - ammoNeeded)
 				return loadedAmmoNode
 			end

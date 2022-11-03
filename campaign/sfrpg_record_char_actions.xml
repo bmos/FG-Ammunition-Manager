@@ -27,7 +27,11 @@
 				<min>0</min>
 				<tooltip textres="weapon_tooltip_reloadammo" />
 				<script file="common/scripts/number_crosslink_unlink.lua" />
-				<script file="campaign/scripts/sfrpg_current_ammo.lua" />
+				<script>
+					function onDoubleClick()
+						Interface.openWindow('char_weapon_reload', window.getDatabaseNode())
+					end
+				</script>
 			</basicnumber>
 			<state_charammocounter name="ammocounter">
 				<anchored to="label_ammo" position="righthigh" offset="33,0" />
@@ -88,14 +92,7 @@
 				<child><backcolor>1A40301E</backcolor></child>
 				<datasource>...inventorylist</datasource>
 				<class>inv_ammoitem</class>
-				<script>
-					function onFilter(w)
-						if w.subtype.getValue() == 'Ammunition' then
-							return true
-						end
-						return false
-					end
-				</script>
+				<script file="campaign/scripts/sfrpg_ammo_list.lua" />
 			</windowlist>
 			<scrollbar>
 				<anchored to="ammunitionlist" />
