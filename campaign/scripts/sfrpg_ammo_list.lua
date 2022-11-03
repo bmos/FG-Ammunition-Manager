@@ -7,7 +7,6 @@ local runOnce = false
 function onFilter(w)
 	if not runOnce then
 		runOnce = true
-		Debug.chat(w.location.getValue())
 	end
 	if w.subtype.getValue() == 'Ammunition' and w.location.getValue() == '' then
 		return true

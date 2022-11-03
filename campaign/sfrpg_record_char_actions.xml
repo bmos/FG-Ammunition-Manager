@@ -41,7 +41,7 @@
 	</windowclass>
 
 	<windowclass name="char_weapon_reload">
-		<frame>recordsheet</frame>
+		<frame>utilitybox</frame>
 		<placement>
 			<size width="400" height="350" />
 		</placement>
@@ -54,7 +54,8 @@
 		<tooltip control="name" />
 		<sheetdata>
 			<windowtitlebar name="title">
-				<resource>weapon_title</resource>
+				<!-- <resource>weapon_title</resource> -->
+				<field>name</field>
 			</windowtitlebar>
 			
 			<frame_record_editor name="contentframe" />
@@ -63,9 +64,9 @@
 				<class>char_weapon_reload_main</class>
 				<activate />
 			</subwindow_record>
-			<scrollbar_record>
+			<!-- <scrollbar_record>
 				<target>main</target>
-			</scrollbar_record>
+			</scrollbar_record> -->
 
 			<resize_recordsheet />
 			<close_recordsheet />
@@ -81,11 +82,11 @@
 				<center />
 			</header_column>
 			<windowlist name="ammunitionlist">
-				<frame>border</frame>
+				<!-- <frame>border</frame> -->
 				<anchored>
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
-					<left offset="15" />
-					<right offset="-20" />
+					<left offset="5" />
+					<right offset="-5" />
 					<bottom offset="-15" />
 				</anchored>
 				<child></child>
