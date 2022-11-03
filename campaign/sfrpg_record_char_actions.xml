@@ -69,14 +69,10 @@
 	</windowclass>
 
 	<windowclass name="char_weapon_reload_main">
+		<script file="campaign/scripts/sfrpg_ammo_item.lua" />
 		<sheetdata>
 			<anchor_column name="columnanchor" />
-			<!-- <hsc name="ammofilter">
-				<static><text>Ammunition</text></static>
-			</hsc> -->
-			<!-- Ammo -->
 			<header_column name="header_ammo">
-				<insertbefore>header_damage</insertbefore>
 				<static textres="weapon_header_ammo" />
 				<center />
 			</header_column>
@@ -90,46 +86,30 @@
 				</anchored>
 				<child></child>
 				<child><backcolor>1A40301E</backcolor></child>
-				<!-- <filter><control>header_ammo</control></filter>
-				<filteron><field>.subtype</field></filteron> -->
 				<datasource>...inventorylist</datasource>
 				<class>inv_ammoitem</class>
-				<script file="campaign/scripts/sfrpg_ammunitionlist.lua" />
+				<script>
+					function onFilter(w)
+						if w.subtype.getValue() == 'Ammunition' then
+							return true
+						end
+						return false
+					end
+				</script>
 			</windowlist>
 			<scrollbar>
 				<anchored to="ammunitionlist" />
 				<target>ammunitionlist</target>
 			</scrollbar>
-			<!-- <combobox name="ammopicker">
-				<frame>
-					<hidereadonly />
-				</frame>
-				<center />
-				<listdirection>down</listdirection>
-				<listmaxsize>15</listmaxsize>
-				<nodrag />
-				<nodrop />
-				<noreset />
-				<anchored height="20">
-					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
-					<left offset="5" />
-					<right offset="-5" />
-				</anchored>
-				<default textres="none" />
-				<itemsheetname>type</itemsheetname>
-				<itemsheetaltname>subtype</itemsheetaltname>
-				<script file="campaign/scripts/sfrpg_ammopicker.lua" />
-			</combobox>
-			<label_fieldtop name="label_ammopicker">
-				<anchored to="ammopicker" />
-				<static textres="weapon_label_ammopicker" />
-				<readonly />
-				<center />
-			</label_fieldtop> -->
 		</sheetdata>
 	</windowclass>
 
 	<windowclass name="inv_ammoitem">
+		<script>
+			function loadAmmo()
+				windowlist.window.loadAmmo(self)
+			end
+		</script>
 		<margins control="0,0,0,2" />
 		<sheetdata>
 			<hidden_record_isidentified name="isidentified">
@@ -156,6 +136,11 @@
 					<right parent="rightanchor" anchor="left" relation="relative" offset="-5" />
 				</anchored>
 				<text>Load</text>
+				<script>
+					function onButtonPress()
+						window.loadAmmo()
+					end
+				</script>
 			</button_text_sm>
 			<stringu name="subtype">
 				<anchored width="20" height="20">
