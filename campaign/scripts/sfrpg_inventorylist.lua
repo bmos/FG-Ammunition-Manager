@@ -5,7 +5,7 @@
 -- luacheck: globals itemsheetname itemsheetaltname setValue setTooltipText
 
 local function onLocationChanged(node)
-	super.updateContainers()
+	self.updateContainers()
 end
 
 function onInit()
