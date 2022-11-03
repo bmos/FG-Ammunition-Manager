@@ -163,7 +163,7 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 		end
 		rAttack.order = i
 		local rRoll = ActionAttack.getRoll(rActor, rAttack)
-		rRoll.sDesc = sDesc
+		rRoll.sDesc = rRoll.sDesc .. sDesc
 		table.insert(rRolls, rRoll)
 	end
 	return rRolls, bAttack
