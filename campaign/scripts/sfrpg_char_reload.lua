@@ -2,8 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
---	luacheck: globals loadAmmo
-
 local function parseWeaponCapacity(capacity)
 	capacity = capacity:lower()
 	if capacity == 'drawn' then
@@ -88,6 +86,7 @@ local function moveInventoryAmmunition(weaponActionNode, newAmmoNode)
 	end
 end
 
+--	luacheck: globals loadAmmo
 function loadAmmo(ammoItem)
 	local nodeWeaponAction = getDatabaseNode()
 	if ammoItem then

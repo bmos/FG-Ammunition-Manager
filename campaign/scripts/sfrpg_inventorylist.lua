@@ -2,7 +2,7 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
--- luacheck: globals itemsheetname itemsheetaltname setValue setTooltipText
+-- luacheck: globals onLocationChanged onInit onClose
 
 local function onLocationChanged(node)
 	self.updateContainers()
