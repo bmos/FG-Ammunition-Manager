@@ -29,7 +29,9 @@
 				<script file="common/scripts/number_crosslink_unlink.lua" />
 				<script>
 					function onDoubleClick()
-						Interface.openWindow('char_weapon_reload', window.getDatabaseNode())
+						if not window.isThrownAttack() then
+							Interface.openWindow('char_weapon_reload', window.getDatabaseNode())
+						end
 					end
 				</script>
 			</basicnumber>

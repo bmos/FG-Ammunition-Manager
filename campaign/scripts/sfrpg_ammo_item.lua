@@ -5,6 +5,10 @@
 --	luacheck: globals loadAmmo
 
 local function parseWeaponCapacity(capacity)
+	capacity = capacity:lower()
+	if capacity == 'drawn' then
+		return 0, capacity
+	end
 	local splitCapacity = StringManager.splitWords(capacity)
 	return tonumber(splitCapacity[1]), splitCapacity[2]
 end
@@ -27,8 +31,11 @@ end
 
 local function moveInventoryAmmunition(weaponActionNode, newAmmunitionNode)
 	local weaponInventoryNode = AmmunitionManager.getShortcutNode(weaponActionNode, 'shortcut')
-	local loadedAmmoNode = getContainedItems(weaponInventoryNode)[1]
 	local maxAmmo, ammoType = parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
+	if ammoType == 'drawn' then
+		return newAmmunitionNode
+	end
+	local loadedAmmoNode = getContainedItems(weaponInventoryNode)[1]
 	local weaponName = ItemManager.getDisplayName(weaponInventoryNode, true)
 	if ammoType == 'charges' then
 		DB.setValue(loadedAmmoNode, 'location', 'string', '')
