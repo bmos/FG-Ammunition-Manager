@@ -95,7 +95,11 @@
 				<child><backcolor>1A40301E</backcolor></child>
 				<datasource>...inventorylist</datasource>
 				<class>inv_ammoitem</class>
-				<script file="campaign/scripts/sfrpg_ammo_list.lua" />
+				<script>
+					function onFilter(w)
+						return w.subtype.getValue() == 'Ammunition' and w.location.getValue() == ''
+					end
+				</script>
 			</windowlist>
 			<scrollbar>
 				<anchored to="ammunitionlist" />
