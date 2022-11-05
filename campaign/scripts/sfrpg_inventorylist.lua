@@ -4,7 +4,7 @@
 --
 -- luacheck: globals onLocationChanged onInit onClose
 
-local function onLocationChanged(node)
+local function onLocationChanged()
 	self.updateContainers()
 end
 
