@@ -43,7 +43,7 @@
 	</windowclass>
 
 	<windowclass name="char_weapon_reload">
-		<frame>utilitybox</frame>
+		<frame>recordsheet</frame>
 		<placement>
 			<size width="400" height="350" />
 		</placement>
@@ -51,9 +51,6 @@
 			<minimum width="400" height="350" />
 			<dynamic />
 		</sizelimits>
-		<nodelete />
-		<playercontrol />
-		<tooltip control="name" />
 		<sheetdata>
 			<windowtitlebar name="title">
 				<!-- <resource>weapon_title</resource> -->
@@ -89,7 +86,7 @@
 				<anchored>
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
 					<left offset="5" />
-					<right offset="-5" />
+					<right offset="-15" />
 					<bottom offset="-35" />
 				</anchored>
 				<child></child>
