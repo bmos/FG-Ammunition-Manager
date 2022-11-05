@@ -29,7 +29,7 @@ end
 
 local function loadCartridges(weaponActionNode, newAmmoNode, loadedAmmoNode)
 	local weaponInventoryNode = AmmunitionManager.getShortcutNode(weaponActionNode, 'shortcut')
-	local maxAmmo, ammoType = parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
+	local maxAmmo, _ = parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
 	local currentAmmoCount = 0
 	if loadedAmmoNode then
 		currentAmmoCount = DB.getValue(loadedAmmoNode, 'count', 0)
@@ -66,11 +66,11 @@ local function moveInventoryAmmunition(weaponActionNode, newAmmoNode)
 		return newAmmoNode
 	end
 
-	local maxAmmo, ammoType = parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
+	local _, ammoType = parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
 	if ammoType == 'drawn' then
 		return newAmmoNode
 	end
-	
+
 	if ammoType == 'charges' then
 		if loadedAmmoNode then
 			DB.setValue(loadedAmmoNode, 'location', 'string', '')

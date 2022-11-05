@@ -3,7 +3,7 @@
 -- attribution and copyright information.
 --
 
---	luacheck: globals action
+--	luacheck: globals action getValue
 function action(draginfo)
 	local nodeWeapon = window.getDatabaseNode()
 	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon)
