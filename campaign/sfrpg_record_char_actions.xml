@@ -31,7 +31,9 @@
 					function onDoubleClick()
 						if not window.isThrownAttack() then
 							Interface.openWindow('char_weapon_reload', window.getDatabaseNode())
+							return true
 						end
+						return false
 					end
 				</script>
 			</basicnumber>
