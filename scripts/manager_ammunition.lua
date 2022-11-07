@@ -27,13 +27,14 @@ end
 --	If no match is found, nothing is returned.
 --	luacheck: globals getAmmoNode
 function getAmmoNode(nodeWeapon)
+	-- check for saved ammoshortcut windowreference and return if found
 	local ammoNode = getShortcutNode(nodeWeapon, 'ammoshortcut')
 	if ammoNode then return ammoNode end
 
+	-- if ammoshortcut does not provide a good node and weapon is ranged, try searching the inventory.
 	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1
 	if User.getRulesetName() == '5E' then bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2 end
 
-	-- if ammoshortcut does not provide a good node and weapon is ranged, try searching the inventory.
 	if bRanged then
 		local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '')
 		if sAmmo ~= '' then
@@ -99,6 +100,8 @@ end
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
 --	luacheck: globals ammoTracker
 function ammoTracker(rSource, sDesc, sResult, bCountAll)
+	if not ActorManager.isPC(rSource) then return; end
+
 	local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
 		local messagedata = { text = '', sender = ActorManager.resolveActor(nodeWeapon.getChild('...')).sName, font = 'emotefont' }
 		if nodeAmmoLink then
@@ -189,7 +192,7 @@ local function noDecrementAmmo() end
 local onPostAttackResolve_old
 local function onPostAttackResolve_new(rSource, rTarget, rRoll, rMessage, ...)
 	onPostAttackResolve_old(rSource, rTarget, rRoll, rMessage, ...)
-	if ActorManager.isPC(rSource) then AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult, true) end
+	AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult, true)
 end
 
 function onInit()

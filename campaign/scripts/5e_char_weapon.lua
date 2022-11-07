@@ -46,14 +46,12 @@ end
 function onDataChanged(nodeWeapon)
 	if super and super.onDataChanged then super.onDataChanged() end
 
-	nodeWeapon = nodeWeapon or getDatabaseNode()
 	local nodeChar = nodeWeapon.getChild('...')
 	local rActor = ActorManager.resolveActor(nodeChar)
 	local bLoading = isLoading(nodeWeapon)
 	isloaded.setVisible(bLoading)
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
-	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink)
-	ammocounter.setVisible(not bInfiniteAmmo and not nodeAmmoLink)
+	ammocounter.setVisible(not nodeAmmoLink)
 	if nodeAmmoLink then
 		maxammo.setLink(nodeAmmoLink.getChild('count'), true)
 	else
@@ -102,12 +100,7 @@ function onInit()
 	local nodeWeapon = getDatabaseNode()
 	DB.addHandler(nodeWeapon.getPath(), 'onChildUpdate', onDataChanged)
 
-	local nodeCT = ActorManager.getCTNode(ActorManager.resolveActor(nodeWeapon.getChild('...')))
-	DB.addHandler(DB.getPath(nodeCT, 'effects.*.label'), 'onUpdate', onDataChanged)
-	DB.addHandler(DB.getPath(nodeCT, 'effects.*.isactive'), 'onUpdate', onDataChanged)
-	DB.addHandler(DB.getPath(nodeCT, 'effects'), 'onChildDeleted', onDataChanged)
-
-	onDataChanged()
+	onDataChanged(nodeWeapon)
 end
 
 function onClose()
@@ -115,9 +108,4 @@ function onClose()
 
 	local nodeWeapon = getDatabaseNode()
 	DB.removeHandler(nodeWeapon.getPath(), 'onChildUpdate', onDataChanged)
-
-	local nodeCT = ActorManager.getCTNode(ActorManager.resolveActor(nodeWeapon.getChild('...')))
-	DB.removeHandler(DB.getPath(nodeCT, 'effects.*.label'), 'onUpdate', onDataChanged)
-	DB.removeHandler(DB.getPath(nodeCT, 'effects.*.isactive'), 'onUpdate', onDataChanged)
-	DB.removeHandler(DB.getPath(nodeCT, 'effects'), 'onChildDeleted', onDataChanged)
 end
