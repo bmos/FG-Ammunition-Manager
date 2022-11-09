@@ -46,8 +46,6 @@ end
 function onDataChanged(nodeWeapon)
 	if super and super.onDataChanged then super.onDataChanged() end
 
-	local nodeChar = nodeWeapon.getChild('...')
-	local rActor = ActorManager.resolveActor(nodeChar)
 	local bLoading = isLoading(nodeWeapon)
 	isloaded.setVisible(bLoading)
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
