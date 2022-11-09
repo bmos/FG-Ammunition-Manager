@@ -18,6 +18,8 @@ function onDataChanged()
 	local bLinkedAmmoEnabled = (DB.getValue(nodeWeapon, 'ammopicker_enabled', 1) == 1)
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink)
 	local bDrawnCapacity = (DB.getValue(nodeWeaponSource, 'capacity', ''):lower() == 'drawn')
+	local sSpecial = DB.getValue(nodeWeapon, 'special', ''):lower()
+	local bThrownAttack = (string.find(sSpecial, 'thrown') and bRanged)
 
 	label_range.setVisible(bRanged)
 	rangeincrement.setVisible(bRanged)
@@ -25,15 +27,15 @@ function onDataChanged()
 	label_ammo.setVisible(bRanged)
 	uses.setVisible(bRanged and not bLinkedAmmoEnabled)
 	current_ammo.setVisible(bRanged and bLinkedAmmoEnabled)
-	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not bDrawnCapacity)
+	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not (bDrawnCapacity or bThrownAttack and bLinkedAmmoEnabled))
 
-	local sSpecial = DB.getValue(nodeWeapon, 'special', ''):lower()
+
 	local bNoFull = false
 	if string.find(sSpecial, 'unwieldy') then
 		bNoFull = true
 	elseif string.find(sSpecial, 'explode') then
 		bNoFull = true
-	elseif string.find(sSpecial, 'thrown') and bRanged then
+	elseif bThrownAttack then
 		bNoFull = true
 	end
 
@@ -167,4 +169,22 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 		table.insert(rRolls, rRoll)
 	end
 	return rRolls, bAttack
+end
+
+--	luacheck: globals isThrownAttack
+function isThrownAttack()
+	local sSpecial = DB.getValue(getDatabaseNode(), 'special', ''):lower()
+	local bRanged = (type.getValue() == 1)
+	return (string.find(sSpecial, 'thrown') and bRanged)
+end
+
+--	luacheck: globals onInit
+function onInit()
+	if isThrownAttack() then
+		local attackNode = getDatabaseNode()
+		local itemNode = AmmunitionManager.getShortcutNode(attackNode, 'shortcut')
+		if itemNode then
+			DB.setValue(attackNode, "ammoshortcut", "windowreference", "item", "....inventorylist." .. itemNode.getName())
+		end
+	end
 end

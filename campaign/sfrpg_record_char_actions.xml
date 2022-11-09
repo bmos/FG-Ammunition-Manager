@@ -27,7 +27,15 @@
 				<min>0</min>
 				<tooltip textres="weapon_tooltip_reloadammo" />
 				<script file="common/scripts/number_crosslink_unlink.lua" />
-				<script file="campaign/scripts/sfrpg_current_ammo.lua" />
+				<script>
+					function onDoubleClick()
+						if not window.isThrownAttack() then
+							Interface.openWindow('char_weapon_reload', window.getDatabaseNode())
+							return true
+						end
+						return false
+					end
+				</script>
 			</basicnumber>
 			<state_charammocounter name="ammocounter">
 				<anchored to="label_ammo" position="righthigh" offset="33,0" />
@@ -45,12 +53,10 @@
 			<minimum width="400" height="350" />
 			<dynamic />
 		</sizelimits>
-		<nodelete />
-		<playercontrol />
-		<tooltip control="name" />
 		<sheetdata>
 			<windowtitlebar name="title">
-				<resource>weapon_title</resource>
+				<!-- <resource>weapon_title</resource> -->
+				<field>name</field>
 			</windowtitlebar>
 			
 			<frame_record_editor name="contentframe" />
@@ -59,9 +65,9 @@
 				<class>char_weapon_reload_main</class>
 				<activate />
 			</subwindow_record>
-			<scrollbar_record>
+			<!-- <scrollbar_record>
 				<target>main</target>
-			</scrollbar_record>
+			</scrollbar_record> -->
 
 			<resize_recordsheet />
 			<close_recordsheet />
@@ -69,40 +75,119 @@
 	</windowclass>
 
 	<windowclass name="char_weapon_reload_main">
+		<script file="campaign/scripts/sfrpg_char_reload.lua" />
 		<sheetdata>
 			<anchor_column name="columnanchor" />
-			<!-- Ammo -->
 			<header_column name="header_ammo">
-				<insertbefore>header_damage</insertbefore>
 				<static textres="weapon_header_ammo" />
 				<center />
 			</header_column>
-			<combobox name="ammopicker">
-				<frame>
-					<hidereadonly />
-				</frame>
-				<center />
-				<listdirection>down</listdirection>
-				<listmaxsize>15</listmaxsize>
-				<nodrag />
-				<nodrop />
-				<noreset />
-				<anchored height="20">
+			
+			<windowlist name="ammunitionlist">
+				<!-- <frame>border</frame> -->
+				<anchored>
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
 					<left offset="5" />
-					<right offset="-5" />
+					<right offset="-15" />
+					<bottom offset="-35" />
 				</anchored>
-				<default textres="none" />
-				<itemsheetname>type</itemsheetname>
-				<itemsheetaltname>subtype</itemsheetaltname>
-				<script file="campaign/scripts/ammo_ammopicker.lua" />
-			</combobox>
-			<label_fieldtop name="label_ammopicker">
-				<anchored to="ammopicker" />
-				<static textres="weapon_label_ammopicker" />
-				<readonly />
-				<center />
-			</label_fieldtop>
+				<child></child>
+				<child><backcolor>1A40301E</backcolor></child>
+				<datasource>...inventorylist</datasource>
+				<class>inv_ammoitem</class>
+				<script>
+					function onFilter(w)
+						return w.subtype.getValue() == 'Ammunition' and w.location.getValue() == ''
+					end
+				</script>
+			</windowlist>
+			<scrollbar>
+				<anchored to="ammunitionlist" />
+				<target>ammunitionlist</target>
+			</scrollbar>
+			<button_text name="unload">
+				<anchored height="20">
+					<top parent="ammunitionlist" anchor="bottom" relation="relative" offset="10" />
+					<left offset="5" />
+					<right offset="-5" />
+					<bottom offset="-5" />
+				</anchored>
+				<text>Unload</text>
+				<script>
+					function onButtonPress()
+						window.loadAmmo()
+					end
+				</script>
+			</button_text>
+		</sheetdata>
+	</windowclass>
+
+	<windowclass name="inv_ammoitem">
+		<script>
+			function loadAmmo()
+				windowlist.window.loadAmmo(self)
+			end
+		</script>
+		<margins control="0,0,0,2" />
+		<sheetdata>
+			<hidden_record_isidentified name="isidentified">
+				<class>item</class>
+				<ignorehost />
+			</hidden_record_isidentified>
+
+			<number_charinv name="count">
+				<bounds>5,2,20,20</bounds>
+				<font>charstarship-sheetnumber</font>
+				<tabtarget next="name" />
+			</number_charinv>
+
+			<genericcontrol name="rightanchor">
+				<anchored width="0" height="0">
+					<top />
+					<right />
+				</anchored>
+				<invisible />
+			</genericcontrol>
+			<button_text_sm name="load">
+				<anchored width="40" height="20">
+					<top offset="2" />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="-5" />
+				</anchored>
+				<text>Load</text>
+				<script>
+					function onButtonPress()
+						window.loadAmmo()
+					end
+				</script>
+			</button_text_sm>
+			<stringu name="subtype">
+				<anchored width="20" height="20">
+					<top offset="2" />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="-10" />
+				</anchored>
+				<invisible />
+			</stringu>
+			<string_charinvloc name="location">
+				<anchored width="80" height="20">
+					<top offset="2" />
+					<right parent="rightanchor" anchor="left" relation="relative" offset="-10" />
+				</anchored>
+				<tabtarget next="weight" prev="nonid_name" />
+			</string_charinvloc>
+			<string_charinvname name="name">
+				<anchored position="insidetopleft" offset="35,2" height="20">
+					<right parent="rightanchor" anchor="left" relation="current" offset="-5" />
+				</anchored>
+				<tabtarget next="nonid_name" prev="count" />
+			</string_charinvname>
+			<string_charinvname name="nonid_name">
+				<anchored position="insidetopleft" offset="35,2" height="20">
+					<right parent="rightanchor" anchor="left" relation="current" offset="-5" />
+				</anchored>
+				<empty textres="library_recordtype_empty_nonid_item" />
+				<invisible />
+				<tabtarget next="location" prev="name" />
+			</string_charinvname>
 		</sheetdata>
 	</windowclass>
 	
@@ -135,34 +220,6 @@
 				</anchored>
 				<default>1</default>
 			</button_checkbox>
-			<!--
-			<combobox name="ammopicker">
-				<frame>
-					<hidereadonly />
-				</frame>
-				<center />
-				<listdirection>down</listdirection>
-				<listmaxsize>15</listmaxsize>
-				<nodrag />
-				<nodrop />
-				<noreset />
-				<anchored height="20">
-					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
-					<left offset="5" />
-					<right offset="-5" />
-				</anchored>
-				<default textres="none" />
-				<itemsheetname>type</itemsheetname>
-				<itemsheetaltname>subtype</itemsheetaltname>
-				<script file="campaign/scripts/ammo_ammopicker.lua" />
-			</combobox>
-			<label_fieldtop name="label_ammopicker">
-				<anchored to="ammopicker" />
-				<static textres="weapon_label_ammopicker" />
-				<readonly />
-				<center />
-			</label_fieldtop>
-			-->
 		</sheetdata>
 	</windowclass>
 </root>
