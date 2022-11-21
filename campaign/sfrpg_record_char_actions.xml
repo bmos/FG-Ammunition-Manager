@@ -13,10 +13,6 @@
 			<number_charweaponattacktotal name="attack0">
 				<script file="campaign/scripts/sfrpg_char_weaponattack.lua" />
 			</number_charweaponattacktotal>
-			<number_charweaponsingleattack name="attack">
-				<invisible />
-				<script file="campaign/scripts/sfrpg_char_weaponattack.lua" />
-			</number_charweaponsingleattack>
 			
 			<basicnumber name="uses">
 				<invisible />
