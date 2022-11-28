@@ -206,6 +206,8 @@ function onInit()
 		CharWeaponManager.decrementAmmo = noDecrementAmmo
 	end
 
-	onPostAttackResolve_old = ActionAttack.onPostAttackResolve
-	ActionAttack.onPostAttackResolve = onPostAttackResolve_new
+	if sRuleset ~= 'SFRPG' then -- SFRPG handled differently
+		onPostAttackResolve_old = ActionAttack.onPostAttackResolve
+		ActionAttack.onPostAttackResolve = onPostAttackResolve_new
+	end
 end
