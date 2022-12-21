@@ -193,9 +193,11 @@ function getWeaponUsage(attackNode)
 end
 
 function useAmmoStarfinder(rSource, rRoll)
-	
-	local attackNode = DB.findNode(rRoll.sAttackNode)
-	if DB.getValue(nodeLinkedWeapon, 'type', 0) == 1 then -- ranged attack
+	local attackNode
+	if rRoll.sAttackNode then
+		attackNode = DB.findNode(rRoll.sAttackNode)
+	end
+	if attackNode and DB.getValue(attackNode, 'type', 0) == 1 then -- ranged attack
 		local ammoNode = AmmunitionManager.getAmmoNode(attackNode)
 		local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rSource, attackNode, ammoNode)
 		if bInfiniteAmmo then return end
@@ -227,6 +229,7 @@ local function onPostAttackResolve_starfinder(rSource, rTarget, rRoll, rMessage,
 end
 
 function onInit()
+	sRuleset = User.getRulesetName()
 	-- replace result handlers
 	if sRuleset == 'PFRPG' or sRuleset == '3.5E' then
 		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' }
