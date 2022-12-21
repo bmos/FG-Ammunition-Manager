@@ -185,6 +185,29 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	end
 end
 
+function useAmmoStarfinder(rSource, rRoll)
+	local function getWeaponUsage(attackNode)
+		local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(attackNode, 'shortcut')
+		if nodeLinkedWeapon then return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1 end
+		return 1
+	end
+	local attackNode = DB.findNode(rRoll.sAttackNode)
+	if DB.getValue(nodeLinkedWeapon, 'type', 0) == 1 then -- ranged attack
+		local ammoNode = AmmunitionManager.getAmmoNode(attackNode)
+		local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rSource, attackNode, ammoNode)
+		if bInfiniteAmmo then return end
+		local weaponUsage = getWeaponUsage(attackNode)
+		local remainingAmmo = nAmmoCount - weaponUsage
+		DB.setValue(ammoNode, 'count', 'number', remainingAmmo)
+		if remainingAmmo <= 0 then
+			local attackName = DB.getValue(attackNode, 'name', '')
+			local messageText = string.format(Interface.getString('char_actions_usedallammo'), attackName)
+			local messagedata = { text = messageText, sender = ActorManager.resolveActor(attackNode.getChild('...')).sName, font = 'emotefont' }
+			Comm.deliverChatMessage(messagedata)
+		end
+	end
+end
+
 local function noDecrementAmmo() end
 
 -- Function Overrides
@@ -193,6 +216,11 @@ local onPostAttackResolve_old
 local function onPostAttackResolve_new(rSource, rTarget, rRoll, rMessage, ...)
 	onPostAttackResolve_old(rSource, rTarget, rRoll, rMessage, ...)
 	AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult, true)
+end
+
+local function onPostAttackResolve_starfinder(rSource, rTarget, rRoll, rMessage, ...)
+	onPostAttackResolve_old(rSource, rTarget, rRoll, rMessage, ...)
+	AmmunitionManager.useAmmoStarfinder(rSource, rRoll)
 end
 
 function onInit()
@@ -206,8 +234,10 @@ function onInit()
 		CharWeaponManager.decrementAmmo = noDecrementAmmo
 	end
 
-	if sRuleset ~= 'SFRPG' then -- SFRPG handled differently
-		onPostAttackResolve_old = ActionAttack.onPostAttackResolve
+	onPostAttackResolve_old = ActionAttack.onPostAttackResolve
+	if sRuleset == 'SFRPG' then -- SFRPG handled differently
+		ActionAttack.onPostAttackResolve = onPostAttackResolve_starfinder
+	else
 		ActionAttack.onPostAttackResolve = onPostAttackResolve_new
 	end
 end
