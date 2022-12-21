@@ -22,7 +22,7 @@ function onValueChanged()
 		if not bLocked then
 			bLocked = true
 
-			if sLink and not isReadOnly() then DB.setValue(sLink, 'number', (getMaxValue() - getCurrentValue()) * window.getWeaponUsage()) end
+			if sLink and not isReadOnly() then DB.setValue(sLink, 'number', (getMaxValue() - getCurrentValue()) * AmmunitionManager.getWeaponUsage(window.getDatabaseNode())) end
 
 			bLocked = false
 		end
@@ -33,7 +33,7 @@ function onLinkUpdated()
 	if sLink and not bLocked then
 		bLocked = true
 
-		setCurrentValue(getMaxValue() - math.floor(DB.getValue(sLink, 0) / window.getWeaponUsage()))
+		setCurrentValue(getMaxValue() - math.floor(DB.getValue(sLink, 0) / AmmunitionManager.getWeaponUsage(window.getDatabaseNode())))
 
 		if self.update then self.update() end
 

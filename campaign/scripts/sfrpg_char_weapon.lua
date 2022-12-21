@@ -99,13 +99,6 @@ function automateAmmo(nodeWeapon)
 	end
 end
 
---	luacheck: globals getWeaponUsage
-function getWeaponUsage()
-	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(getDatabaseNode(), 'shortcut')
-	if nodeLinkedWeapon then return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1 end
-	return 1
-end
-
 --	luacheck: globals generateAttackRolls
 function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 	local function useWeaponAmmo(attackCount)
@@ -115,7 +108,7 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 		local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmo)
 		if bInfiniteAmmo then return true end
 		if nAmmoCount == 0 then return false end
-		local weaponUsage = getWeaponUsage()
+		local weaponUsage = AmmunitionManager.getWeaponUsage(nodeWeapon)
 		if nAmmoCount >= weaponUsage * attackCount then
 			-- local remainingAmmo = nAmmoCount - weaponUsage
 			-- DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)

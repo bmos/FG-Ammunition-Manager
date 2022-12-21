@@ -185,18 +185,21 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	end
 end
 
+--	luacheck: globals getWeaponUsage
+function getWeaponUsage(attackNode)
+	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(attackNode, 'shortcut')
+	if nodeLinkedWeapon then return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1 end
+	return 1
+end
+
 function useAmmoStarfinder(rSource, rRoll)
-	local function getWeaponUsage(attackNode)
-		local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(attackNode, 'shortcut')
-		if nodeLinkedWeapon then return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1 end
-		return 1
-	end
+	
 	local attackNode = DB.findNode(rRoll.sAttackNode)
 	if DB.getValue(nodeLinkedWeapon, 'type', 0) == 1 then -- ranged attack
 		local ammoNode = AmmunitionManager.getAmmoNode(attackNode)
 		local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rSource, attackNode, ammoNode)
 		if bInfiniteAmmo then return end
-		local weaponUsage = getWeaponUsage(attackNode)
+		local weaponUsage = AmmunitionManager.getWeaponUsage(attackNode)
 		local remainingAmmo = nAmmoCount - weaponUsage
 		DB.setValue(ammoNode, 'count', 'number', remainingAmmo)
 		if remainingAmmo <= 0 then
@@ -224,7 +227,6 @@ local function onPostAttackResolve_starfinder(rSource, rTarget, rRoll, rMessage,
 end
 
 function onInit()
-	sRuleset = User.getRulesetName()
 	-- replace result handlers
 	if sRuleset == 'PFRPG' or sRuleset == '3.5E' then
 		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' }
