@@ -108,7 +108,7 @@ end
 
 --	luacheck: globals generateAttackRolls
 function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
-	local function useWeaponAmmo()
+	local function useWeaponAmmo(attackCount)
 		local sSpecial = DB.getValue(nodeWeapon, 'special', ''):lower()
 		if string.find(sSpecial, 'powered') then return true end
 		local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
@@ -116,9 +116,9 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 		if bInfiniteAmmo then return true end
 		if nAmmoCount == 0 then return false end
 		local weaponUsage = getWeaponUsage()
-		if nAmmoCount >= weaponUsage then
-			local remainingAmmo = nAmmoCount - weaponUsage
-			DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)
+		if nAmmoCount >= weaponUsage * attackCount then
+			-- local remainingAmmo = nAmmoCount - weaponUsage
+			-- DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)
 		else
 			return false
 		end
@@ -152,7 +152,7 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 	local rRolls = {}
 	local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
 	for i = 1, nAttacksCount do
-		if not useWeaponAmmo() then
+		if not useWeaponAmmo(i) then
 			if i == 1 then
 				messagedata.text = Interface.getString('char_message_atkwithnoammo')
 				Comm.deliverChatMessage(messagedata)
@@ -166,6 +166,7 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 		rAttack.order = i
 		local rRoll = ActionAttack.getRoll(rActor, rAttack)
 		rRoll.sDesc = rRoll.sDesc .. sDesc
+		rRoll.sAttackNode = DB.getPath(nodeWeapon)
 		table.insert(rRolls, rRoll)
 	end
 	return rRolls, bAttack
