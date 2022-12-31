@@ -4,6 +4,22 @@
 --
 -- luacheck: globals onFilter
 
+function getAmmoType(itemNode)
+	local ammoCount, ammoType = AmmunitionManager.parseWeaponCapacity(DB.getValue(itemNode, "capacity", ""))
+	if ammoType == 'grenade' then
+		return 'Grenade'
+	end
+	return 'Ammunition'
+end
+
+local attackNode, itemNode, ammoSubtype
+
+function onInit()
+	attackNode = window.parentcontrol.window.getDatabaseNode()
+	itemNode = AmmunitionManager.getShortcutNode(attackNode)
+	ammoSubtype = getAmmoType(itemNode)
+end
+
 function onFilter(w)
-	return w.subtype.getValue() == 'Ammunition' and w.location.getValue() == ''
+	return w.subtype.getValue() == ammoSubtype and w.location.getValue() == ''
 end

@@ -19,6 +19,14 @@ function getShortcutNode(node, shortcutName)
 	if sRecord and sRecord ~= '' then return DB.findNode(sRecord) end
 end
 
+--	luacheck: globals parseWeaponCapacity
+function parseWeaponCapacity(capacity)
+	capacity = capacity:lower()
+	if capacity == 'drawn' then return 0, capacity end
+	local splitCapacity = StringManager.splitWords(capacity)
+	return tonumber(splitCapacity[1]), splitCapacity[2]
+end
+
 ---	This function finds the correct node for a weapon's ammunition.
 --	It first checks for a path saved in ammoshortcut. If found, databasenode record is returned.
 --	If no path is found, it checks to see if the ammo name is known.
