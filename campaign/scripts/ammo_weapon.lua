@@ -64,9 +64,7 @@ function onDataChanged()
 	maxammo.setVisible(bRanged)
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink)
 
-	if not maxammo.setLink then
-		return
-	end
+	if not maxammo.setLink then return end
 
 	if nodeAmmoLink then
 		maxammo.setLink(nodeAmmoLink.getChild('count'), true)

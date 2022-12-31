@@ -12,7 +12,7 @@ function action(draginfo)
 	local nodeWeapon = window.getDatabaseNode()
 	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 
-	if window.automateAmmo(window.getDatabaseNode()) then return; end
+	if window.automateAmmo(window.getDatabaseNode()) then return end
 
 	if bInfiniteAmmo or nAmmo > 0 then
 		ActionAttack.performRoll(draginfo, rActor, rAttack)
@@ -21,10 +21,6 @@ function action(draginfo)
 end
 
 function onInit()
-	if super and super.onInit then
-		super.onInit()
-	end
-	if super then
-		super.action = action
-	end
+	if super and super.onInit then super.onInit() end
+	if super then super.action = action end
 end

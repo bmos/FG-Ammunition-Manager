@@ -29,7 +29,6 @@ function onDataChanged()
 	current_ammo.setVisible(bRanged and bLinkedAmmoEnabled)
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not (bDrawnCapacity or bThrownAttack and bLinkedAmmoEnabled))
 
-
 	local bNoFull = false
 	if string.find(sSpecial, 'unwieldy') then
 		bNoFull = true
@@ -99,32 +98,25 @@ function automateAmmo(nodeWeapon)
 	end
 end
 
---	luacheck: globals getWeaponUsage
-function getWeaponUsage()
-	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(getDatabaseNode(), 'shortcut')
-	if nodeLinkedWeapon then return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1 end
-	return 1
+local function useWeaponAmmo(rActor, nodeWeapon, attackCount)
+	local sSpecial = DB.getValue(nodeWeapon, 'special', ''):lower()
+	if string.find(sSpecial, 'powered') then return true end
+	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
+	local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmo)
+	if bInfiniteAmmo then return true end
+	if nAmmoCount == 0 then return false end
+	local weaponUsage = AmmunitionManager.getWeaponUsage(nodeWeapon)
+	if nAmmoCount < weaponUsage * attackCount then
+		return false
+	else
+		-- local remainingAmmo = nAmmoCount - weaponUsage
+		-- DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)
+		return true
+	end
 end
 
 --	luacheck: globals generateAttackRolls
 function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
-	local function useWeaponAmmo()
-		local sSpecial = DB.getValue(nodeWeapon, 'special', ''):lower()
-		if string.find(sSpecial, 'powered') then return true end
-		local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
-		local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmo)
-		if bInfiniteAmmo then return true end
-		if nAmmoCount == 0 then return false end
-		local weaponUsage = getWeaponUsage()
-		if nAmmoCount >= weaponUsage then
-			local remainingAmmo = nAmmoCount - weaponUsage
-			DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)
-		else
-			return false
-		end
-		return true
-	end
-
 	local sDesc = ''
 	local nProf = DB.getValue(nodeWeapon, 'prof', 0)
 	if nProf == 1 then
@@ -151,9 +143,9 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 	local bAttack = true
 	local rRolls = {}
 	local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
-	for i = 1, nAttacksCount do
-		if not useWeaponAmmo() then
-			if i == 1 then
+	for attackCount = 1, nAttacksCount do
+		if not useWeaponAmmo(rActor, nodeWeapon, attackCount) then
+			if attackCount == 1 then
 				messagedata.text = Interface.getString('char_message_atkwithnoammo')
 				Comm.deliverChatMessage(messagedata)
 				bAttack = false
@@ -163,9 +155,10 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 			end
 			break
 		end
-		rAttack.order = i
+		rAttack.order = attackCount
 		local rRoll = ActionAttack.getRoll(rActor, rAttack)
 		rRoll.sDesc = rRoll.sDesc .. sDesc
+		rRoll.sAttackNode = DB.getPath(nodeWeapon)
 		table.insert(rRolls, rRoll)
 	end
 	return rRolls, bAttack
@@ -180,11 +173,11 @@ end
 
 --	luacheck: globals onInit
 function onInit()
-	if isThrownAttack() then
-		local attackNode = getDatabaseNode()
-		local itemNode = AmmunitionManager.getShortcutNode(attackNode, 'shortcut')
-		if itemNode then
-			DB.setValue(attackNode, "ammoshortcut", "windowreference", "item", "....inventorylist." .. itemNode.getName())
-		end
-	end
+	if not isThrownAttack() and not DB.getValue(getDatabaseNode(), 'subtype', ''):lower():find('grenade') then return end
+
+	local shortcutNode = getDatabaseNode().getChild('shortcut')
+	if not shortcutNode then return end
+
+	local ammoShortcuttNode = getDatabaseNode().getChild('ammoshortcut', shortcutNode.getType())
+	DB.copyNode(shortcutNode, ammoShortcuttNode)
 end
