@@ -22,7 +22,10 @@ function onValueChanged()
 
 	bLocked = true
 
-	DB.setValue(sLink, 'number', (getMaxValue() - getCurrentValue()) * AmmunitionManager.getWeaponUsage(window.getDatabaseNode()))
+	local currentAmmo = DB.getValue(sLink, 'number', 0)
+	local usage = AmmunitionManager.getWeaponUsage(window.getDatabaseNode())
+	local excess = math.fmod(currentAmmo, usage)
+	DB.setValue(sLink, 'number', math.min(excess + (getMaxValue() - getCurrentValue()) * usage, getMaxValue() * usage))
 
 	bLocked = false
 end
