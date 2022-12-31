@@ -25,7 +25,7 @@
 				<script file="common/scripts/number_crosslink_unlink.lua" />
 				<script>
 					function onDoubleClick()
-						if not window.isThrownAttack() then
+						if not window.isAmmoAutolinkable() then
 							Interface.openWindow('char_weapon_reload', window.getDatabaseNode())
 							return true
 						end
@@ -91,11 +91,7 @@
 				<child><backcolor>1A40301E</backcolor></child>
 				<datasource>...inventorylist</datasource>
 				<class>inv_ammoitem</class>
-				<script>
-					function onFilter(w)
-						return w.subtype.getValue() == 'Ammunition' and w.location.getValue() == ''
-					end
-				</script>
+				<script file="campaign/scripts/sfrpg_ammolist.lua" />
 			</windowlist>
 			<scrollbar>
 				<anchored to="ammunitionlist" />
