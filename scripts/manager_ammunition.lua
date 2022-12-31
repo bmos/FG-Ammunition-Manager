@@ -185,14 +185,14 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	end
 end
 
---	luacheck: globals getWeaponUsage
+-- luacheck: globals getWeaponUsage
 function getWeaponUsage(attackNode)
 	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(attackNode, 'shortcut')
 	if nodeLinkedWeapon then return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1 end
 	return 1
 end
 
--- luacheck: globals useAmmoStarfinder
+-- luacheck: globals useAmmoStarfinder 
 function useAmmoStarfinder(rSource, rRoll)
 	local attackNode
 	if rRoll.sAttackNode then attackNode = DB.findNode(rRoll.sAttackNode) end
