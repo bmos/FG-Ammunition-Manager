@@ -174,11 +174,12 @@ end
 
 --	luacheck: globals onInit
 function onInit()
-	if isThrownAttack() then
-		local attackNode = getDatabaseNode()
-		local itemNode = AmmunitionManager.getShortcutNode(attackNode, 'shortcut')
-		if itemNode then
-			DB.setValue(attackNode, "ammoshortcut", "windowreference", "item", "....inventorylist." .. itemNode.getName())
+	local attackNode = getDatabaseNode()
+	if isThrownAttack() or DB.getValue(attackNode, 'subtype', ''):lower() == 'grenade' then
+		local shortcutNode = attackNode.getChild('shortcut')
+		if shortcutNode then
+			local ammoShortcuttNode = attackNode.getChild("ammoshortcut", shortcutNode.getType())
+			DB.copyNode(shortcutNode, ammoShortcuttNode)
 		end
 	end
 end
