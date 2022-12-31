@@ -179,7 +179,7 @@ end
 
 --	luacheck: globals onInit
 function onInit()
-	if not isAmmoAutolinkable then return end
+	if not isAmmoAutolinkable() then return end
 
 	local shortcutNode = getDatabaseNode().getChild('shortcut')
 	if not shortcutNode then return end
