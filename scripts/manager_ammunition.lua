@@ -100,7 +100,7 @@ end
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
 --	luacheck: globals ammoTracker
 function ammoTracker(rSource, sDesc, sResult, bCountAll)
-	if not ActorManager.isPC(rSource) then return; end
+	if not ActorManager.isPC(rSource) then return end
 
 	local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
 		local messagedata = { text = '', sender = ActorManager.resolveActor(nodeWeapon.getChild('...')).sName, font = 'emotefont' }
@@ -192,11 +192,10 @@ function getWeaponUsage(attackNode)
 	return 1
 end
 
+-- luacheck: globals useAmmoStarfinder
 function useAmmoStarfinder(rSource, rRoll)
 	local attackNode
-	if rRoll.sAttackNode then
-		attackNode = DB.findNode(rRoll.sAttackNode)
-	end
+	if rRoll.sAttackNode then attackNode = DB.findNode(rRoll.sAttackNode) end
 	if attackNode and DB.getValue(attackNode, 'type', 0) == 1 then -- ranged attack
 		local ammoNode = AmmunitionManager.getAmmoNode(attackNode)
 		local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rSource, attackNode, ammoNode)

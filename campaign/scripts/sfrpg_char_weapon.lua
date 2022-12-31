@@ -109,13 +109,13 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 		if bInfiniteAmmo then return true end
 		if nAmmoCount == 0 then return false end
 		local weaponUsage = AmmunitionManager.getWeaponUsage(nodeWeapon)
-		if nAmmoCount >= weaponUsage * attackCount then
+		if nAmmoCount < weaponUsage * attackCount then
+			return false
+		else
 			-- local remainingAmmo = nAmmoCount - weaponUsage
 			-- DB.setValue(nodeAmmo, 'count', 'number', remainingAmmo)
-		else
-			return false
+			return true
 		end
-		return true
 	end
 
 	local sDesc = ''
