@@ -192,7 +192,7 @@ function getWeaponUsage(attackNode)
 	return 1
 end
 
--- luacheck: globals useAmmoStarfinder 
+-- luacheck: globals useAmmoStarfinder
 function useAmmoStarfinder(rSource, rRoll)
 	local attackNode
 	if rRoll.sAttackNode then attackNode = DB.findNode(rRoll.sAttackNode) end
