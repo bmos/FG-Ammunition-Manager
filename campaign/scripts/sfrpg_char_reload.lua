@@ -4,9 +4,7 @@
 
 local function parseWeaponCapacity(capacity)
 	capacity = capacity:lower()
-	if capacity == 'drawn' then
-		return 0, capacity
-	end
+	if capacity == 'drawn' then return 0, capacity end
 	local splitCapacity = StringManager.splitWords(capacity)
 	return tonumber(splitCapacity[1]), splitCapacity[2]
 end
@@ -18,9 +16,7 @@ local function getContainedItems(nodeContainer)
 		for _, nodeItem in pairs(nodeContainer.getParent().getChildren()) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
 				local itemContainerName = StringManager.trim(DB.getValue(nodeItem, 'location', '')):lower()
-				if itemContainerName == containerName then
-					table.insert(containedItems, nodeItem)
-				end
+				if itemContainerName == containerName then table.insert(containedItems, nodeItem) end
 			end
 		end
 	end
@@ -40,22 +36,16 @@ local function loadCartridges(weaponActionNode, newAmmoNode, loadedAmmoNode)
 	end
 	local newAmmoCount = DB.getValue(newAmmoNode, 'count', 0)
 	local ammoNeeded = maxAmmo - currentAmmoCount
-	if ammoNeeded > newAmmoCount then
-		ammoNeeded = newAmmoCount
-	end
+	if ammoNeeded > newAmmoCount then ammoNeeded = newAmmoCount end
 	DB.setValue(loadedAmmoNode, 'count', 'number', currentAmmoCount + ammoNeeded)
 	DB.setValue(newAmmoNode, 'count', 'number', newAmmoCount - ammoNeeded)
 	return loadedAmmoNode
 end
 
-local function isSameAmmo(ammo1, ammo2)
-	return ammo1 and ammo2 and ItemManager.compareFields(ammo1, ammo2, true)
-end
+local function isSameAmmo(ammo1, ammo2) return ammo1 and ammo2 and ItemManager.compareFields(ammo1, ammo2, true) end
 
 local function unloadAmmunition(loadedAmmoNode)
-	if loadedAmmoNode then
-		DB.setValue(loadedAmmoNode, 'location', 'string', '')
-	end
+	if loadedAmmoNode then DB.setValue(loadedAmmoNode, 'location', 'string', '') end
 end
 
 local function moveInventoryAmmunition(weaponActionNode, newAmmoNode)
@@ -67,14 +57,10 @@ local function moveInventoryAmmunition(weaponActionNode, newAmmoNode)
 	end
 
 	local _, ammoType = parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
-	if ammoType == 'drawn' then
-		return newAmmoNode
-	end
+	if ammoType == 'drawn' then return newAmmoNode end
 
 	if ammoType == 'charges' then
-		if loadedAmmoNode then
-			DB.setValue(loadedAmmoNode, 'location', 'string', '')
-		end
+		if loadedAmmoNode then DB.setValue(loadedAmmoNode, 'location', 'string', '') end
 		DB.setValue(newAmmoNode, 'location', 'string', ItemManager.getDisplayName(weaponInventoryNode, true))
 		return newAmmoNode
 	end
@@ -98,7 +84,7 @@ function loadAmmo(ammoItem)
 		local messagedata = {
 			text = Interface.getString('char_message_reloadammo'),
 			sender = rActor.sName,
-			font = 'emotefont'
+			font = 'emotefont',
 		}
 		Comm.deliverChatMessage(messagedata)
 	else

@@ -29,7 +29,6 @@ function onDataChanged()
 	current_ammo.setVisible(bRanged and bLinkedAmmoEnabled)
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not (bDrawnCapacity or bThrownAttack and bLinkedAmmoEnabled))
 
-
 	local bNoFull = false
 	if string.find(sSpecial, 'unwieldy') then
 		bNoFull = true
@@ -118,7 +117,6 @@ end
 
 --	luacheck: globals generateAttackRolls
 function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
-
 	local sDesc = ''
 	local nProf = DB.getValue(nodeWeapon, 'prof', 0)
 	if nProf == 1 then
@@ -175,12 +173,11 @@ end
 
 --	luacheck: globals onInit
 function onInit()
-	local attackNode = getDatabaseNode()
-	if isThrownAttack() or DB.getValue(attackNode, 'subtype', ''):lower() == 'grenade' then
-		local shortcutNode = attackNode.getChild('shortcut')
-		if shortcutNode then
-			local ammoShortcuttNode = attackNode.getChild("ammoshortcut", shortcutNode.getType())
-			DB.copyNode(shortcutNode, ammoShortcuttNode)
-		end
-	end
+	if not isThrownAttack() and not DB.getValue(getDatabaseNode(), 'subtype', ''):lower():find('grenade') then return end
+
+	local shortcutNode = getDatabaseNode().getChild('shortcut')
+	if not shortcutNode then return end
+
+	local ammoShortcuttNode = getDatabaseNode().getChild('ammoshortcut', shortcutNode.getType())
+	DB.copyNode(shortcutNode, ammoShortcuttNode)
 end

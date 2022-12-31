@@ -18,27 +18,25 @@ function onClose()
 end
 
 function onValueChanged()
-	if sLink then
-		if not bLocked then
-			bLocked = true
+	if not sLink or bLocked or isReadOnly() then return end
 
-			if sLink and not isReadOnly() then DB.setValue(sLink, 'number', (getMaxValue() - getCurrentValue()) * AmmunitionManager.getWeaponUsage(window.getDatabaseNode())) end
+	bLocked = true
 
-			bLocked = false
-		end
-	end
+	DB.setValue(sLink, 'number', (getMaxValue() - getCurrentValue()) * AmmunitionManager.getWeaponUsage(window.getDatabaseNode()))
+
+	bLocked = false
 end
 
 function onLinkUpdated()
-	if sLink and not bLocked then
-		bLocked = true
+	if not sLink or bLocked then return end
 
-		setCurrentValue(getMaxValue() - math.floor(DB.getValue(sLink, 0) / AmmunitionManager.getWeaponUsage(window.getDatabaseNode())))
+	bLocked = true
 
-		if self.update then self.update() end
+	setCurrentValue(getMaxValue() - math.floor(DB.getValue(sLink, 0) / AmmunitionManager.getWeaponUsage(window.getDatabaseNode())))
 
-		bLocked = false
-	end
+	if self.update then self.update() end
+
+	bLocked = false
 end
 
 --	luacheck: globals setLink
@@ -48,13 +46,14 @@ function setLink(dbnode)
 		sLink = nil
 	end
 
-	if dbnode then
-		sLink = dbnode.getPath()
-
-		DB.addHandler(sLink, 'onUpdate', onLinkUpdated)
-
-		onLinkUpdated()
-	else
+	if not dbnode then
 		setCurrentValue(getMaxValue())
+		return
 	end
+
+	sLink = dbnode.getPath()
+
+	DB.addHandler(sLink, 'onUpdate', onLinkUpdated)
+
+	onLinkUpdated()
 end
