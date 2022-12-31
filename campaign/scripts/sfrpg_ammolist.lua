@@ -6,7 +6,7 @@
 
 function getAmmoType(itemNode)
 	local ammoCount, ammoType = AmmunitionManager.parseWeaponCapacity(DB.getValue(itemNode, "capacity", ""))
-	if ammoType == 'grenade' then
+	if ammoType:find('grenade') then
 		return 'Grenade'
 	end
 	return 'Ammunition'
