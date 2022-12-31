@@ -171,6 +171,7 @@ function isThrownAttack()
 	return (string.find(sSpecial, 'thrown') and bRanged)
 end
 
+--	luacheck: globals isAmmoAutolinkable
 function isAmmoAutolinkable()
 	return isThrownAttack() or DB.getValue(getDatabaseNode(), 'subtype', ''):lower():find('grenade')
 end
