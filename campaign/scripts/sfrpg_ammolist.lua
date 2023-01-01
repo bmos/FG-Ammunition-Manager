@@ -2,7 +2,7 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
--- luacheck: globals onFilter
+-- luacheck: globals getAmmoType onFilter onInit
 
 function getAmmoType(itemNode)
 	local ammoCount, ammoType = AmmunitionManager.parseWeaponCapacity(DB.getValue(itemNode, "capacity", ""))
