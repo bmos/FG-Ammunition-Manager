@@ -19,7 +19,7 @@ function getShortcutNode(node, shortcutName)
 	if sRecord and sRecord ~= '' then return DB.findNode(sRecord) end
 end
 
---	luacheck: globals parseWeaponCapacity
+-- luacheck: globals parseWeaponCapacity
 function parseWeaponCapacity(capacity)
 	capacity = capacity:lower()
 	if capacity == 'drawn' then return 0, capacity end
