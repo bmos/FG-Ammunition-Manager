@@ -5,7 +5,7 @@
 -- luacheck: globals getAmmoType onFilter onInit
 
 function getAmmoType(itemNode)
-	local ammoCount, ammoType = AmmunitionManager.parseWeaponCapacity(DB.getValue(itemNode, "capacity", ""))
+	local _, ammoType = AmmunitionManager.parseWeaponCapacity(DB.getValue(itemNode, "capacity", ""))
 	if ammoType:find('grenade') then
 		return 'Grenade'
 	end
