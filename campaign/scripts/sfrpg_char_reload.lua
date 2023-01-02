@@ -2,13 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
-local function parseWeaponCapacity(capacity)
-	capacity = capacity:lower()
-	if capacity == 'drawn' then return 0, capacity end
-	local splitCapacity = StringManager.splitWords(capacity)
-	return tonumber(splitCapacity[1]), splitCapacity[2]
-end
-
 local function getContainedItems(nodeContainer)
 	local containerName = ItemManager.getSortName(nodeContainer)
 	local containedItems = {}
@@ -25,7 +18,7 @@ end
 
 local function loadCartridges(weaponActionNode, newAmmoNode, loadedAmmoNode)
 	local weaponInventoryNode = AmmunitionManager.getShortcutNode(weaponActionNode, 'shortcut')
-	local maxAmmo, _ = parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
+	local maxAmmo, _ = AmmunitionManager.parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
 	local currentAmmoCount = 0
 	if loadedAmmoNode then
 		currentAmmoCount = DB.getValue(loadedAmmoNode, 'count', 0)
@@ -56,7 +49,7 @@ local function moveInventoryAmmunition(weaponActionNode, newAmmoNode)
 		return newAmmoNode
 	end
 
-	local _, ammoType = parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
+	local _, ammoType = AmmunitionManager.parseWeaponCapacity(DB.getValue(weaponInventoryNode, 'capacity', ''))
 	if ammoType == 'drawn' then return newAmmoNode end
 
 	if ammoType == 'charges' then

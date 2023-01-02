@@ -171,13 +171,19 @@ function isThrownAttack()
 	return (string.find(sSpecial, 'thrown') and bRanged)
 end
 
+--	luacheck: globals isAmmoAutolinkable
+function isAmmoAutolinkable()
+	return isThrownAttack() or DB.getValue(getDatabaseNode(), 'subtype', ''):lower():find('grenade')
+end
+
+
 --	luacheck: globals onInit
 function onInit()
-	if not isThrownAttack() and not DB.getValue(getDatabaseNode(), 'subtype', ''):lower():find('grenade') then return end
+	if not isAmmoAutolinkable() then return end
 
 	local shortcutNode = getDatabaseNode().getChild('shortcut')
 	if not shortcutNode then return end
 
-	local ammoShortcuttNode = getDatabaseNode().getChild('ammoshortcut', shortcutNode.getType())
-	DB.copyNode(shortcutNode, ammoShortcuttNode)
+	local ammoShortcutNode = getDatabaseNode().createChild('ammoshortcut', shortcutNode.getType())
+	DB.copyNode(shortcutNode, ammoShortcutNode)
 end
