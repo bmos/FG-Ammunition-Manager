@@ -20,7 +20,7 @@ end
 
 function onDrop(_, _, draginfo)
 	if Session.IsHost then
-		if DB.getType(draginfo) ~= 'number' then return false end
+		if draginfo.getType() ~= 'number' then return false end
 
 		if self.handleDrop then
 			self.handleDrop(draginfo)
