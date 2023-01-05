@@ -8,7 +8,7 @@ function isLoading(nodeWeapon)
 	local sProps = DB.getValue(nodeWeapon, 'properties', ''):lower()
 
 	local bCrossbow = DB.getValue(nodeWeapon, 'name', 'weapon'):lower():find('crossbow')
-		and CharManager.hasFeature(nodeWeapon.getChild('...'), 'crossbow expert')
+		and CharManager.hasFeature(DB.getChild(nodeWeapon, '...'), 'crossbow expert')
 
 	return not bCrossbow and sProps:find('loading') and not sProps:find('noload')
 end
@@ -16,7 +16,7 @@ end
 --	luacheck: globals onDamageAction
 function onDamageAction(draginfo)
 	local nodeWeapon = getDatabaseNode()
-	local nodeChar = nodeWeapon.getChild('...')
+	local nodeChar = DB.getChild(nodeWeapon, '...')
 
 	-- Build basic damage action record
 	local rAction = CharWeaponManager.buildDamageAction(nodeChar, nodeWeapon)
@@ -34,7 +34,7 @@ function onDamageAction(draginfo)
 	-- add this in the onDamageAction function of other effects to maintain compatibility
 	if AmmunitionManager then
 		local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor)
-		if nodeAmmo then rActor.ammoPath = nodeAmmo.getPath() end
+		if nodeAmmo then rActor.ammoPath = DB.getPath(nodeAmmo) end
 	end
 	-- end bmos adding ammoPath
 
@@ -51,7 +51,7 @@ function onDataChanged(nodeWeapon)
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
 	ammocounter.setVisible(not nodeAmmoLink)
 	if nodeAmmoLink then
-		maxammo.setLink(nodeAmmoLink.getChild('count'), true)
+		maxammo.setLink(DB.getChild(nodeAmmoLink, 'count'), true)
 	else
 		maxammo.setLink()
 	end
@@ -63,7 +63,7 @@ function onInit()
 			local onAttackAction_old
 			local function onAttackAction_new(draginfo, ...)
 				local nodeWeapon = getDatabaseNode()
-				local nodeChar = nodeWeapon.getChild('...')
+				local nodeChar = DB.getChild(nodeWeapon, '...')
 				local rActor = ActorManager.resolveActor(nodeChar)
 				local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 				local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
@@ -96,7 +96,7 @@ function onInit()
 	end
 
 	local nodeWeapon = getDatabaseNode()
-	DB.addHandler(nodeWeapon.getPath(), 'onChildUpdate', onDataChanged)
+	DB.addHandler(DB.getPath(nodeWeapon), 'onChildUpdate', onDataChanged)
 
 	onDataChanged(nodeWeapon)
 end
@@ -105,5 +105,5 @@ function onClose()
 	if super and super.onClose then super.onClose() end
 
 	local nodeWeapon = getDatabaseNode()
-	DB.removeHandler(nodeWeapon.getPath(), 'onChildUpdate', onDataChanged)
+	DB.removeHandler(DB.getPath(nodeWeapon), 'onChildUpdate', onDataChanged)
 end

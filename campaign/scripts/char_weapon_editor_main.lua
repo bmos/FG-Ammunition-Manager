@@ -20,10 +20,10 @@ function onDataChanged()
 
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
 	if nodeAmmoLink then
-		local nodeAmmoMisses = nodeAmmoLink.getChild('missedshots')
+		local nodeAmmoMisses = DB.getChild(nodeAmmoLink, 'missedshots')
 		if not nodeAmmoMisses then
 			DB.setValue(nodeAmmoLink, 'missedshots', 'number', 0)
-			nodeAmmoMisses = nodeAmmoLink.getChild('missedshots')
+			nodeAmmoMisses = DB.getChild(nodeAmmoLink, 'missedshots')
 		end
 		missedshots.setLink(nodeAmmoMisses, true)
 	else
@@ -34,7 +34,7 @@ end
 function onInit()
 	if super and super.onInit then super.onInit() end
 
-	local sNode = getDatabaseNode().getPath()
+	local sNode = DB.getPath(getDatabaseNode())
 	DB.addHandler(sNode, 'onChildUpdate', onDataChanged)
 
 	onDataChanged()
@@ -43,6 +43,6 @@ end
 function onClose()
 	if super and super.onClose then super.onClose() end
 
-	local sNode = getDatabaseNode().getPath()
+	local sNode = DB.getPath(getDatabaseNode())
 	DB.removeHandler(sNode, 'onChildUpdate', onDataChanged)
 end

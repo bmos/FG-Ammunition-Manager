@@ -20,7 +20,7 @@ end
 
 function onDrop(_, _, draginfo)
 	if Session.IsHost then
-		if draginfo.getType() ~= 'number' then return false end
+		if DB.getType(draginfo) ~= 'number' then return false end
 
 		if self.handleDrop then
 			self.handleDrop(draginfo)
@@ -66,7 +66,7 @@ function setLink(dbnode)
 	end
 
 	if dbnode then
-		sLink = dbnode.getPath()
+		sLink = DB.getPath(dbnode)
 
 		if not nolinkwidget then
 			widget = addBitmapWidget('field_linked')

@@ -10,7 +10,7 @@ function onClickRelease()
 	if nMisses > 0 then
 		local nPercent = DB.getValue(nodeWeapon, 'recoverypercentage', 50) / 100
 		local nAmmoRecovered = math.floor(nMisses * nPercent)
-		local messagedata = { text = '', sender = ActorManager.resolveActor(nodeWeapon.getChild('...')).sName, font = 'emotefont' }
+		local messagedata = { text = '', sender = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...')).sName, font = 'emotefont' }
 		messagedata.text = string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered)
 		Comm.deliverChatMessage(messagedata)
 

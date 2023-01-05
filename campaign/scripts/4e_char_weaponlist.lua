@@ -27,14 +27,14 @@ function toggleDetail()
 	local bRanged = (DB.getValue(nodeWeapon, 'type', 0) == 1)
 	isloaded.setVisible(bRanged and hasLoadAction())
 
-	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'))
+	local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink)
 
 	ammo_label.setVisible(bRanged)
 	if nodeAmmoLink then
-		if maxammo then maxammo.setLink(nodeAmmoLink.getChild('count'), true) end
-		if missedshots then missedshots.setLink(nodeAmmoLink.getChild('missedshots'), true) end
+		if maxammo then maxammo.setLink(DB.getChild(nodeAmmoLink, 'count'), true) end
+		if missedshots then missedshots.setLink(DB.getChild(nodeAmmoLink, 'missedshots'), true) end
 	else
 		if maxammo then maxammo.setLink() end
 		if missedshots then missedshots.setLink() end

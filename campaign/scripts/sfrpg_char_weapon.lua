@@ -11,7 +11,7 @@ function onDataChanged()
 	local nodeWeapon = getDatabaseNode()
 	local nodeWeaponSource = AmmunitionManager.getShortcutNode(nodeWeapon, 'shortcut')
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
-	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'))
+	local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 
 	--	luacheck: globals type
 	local bRanged = (type.getValue() == 1)
@@ -56,8 +56,8 @@ function onDataChanged()
 	end
 
 	if nodeAmmoLink then
-		current_ammo.setLink(nodeAmmoLink.getChild('count'), true)
-		ammocounter.setLink(nodeAmmoLink.getChild('count'), true)
+		current_ammo.setLink(DB.getChild(nodeAmmoLink, 'count'), true)
+		ammocounter.setLink(DB.getChild(nodeAmmoLink, 'count'), true)
 	else
 		current_ammo.setLink()
 		ammocounter.setLink()
@@ -87,7 +87,7 @@ function automateAmmo(nodeWeapon)
 	local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0)
 	DB.setValue(nodeWeapon, 'isloaded', 'number', 0)
 	if hasLoadAction(nodeWeapon) and bNotLoaded then
-		local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'))
+		local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 		local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
 
 		local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
@@ -122,8 +122,8 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 	if nProf == 1 then
 		sDesc = sDesc .. ' [NONPROF -4]'
 	elseif nProf == 2 then
-		local nCharLevel = DB.getValue(nodeWeapon.getParent().getParent(), 'level', 0)
-		local nBAB = DB.getValue(nodeWeapon.getParent().getParent(), 'attackbonus.base', 0)
+		local nCharLevel = DB.getValue(DB.getChild(nodeWeapon, '...'), 'level', 0)
+		local nBAB = DB.getValue(DB.getChild(nodeWeapon, '...'), 'attackbonus.base', 0)
 		local bLowBAB = (nBAB <= nCharLevel - 3)
 		local nFocusBonus = 1
 
@@ -181,9 +181,9 @@ end
 function onInit()
 	if not isAmmoAutolinkable() then return end
 
-	local shortcutNode = getDatabaseNode().getChild('shortcut')
+	local shortcutNode = DB.getChild(getDatabaseNode(), 'shortcut')
 	if not shortcutNode then return end
 
-	local ammoShortcutNode = getDatabaseNode().createChild('ammoshortcut', shortcutNode.getType())
+	local ammoShortcutNode = DB.createChild(getDatabaseNode(), 'ammoshortcut', DB.getType(shortcutNode))
 	DB.copyNode(shortcutNode, ammoShortcutNode)
 end

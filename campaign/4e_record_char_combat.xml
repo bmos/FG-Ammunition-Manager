@@ -28,7 +28,7 @@
 						local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
 						DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
 						if window.type.getValue() == 1 and bNotLoaded and window.hasLoadAction() then
-							local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'));
+							local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'));
 							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
 
 							local messagedata = { text = '', sender = rActor.sName, font = "emotefont" }

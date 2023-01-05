@@ -6,8 +6,8 @@
 function onInit()
 	local function isAmmo(nodeItem, sTypeField)
 		local bThrown = false
-		if User.getRulesetName() == '5E' then bThrown = DB.getValue(getDatabaseNode().getParent(), 'type', 0) == 2 end
-		if sTypeField and nodeItem.getChild(sTypeField) then
+		if User.getRulesetName() == '5E' then bThrown = DB.getValue(DB.getParent(getDatabaseNode()), 'type', 0) == 2 end
+		if sTypeField and DB.getChild(nodeItem, sTypeField) then
 			local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower()
 			if bThrown then
 				return (sItemType:match('weapon') ~= nil)
@@ -24,10 +24,10 @@ function onInit()
 			setValue(sValue)
 
 			-- save node to weapon node when choosing ammo
-			local nodeWeapon = getDatabaseNode().getParent()
-			local nodeInventory = nodeWeapon.getChild('...inventorylist')
+			local nodeWeapon = DB.getParent(getDatabaseNode())
+			local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
 			if nodeInventory then
-				for _, nodeItem in pairs(nodeInventory.getChildren()) do
+				for _, nodeItem in pairs(DB.getChildren(nodeInventory)) do
 					local sName = ItemManager.getDisplayName(nodeItem, true)
 					if sValue == '' then
 						DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '')
@@ -37,8 +37,8 @@ function onInit()
 				end
 			end
 
-			local nodeOldNode = nodeWeapon.getChild('ammopickernode')
-			if nodeOldNode then nodeOldNode.delete() end
+			local nodeOldNode = DB.getChild(nodeWeapon, 'ammopickernode')
+			if nodeOldNode then DB.deleteNode(nodeOldNode) end
 
 			setTooltipText(sValue)
 			super.refreshSelectionDisplay()
@@ -50,9 +50,9 @@ function onInit()
 	local aAutoFill = {}
 	table.insert(aAutoFill, Interface.getString('none'))
 
-	local nodeInventory = getDatabaseNode().getChild('....inventorylist')
+	local nodeInventory = DB.getChild(getDatabaseNode(), '....inventorylist')
 	if nodeInventory then
-		for _, nodeItem in pairs(nodeInventory.getChildren()) do
+		for _, nodeItem in pairs(DB.getChildren(nodeInventory)) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
 				local sName = ItemManager.getDisplayName(nodeItem, true)
 				if sName ~= '' then

@@ -15,7 +15,7 @@ function onDoubleClick(x, y, ...)
 
 		if (nAmmo > 0) and (nCount > 0) then
 			local nReload = (nCount - nAmmo)
-			local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'))
+			local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 			local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
 			if nReload > 0 then
 				DB.setValue(nodeWeapon, ammo[1], 'number', 0)

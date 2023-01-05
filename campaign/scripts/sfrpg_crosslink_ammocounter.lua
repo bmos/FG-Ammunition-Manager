@@ -54,7 +54,7 @@ function setLink(dbnode)
 		return
 	end
 
-	sLink = dbnode.getPath()
+	sLink = DB.getPath(dbnode)
 
 	DB.addHandler(sLink, 'onUpdate', onLinkUpdated)
 

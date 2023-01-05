@@ -4,7 +4,7 @@
 --
 -- luacheck: globals onClickRelease getValue
 function onClickRelease()
-	local rActor = ActorManager.resolveActor(getDatabaseNode().getChild('....'))
+	local rActor = ActorManager.resolveActor(DB.getChild(getDatabaseNode(), '....'))
 	local nodeWeapon = window.getDatabaseNode()
 
 	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))

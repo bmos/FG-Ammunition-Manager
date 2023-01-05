@@ -47,9 +47,9 @@ function getAmmoNode(nodeWeapon)
 		local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '')
 		if sAmmo ~= '' then
 			Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'))
-			local nodeInventory = nodeWeapon.getChild('...inventorylist')
+			local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
 			if nodeInventory.getName() == 'inventorylist' then
-				for _, nodeItem in pairs(nodeInventory.getChildren()) do
+				for _, nodeItem in pairs(DB.getChildren(nodeInventory)) do
 					if ItemManager.getIDState(nodeItem) then
 						if DB.getValue(nodeItem, 'name', '') == sAmmo then return nodeItem end
 					else
@@ -111,7 +111,7 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	if not ActorManager.isPC(rSource) then return end
 
 	local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
-		local messagedata = { text = '', sender = ActorManager.resolveActor(nodeWeapon.getChild('...')).sName, font = 'emotefont' }
+		local messagedata = { text = '', sender = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...')).sName, font = 'emotefont' }
 		if nodeAmmoLink then
 			if nAmmoRemaining == 0 then
 				messagedata.text = string.format(Interface.getString('char_actions_usedallammo'), sWeaponName)
@@ -170,8 +170,8 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 
 	local sWeaponName = getWeaponName(sDesc)
 	if not sDesc:match('%[CONFIRM%]') and sWeaponName ~= '' then
-		local nodeWeaponList = ActorManager.getCreatureNode(rSource).getChild('.weaponlist')
-		for _, nodeWeapon in pairs(nodeWeaponList.getChildren()) do
+		local nodeWeaponList = DB.getChild(ActorManager.getCreatureNode(rSource), 'weaponlist')
+		for _, nodeWeapon in pairs(DB.getChildren(nodeWeaponList)) do
 			local sWeaponNameFromNode = getWeaponName(DB.getValue(nodeWeapon, 'name', ''))
 			if sWeaponNameFromNode == sWeaponName then
 				if sResult == 'fumble' then -- break fragile weapon on natural 1
@@ -214,7 +214,7 @@ function useAmmoStarfinder(rSource, rRoll)
 		if remainingAmmo <= 0 then
 			local attackName = DB.getValue(attackNode, 'name', '')
 			local messageText = string.format(Interface.getString('char_actions_usedallammo'), attackName)
-			local messagedata = { text = messageText, sender = ActorManager.resolveActor(attackNode.getChild('...')).sName, font = 'emotefont' }
+			local messagedata = { text = messageText, sender = ActorManager.resolveActor(DB.getChild(attackNode, '...')).sName, font = 'emotefont' }
 			Comm.deliverChatMessage(messagedata)
 		end
 	end

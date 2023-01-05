@@ -6,7 +6,7 @@ local function getContainedItems(nodeContainer)
 	local containerName = ItemManager.getSortName(nodeContainer)
 	local containedItems = {}
 	if containerName ~= '' then
-		for _, nodeItem in pairs(nodeContainer.getParent().getChildren()) do
+		for _, nodeItem in pairs(DB.getChildren(DB.getParent(nodeContainer))) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
 				local itemContainerName = StringManager.trim(DB.getValue(nodeItem, 'location', '')):lower()
 				if itemContainerName == containerName then table.insert(containedItems, nodeItem) end
@@ -23,7 +23,7 @@ local function loadCartridges(weaponActionNode, newAmmoNode, loadedAmmoNode)
 	if loadedAmmoNode then
 		currentAmmoCount = DB.getValue(loadedAmmoNode, 'count', 0)
 	else
-		loadedAmmoNode = newAmmoNode.getParent().createChild()
+		loadedAmmoNode = DB.getParent(newAmmoNode).createChild()
 		loadedAmmoNode = DB.copyNode(newAmmoNode, loadedAmmoNode)
 		DB.setValue(loadedAmmoNode, 'location', 'string', ItemManager.getDisplayName(weaponInventoryNode, true))
 	end

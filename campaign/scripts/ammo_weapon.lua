@@ -33,7 +33,7 @@ function automateAmmo(nodeWeapon)
 	local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0)
 	DB.setValue(nodeWeapon, 'isloaded', 'number', 0)
 	if hasLoadAction(nodeWeapon) and bNotLoaded then
-		local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'))
+		local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 		local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
 
 		local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
@@ -51,7 +51,7 @@ function onDataChanged()
 
 	local nodeWeapon = getDatabaseNode()
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
-	local rActor = ActorManager.resolveActor(nodeWeapon.getChild('...'))
+	local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink)
 
 	--	luacheck: globals type
@@ -67,7 +67,7 @@ function onDataChanged()
 	if not maxammo.setLink then return end
 
 	if nodeAmmoLink then
-		maxammo.setLink(nodeAmmoLink.getChild('count'), true)
+		maxammo.setLink(DB.getChild(nodeAmmoLink, 'count'), true)
 	else
 		maxammo.setLink()
 	end
@@ -77,12 +77,12 @@ function onInit()
 	super.registerMenuItem(Interface.getString('menu_deleteweapon'), 'delete', 4)
 	super.registerMenuItem(Interface.getString('list_menu_deleteconfirm'), 'delete', 4, 3)
 
-	local sNode = getDatabaseNode().getPath()
+	local sNode = DB.getPath(getDatabaseNode())
 	DB.addHandler(sNode, 'onChildUpdate', onDataChanged)
 	onDataChanged()
 end
 
 function onClose()
-	local sNode = getDatabaseNode().getPath()
+	local sNode = DB.getPath(getDatabaseNode())
 	DB.removeHandler(sNode, 'onChildUpdate', onDataChanged)
 end
