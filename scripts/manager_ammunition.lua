@@ -48,7 +48,7 @@ function getAmmoNode(nodeWeapon)
 		if sAmmo ~= '' then
 			Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'))
 			local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
-			if nodeInventory.getName() == 'inventorylist' then
+			if DB.getName(nodeInventory) == 'inventorylist' then
 				for _, nodeItem in pairs(DB.getChildren(nodeInventory)) do
 					if ItemManager.getIDState(nodeItem) then
 						if DB.getValue(nodeItem, 'name', '') == sAmmo then return nodeItem end

@@ -32,7 +32,7 @@ function onInit()
 					if sValue == '' then
 						DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '')
 					elseif sValue == sName then
-						DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '....inventorylist.' .. nodeItem.getName())
+						DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '....inventorylist.' .. DB.getName(nodeItem))
 					end
 				end
 			end

@@ -23,7 +23,7 @@ local function loadCartridges(weaponActionNode, newAmmoNode, loadedAmmoNode)
 	if loadedAmmoNode then
 		currentAmmoCount = DB.getValue(loadedAmmoNode, 'count', 0)
 	else
-		loadedAmmoNode = DB.getParent(newAmmoNode).createChild()
+		loadedAmmoNode = DB.createChild(DB.getParent(newAmmoNode))
 		loadedAmmoNode = DB.copyNode(newAmmoNode, loadedAmmoNode)
 		DB.setValue(loadedAmmoNode, 'location', 'string', ItemManager.getDisplayName(weaponInventoryNode, true))
 	end
@@ -70,9 +70,9 @@ function loadAmmo(ammoItem)
 	local nodeWeaponAction = getDatabaseNode()
 	if ammoItem then
 		local nodeAmmoItem = ammoItem.getDatabaseNode()
-		local loadedAmmo = moveInventoryAmmunition(nodeWeaponAction, nodeAmmoItem)
+		local nodeAmmo = moveInventoryAmmunition(nodeWeaponAction, nodeAmmoItem)
 		DB.setValue(nodeWeaponAction, 'ammopicker', 'string', ItemManager.getDisplayName(nodeAmmoItem, true))
-		DB.setValue(nodeWeaponAction, 'ammoshortcut', 'windowreference', 'item', '....inventorylist.' .. loadedAmmo.getName())
+		DB.setValue(nodeWeaponAction, 'ammoshortcut', 'windowreference', 'item', '....inventorylist.' .. DB.getName(nodeAmmo))
 		local rActor = CharManager.getWeaponAttackRollStructures(nodeWeaponAction)
 		local messagedata = {
 			text = Interface.getString('char_message_reloadammo'),
