@@ -49,7 +49,7 @@ function getAmmoNode(nodeWeapon)
 			Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'))
 			local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
 			if DB.getName(nodeInventory) == 'inventorylist' then
-				for _, nodeItem in pairs(DB.getChildren(nodeInventory)) do
+				for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
 					if ItemManager.getIDState(nodeItem) then
 						if DB.getValue(nodeItem, 'name', '') == sAmmo then return nodeItem end
 					else
@@ -171,7 +171,7 @@ function ammoTracker(rSource, sDesc, sResult, bCountAll)
 	local sWeaponName = getWeaponName(sDesc)
 	if not sDesc:match('%[CONFIRM%]') and sWeaponName ~= '' then
 		local nodeWeaponList = DB.getChild(ActorManager.getCreatureNode(rSource), 'weaponlist')
-		for _, nodeWeapon in pairs(DB.getChildren(nodeWeaponList)) do
+		for _, nodeWeapon in ipairs(DB.getChildList(nodeWeaponList)) do
 			local sWeaponNameFromNode = getWeaponName(DB.getValue(nodeWeapon, 'name', ''))
 			if sWeaponNameFromNode == sWeaponName then
 				if sResult == 'fumble' then -- break fragile weapon on natural 1

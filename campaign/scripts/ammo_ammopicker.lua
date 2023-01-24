@@ -27,7 +27,7 @@ function onInit()
 			local nodeWeapon = DB.getParent(getDatabaseNode())
 			local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
 			if nodeInventory then
-				for _, nodeItem in pairs(DB.getChildren(nodeInventory)) do
+				for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
 					local sName = ItemManager.getDisplayName(nodeItem, true)
 					if sValue == '' then
 						DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '')
@@ -52,7 +52,7 @@ function onInit()
 
 	local nodeInventory = DB.getChild(getDatabaseNode(), '....inventorylist')
 	if nodeInventory then
-		for _, nodeItem in pairs(DB.getChildren(nodeInventory)) do
+		for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
 				local sName = ItemManager.getDisplayName(nodeItem, true)
 				if sName ~= '' then

@@ -6,7 +6,7 @@ local function getContainedItems(nodeContainer)
 	local containerName = ItemManager.getSortName(nodeContainer)
 	local containedItems = {}
 	if containerName ~= '' then
-		for _, nodeItem in pairs(DB.getChildren(DB.getParent(nodeContainer))) do
+		for _, nodeItem in ipairs(DB.getChildList(DB.getParent(nodeContainer))) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
 				local itemContainerName = StringManager.trim(DB.getValue(nodeItem, 'location', '')):lower()
 				if itemContainerName == containerName then table.insert(containedItems, nodeItem) end
