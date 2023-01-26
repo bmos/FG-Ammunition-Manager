@@ -227,6 +227,7 @@ local function noDecrementAmmo() end
 local onPostAttackResolve_old
 local function onPostAttackResolve_new(rSource, rTarget, rRoll, rMessage, ...)
 	onPostAttackResolve_old(rSource, rTarget, rRoll, rMessage, ...)
+	Debug.chat(rSource, rTarget, rRoll, rMessage)
 	AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult, true)
 end
 
@@ -237,19 +238,16 @@ end
 
 function onInit()
 	sRuleset = User.getRulesetName()
-	-- replace result handlers
+
+	onPostAttackResolve_old = ActionAttack.onPostAttackResolve
+	ActionAttack.onPostAttackResolve = onPostAttackResolve_new
 	if sRuleset == 'PFRPG' or sRuleset == '3.5E' then
 		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' }
 	elseif sRuleset == '4E' then
 		tLoadWeapons = { 'loadaction', 'ballista' }
 	elseif sRuleset == '5E' then
 		CharWeaponManager.decrementAmmo = noDecrementAmmo
-	end
-
-	onPostAttackResolve_old = ActionAttack.onPostAttackResolve
-	if sRuleset == 'SFRPG' then -- SFRPG handled differently
+	elseif sRuleset == 'SFRPG' then -- reregister onPostAttackResolve if using SFRPG
 		ActionAttack.onPostAttackResolve = onPostAttackResolve_starfinder
-	else
-		ActionAttack.onPostAttackResolve = onPostAttackResolve_new
 	end
 end
