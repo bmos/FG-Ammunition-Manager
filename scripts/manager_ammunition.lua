@@ -227,7 +227,6 @@ local function noDecrementAmmo() end
 local onPostAttackResolve_old
 local function onPostAttackResolve_new(rSource, rTarget, rRoll, rMessage, ...)
 	onPostAttackResolve_old(rSource, rTarget, rRoll, rMessage, ...)
-	Debug.chat(rSource, rTarget, rRoll, rMessage)
 	AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult, true)
 end
 
