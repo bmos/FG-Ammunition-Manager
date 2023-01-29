@@ -6,7 +6,7 @@
 function onInit()
 	local function isAmmo(nodeItem, sTypeField)
 		local bThrown = false
-		if User.getRulesetName() == '5E' then bThrown = DB.getValue(DB.getParent(getDatabaseNode()), 'type', 0) == 2 end
+		if User.getRulesetName() == '5E' then bThrown = DB.getValue(getDatabaseNode(), '..type', 0) == 2 end
 		if sTypeField and DB.getChild(nodeItem, sTypeField) then
 			local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower()
 			if bThrown then
