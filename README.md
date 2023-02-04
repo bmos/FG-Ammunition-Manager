@@ -19,8 +19,6 @@ This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
 
 * An "INFAMMO" effect negates the counting of used ammo and missed shots (as per rules for Abundant Ammunition).
 
-* Attack success/failure messages (range, melee, cmb, etc) for attack rolls will now also include a [BY 5+, 10+, etc] tag (for bull rush and such where there are tiers of success for each 5 that you exceed/fail the defensive stat).
-
 * If used with my [Item Durability](https://github.com/bmos/FG-PFRPG-Item-Durability) extension for Pathfinder and 3.5E, natural 1s rolled with a weapon with "fragile" in the properties field will be broken automatically. If the weapon is already broken, the weapon will be destroyed instead.
 
 * If used with [Advanced Effects for Pathfinder and 3.5E](https://forge.fantasygrounds.com/shop/items/33/view) or [5E Advanced Effects](https://forge.fantasygrounds.com/shop/items/68/view), "Action Only" effects attached to equipped ammmunition used in an attack will be included in the roll.
