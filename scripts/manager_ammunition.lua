@@ -42,32 +42,33 @@ function getAmmoNode(nodeWeapon)
 	-- if ammoshortcut does not provide a good node and weapon is ranged, try searching the inventory.
 	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1
 	if User.getRulesetName() == '5E' then bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2 end
+	if not bRanged then return end
 
-	if bRanged then
-		local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '')
-		if sAmmo ~= '' then
-			Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'))
-			local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
-			if DB.getName(nodeInventory) == 'inventorylist' then
-				for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
-					if ItemManager.getIDState(nodeItem) then
-						if DB.getValue(nodeItem, 'name', '') == sAmmo then return nodeItem end
-					else
-						if DB.getValue(nodeItem, 'nonid_name', '') == sAmmo then return nodeItem end
-					end
-				end
-				Debug.console(Interface.getString('debug_ammo_itemnotfound'))
+	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '')
+	if sAmmo == '' then return end
+
+	Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'))
+
+	local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
+	if DB.getName(nodeInventory) == 'inventorylist' then
+		for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
+			local sItemName
+			if ItemManager.getIDState(nodeItem) then
+				sItemName = DB.getValue(nodeItem, 'name', '')
 			else
-				Debug.console(Interface.getString('debug_ammo_noinventoryfound'))
+				sItemName = DB.getValue(nodeItem, 'nonid_name', '')
 			end
+			if sItemName == sAmmo then return nodeItem end
 		end
+		Debug.console(Interface.getString('debug_ammo_itemnotfound'))
+	else
+		Debug.console(Interface.getString('debug_ammo_noinventoryfound'))
 	end
 end
 
 --	luacheck: globals getWeaponName
 function getWeaponName(s)
-	local sWeaponName = s:gsub('%[ATTACK %(%u%)%]', '')
-	sWeaponName = sWeaponName:gsub('%[ATTACK #%d+ %(%u%)%]', '')
+	local sWeaponName = s:gsub('%[ATTACK%s#?%d*%s?%(%u%)%]', '')
 	sWeaponName = sWeaponName:gsub('%[%u+%]', '')
 	if sWeaponName:match('%[USING ') then sWeaponName = sWeaponName:match('%[USING (.-)%]') end
 	sWeaponName = sWeaponName:gsub('%[.+%]', '')
@@ -105,89 +106,54 @@ function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 	return nAmmo, bInfiniteAmmo
 end
 
+local function countMissedShots(nodeAmmoLink)
+	-- counting misses
+	DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.getValue(nodeAmmoLink, 'missedshots', 0) + 1)
+end
+
+local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
+	local messagedata = { text = '', sender = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...')).sName, font = 'emotefont' }
+	if nodeAmmoLink then
+		if nAmmoRemaining == 0 then
+			messagedata.text = string.format(Interface.getString('char_actions_usedallammo'), sWeaponName)
+			Comm.deliverChatMessage(messagedata)
+
+			DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining)
+		else
+			DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining)
+		end
+	else
+		if nAmmoRemaining <= 0 then
+			messagedata.text = string.format(Interface.getString('char_actions_usedallammo'), sWeaponName)
+			Comm.deliverChatMessage(messagedata)
+		end
+		local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
+		DB.setValue(nodeWeapon, 'ammo', 'number', nMaxAmmo - nAmmoRemaining)
+	end
+end
+
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
 --	luacheck: globals ammoTracker
-function ammoTracker(rSource, sDesc, sResult, bCountAll)
+function ammoTracker(rSource, rRoll)
 	if not ActorManager.isPC(rSource) then return end
 
-	local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)
-		local messagedata = { text = '', sender = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...')).sName, font = 'emotefont' }
-		if nodeAmmoLink then
-			if nAmmoRemaining == 0 then
-				messagedata.text = string.format(Interface.getString('char_actions_usedallammo'), sWeaponName)
-				Comm.deliverChatMessage(messagedata)
-
-				DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining)
-			else
-				DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining)
-			end
-		else
-			if nAmmoRemaining <= 0 then
-				messagedata.text = string.format(Interface.getString('char_actions_usedallammo'), sWeaponName)
-				Comm.deliverChatMessage(messagedata)
-			end
-			local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-			DB.setValue(nodeWeapon, 'ammo', 'number', nMaxAmmo - nAmmoRemaining)
-		end
-	end
-
-	local function countMissedShots(nodeAmmoLink)
-		if bCountAll or (sResult == 'miss' or sResult == 'fumble') then -- counting misses
-			DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.getValue(nodeAmmoLink, 'missedshots', 0) + 1)
-		end
-	end
-
-	--	if weapon is fragile, set as broken or destroyed and post a chat message.
-	local function breakWeapon(nodeWeapon, sWeaponName)
-		-- examine weapon properties to check if fragile
-		local function isFragile()
-			local sWeaponProperties = DB.getValue(nodeWeapon, 'properties', ''):lower()
-			local bIsFragile = (sWeaponProperties:find('fragile') or 0) > 0
-			local bIsMasterwork = sWeaponProperties:find('masterwork') or false
-			local bIsBone = sWeaponProperties:find('bone') or false
-			local bIsMagic = DB.getValue(nodeWeapon, 'bonus', 0) > 0
-			return (bIsFragile and not bIsMagic and (not bIsMasterwork or bIsBone))
-		end
-
-		if nodeWeapon and isFragile() then
-			local nBroken = DB.getValue(nodeWeapon, 'broken', 0)
-			local nItemHitpoints = DB.getValue(nodeWeapon, 'hitpoints', 0)
-			local nItemDamage = DB.getValue(nodeWeapon, 'itemdamage', 0)
-			local messagedata = { text = '', sender = rSource.sName, font = 'emotefont' }
-			if nBroken == 0 then
-				DB.setValue(nodeWeapon, 'broken', 'number', 1)
-				DB.setValue(nodeWeapon, 'itemdamage', 'number', math.floor(nItemHitpoints / 2) + math.max(nItemDamage, 1))
-				messagedata.text = string.format(Interface.getString('char_actions_fragile_broken'), sWeaponName)
-				Comm.deliverChatMessage(messagedata)
-			elseif nBroken == 1 then
-				DB.setValue(nodeWeapon, 'broken', 'number', 2)
-				DB.setValue(nodeWeapon, 'itemdamage', 'number', nItemHitpoints + math.max(nItemDamage, 1))
-				messagedata.text = string.format(Interface.getString('char_actions_fragile_destroyed'), sWeaponName)
-				Comm.deliverChatMessage(messagedata)
-			end
-		end
-	end
-
-	local sWeaponName = getWeaponName(sDesc)
-	if not sDesc:match('%[CONFIRM%]') and sWeaponName ~= '' then
-		local nodeWeaponList = DB.getChild(ActorManager.getCreatureNode(rSource), 'weaponlist')
-		for _, nodeWeapon in ipairs(DB.getChildList(nodeWeaponList)) do
-			local sWeaponNameFromNode = getWeaponName(DB.getValue(nodeWeapon, 'name', ''))
-			if sWeaponNameFromNode == sWeaponName then
-				if sResult == 'fumble' then -- break fragile weapon on natural 1
-					local _, sWeaponNode = DB.getValue(nodeWeapon, 'shortcut', '')
-					local nodeWeaponLink = DB.findNode(sWeaponNode)
-					breakWeapon(nodeWeaponLink, sWeaponName)
-				end
-				local bMelee = DB.getValue(nodeWeapon, 'type', 0) == 0
-				if (sDesc:match('%[ATTACK %(R%)%]') or sDesc:match('%[ATTACK #%d+ %(R%)%]')) and not bMelee then
-					local nodeAmmoLink = getAmmoNode(nodeWeapon)
-					local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
-					if not bInfiniteAmmo then
-						writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
+	local sWeaponName = getWeaponName(rRoll.sDesc)
+	if rRoll.sDesc:match('%[CONFIRM%]') or sWeaponName == '' then return end
+	local nodeWeaponList = DB.getChild(ActorManager.getCreatureNode(rSource), 'weaponlist')
+	for _, nodeWeapon in ipairs(DB.getChildList(nodeWeaponList)) do
+		local sWeaponNameFromNode = getWeaponName(DB.getValue(nodeWeapon, 'name', ''))
+		if sWeaponNameFromNode == sWeaponName then
+			local bMelee = DB.getValue(nodeWeapon, 'type', 0) == 0
+			if rRoll.sDesc:match('%[ATTACK%s#?%d*%s?%(R%)%]') and not bMelee then
+				local nodeAmmoLink = getAmmoNode(nodeWeapon)
+				local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
+				if not bInfiniteAmmo then
+					writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
+					if StringManager.contains({ 'miss', 'fumble' }, rRoll.sResult) then
 						countMissedShots(nodeAmmoLink or nodeWeapon)
 					end
 				end
+				break
 			end
 		end
 	end
@@ -227,7 +193,7 @@ local function noDecrementAmmo() end
 local onPostAttackResolve_old
 local function onPostAttackResolve_new(rSource, rTarget, rRoll, rMessage, ...)
 	onPostAttackResolve_old(rSource, rTarget, rRoll, rMessage, ...)
-	AmmunitionManager.ammoTracker(rSource, rRoll.sDesc, rRoll.sResult, true)
+	AmmunitionManager.ammoTracker(rSource, rRoll)
 end
 
 local function onPostAttackResolve_starfinder(rSource, rTarget, rRoll, rMessage, ...)
