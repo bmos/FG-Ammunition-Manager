@@ -149,9 +149,7 @@ function ammoTracker(rSource, rRoll)
 				local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 				if not bInfiniteAmmo then
 					writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
-					if StringManager.contains({ 'miss', 'fumble' }, rRoll.sResult) then
-						countMissedShots(nodeAmmoLink or nodeWeapon)
-					end
+					if StringManager.contains({ 'miss', 'fumble' }, rRoll.sResult) then countMissedShots(nodeAmmoLink or nodeWeapon) end
 				end
 				break
 			end

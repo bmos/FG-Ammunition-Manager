@@ -172,10 +172,7 @@ function isThrownAttack()
 end
 
 --	luacheck: globals isAmmoAutolinkable
-function isAmmoAutolinkable()
-	return isThrownAttack() or DB.getValue(getDatabaseNode(), 'subtype', ''):lower():find('grenade')
-end
-
+function isAmmoAutolinkable() return isThrownAttack() or DB.getValue(getDatabaseNode(), 'subtype', ''):lower():find('grenade') end
 
 --	luacheck: globals onInit
 function onInit()
