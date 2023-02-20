@@ -122,8 +122,8 @@ function generateAttackRolls(rActor, nodeWeapon, rAttack, nAttacksCount)
 	if nProf == 1 then
 		sDesc = sDesc .. ' [NONPROF -4]'
 	elseif nProf == 2 then
-		local nCharLevel = DB.getValue(DB.getChild(nodeWeapon, '...'), 'level', 0)
-		local nBAB = DB.getValue(DB.getChild(nodeWeapon, '...'), 'attackbonus.base', 0)
+		local nCharLevel = DB.getValue(nodeWeapon, '...level', 0)
+		local nBAB = DB.getValue(nodeWeapon, '...attackbonus.base', 0)
 		local bLowBAB = (nBAB <= nCharLevel - 3)
 		local nFocusBonus = 1
 
@@ -172,10 +172,7 @@ function isThrownAttack()
 end
 
 --	luacheck: globals isAmmoAutolinkable
-function isAmmoAutolinkable()
-	return isThrownAttack() or DB.getValue(getDatabaseNode(), 'subtype', ''):lower():find('grenade')
-end
-
+function isAmmoAutolinkable() return isThrownAttack() or DB.getValue(getDatabaseNode(), 'subtype', ''):lower():find('grenade') end
 
 --	luacheck: globals onInit
 function onInit()

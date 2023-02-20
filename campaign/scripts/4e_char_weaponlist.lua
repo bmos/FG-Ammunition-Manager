@@ -64,11 +64,11 @@ end
 
 function onInit()
 	if super and super.onInit then super.onInit() end
-	DB.addHandler(getDatabaseNode().getNodeName(), 'onChildUpdate', toggleDetail)
+	DB.addHandler(DB.getPath(getDatabaseNode()), 'onChildUpdate', toggleDetail)
 	toggleDetail()
 end
 
 function onClose()
 	if super and super.onClose then super.onClose() end
-	DB.removeHandler(getDatabaseNode().getNodeName(), 'onChildUpdate', toggleDetail)
+	DB.removeHandler(DB.getPath(getDatabaseNode()), 'onChildUpdate', toggleDetail)
 end

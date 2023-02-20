@@ -4,7 +4,7 @@
 This extension aids in tracking whether some ranged weapons are loaded and assists in ammo tracking for all ranged weapons.
 
 # Compatibility and Instructions
-This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.3.2 (2022-12-12).
+This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) 4.3.3 (2023-02-21).
 
 This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
 
@@ -18,8 +18,6 @@ This extension works with the 3.5E, PFRPG, SFRPG, 4E, and 5E rulesets.
 * Ranged attacks that miss will now increment a per-ammo-type counter. If you open the weapon details page from the actions tab, you can now enter a percentage of missed arrows to recover. Clicking the green circle with + symbol will add this percentage of missed arrows back to the quiver.
 
 * An "INFAMMO" effect negates the counting of used ammo and missed shots (as per rules for Abundant Ammunition).
-
-* If used with my [Item Durability](https://github.com/bmos/FG-PFRPG-Item-Durability) extension for Pathfinder and 3.5E, natural 1s rolled with a weapon with "fragile" in the properties field will be broken automatically. If the weapon is already broken, the weapon will be destroyed instead.
 
 * If used with [Advanced Effects for Pathfinder and 3.5E](https://forge.fantasygrounds.com/shop/items/33/view) or [5E Advanced Effects](https://forge.fantasygrounds.com/shop/items/68/view), "Action Only" effects attached to equipped ammmunition used in an attack will be included in the roll.
 This allowed things like "Magic Arrow; ATK: 1 enhancement" to be added to the arrow effects list and it will only be used to modify the attack when the archer uses **those** arrows (even if those arrows are equipped constantly in the inventory).
