@@ -6,6 +6,8 @@
 tLoadWeapons = { 'loadaction' }
 tLoadWeaponProps = { 'loadaction' }
 
+local sRuleset
+
 --	luacheck: globals calculateMargin
 function calculateMargin(nDC, nTotal)
 	Debug.console('AmmunitionManager.calculateMargin - DEPRECATED - 2022-07-13 - Use AttackMargins.calculateMargin')
@@ -78,7 +80,6 @@ function getWeaponName(s)
 	return sWeaponName or ''
 end
 
-local sRuleset
 --	luacheck: globals getAmmoRemaining
 function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 	local function isInfiniteAmmo()
@@ -106,7 +107,9 @@ function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 	return nAmmo, bInfiniteAmmo
 end
 
-local function countMissedShots(nodeAmmoLink)
+local function countShots(nodeAmmoLink, rRoll)
+	local bOnlyCountMisses = StringManager.contains({ '3.5E', 'PFRPG' }, sRuleset)
+	if bOnlyCountMisses and not StringManager.contains({ 'miss', 'fumble' }, rRoll.sResult) then return end
 	-- counting misses
 	DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.getValue(nodeAmmoLink, 'missedshots', 0) + 1)
 end
@@ -149,7 +152,7 @@ function ammoTracker(rSource, rRoll)
 				local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 				if not bInfiniteAmmo then
 					writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
-					if StringManager.contains({ 'miss', 'fumble' }, rRoll.sResult) then countMissedShots(nodeAmmoLink or nodeWeapon) end
+					countShots(nodeAmmoLink or nodeWeapon, rRoll)
 				end
 				break
 			end
