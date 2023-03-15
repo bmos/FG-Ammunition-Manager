@@ -79,12 +79,12 @@
 	<windowclass name="char_weapon_editor_main" merge="join">
 		<script file="campaign/scripts/char_weapon_editor_main.lua" />
 		<sheetdata>
-			<!-- Ammo -->
 			<header_column name="header_ammo">
 				<insertbefore>header_damage</insertbefore>
 				<static textres="weapon_header_ammo" />
 				<center />
 			</header_column>
+
 			<combobox name="ammopicker">
 				<frame>
 					<hidereadonly />
