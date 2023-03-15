@@ -17,12 +17,13 @@ end
 
 -- luacheck: globals itemsheetname setValue setTooltipText
 function onInit()
-
 	if super then
 		if super.onInit then super.onInit() end
 
 		local function setListValue_new(sValue)
 			setValue(sValue)
+			setTooltipText(sValue)
+			super.refreshSelectionDisplay()
 
 			-- save node to weapon node when choosing ammo
 			local nodeWeapon = DB.getParent(getDatabaseNode())
@@ -30,19 +31,14 @@ function onInit()
 			if nodeInventory then
 				for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
 					local sName = ItemManager.getDisplayName(nodeItem, true)
+					local sShortcutNodeName = DB.getName(getDatabaseNode()) .. 'shortcut'
 					if sValue == '' then
-						DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '')
+						DB.setValue(nodeWeapon, sShortcutNodeName, 'windowreference', 'item', '')
 					elseif sValue == sName then
-						DB.setValue(nodeWeapon, 'ammoshortcut', 'windowreference', 'item', '....inventorylist.' .. DB.getName(nodeItem))
+						DB.setValue(nodeWeapon, sShortcutNodeName, 'windowreference', 'item', '....inventorylist.' .. DB.getName(nodeItem))
 					end
 				end
 			end
-
-			local nodeOldNode = DB.getChild(nodeWeapon, 'ammopickernode')
-			if nodeOldNode then DB.deleteNode(nodeOldNode) end
-
-			setTooltipText(sValue)
-			super.refreshSelectionDisplay()
 		end
 
 		super.setListValue = setListValue_new
