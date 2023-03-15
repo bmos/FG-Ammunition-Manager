@@ -89,27 +89,10 @@
 				<script file="campaign/scripts/ammo_recover.lua" />
 				<invisible />
 			</buttoncontrol>
-			<combobox name="ammopicker">
-				<frame>
-					<hidereadonly />
-				</frame>
-				<center />
-				<listdirection>down</listdirection>
-				<listmaxsize>15</listmaxsize>
-				<nodrag />
-				<nodrop />
-				<noreset />
-				<anchored to="missedshots" height="20">
-					<top anchor="top" />
-					<left anchor="right" offset="15" />
-					<right parent="recoverammo" anchor="left" offset="-7" />
-				</anchored>
-				<default textres="none" />
-				<itemsheetname>class</itemsheetname>
-				<itemsheetaltname>subclass</itemsheetaltname>
-				<script file="campaign/scripts/ammo_ammopicker.lua" />
-				<invisible />
-			</combobox>
+			<combobox_ammo name="ammopicker">
+				<itemsheetname><string /><field>class</field></itemsheetname>
+				<itemsheetname><string /><field>subclass</field></itemsheetname>
+			</combobox_ammo>
 			
 			<label name="range_label">
 				<anchored width="62">
