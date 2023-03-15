@@ -72,7 +72,7 @@ function loadAmmo(ammoItem)
 		local nodeAmmoItem = ammoItem.getDatabaseNode()
 		local nodeAmmo = moveInventoryAmmunition(nodeWeaponAction, nodeAmmoItem)
 		DB.setValue(nodeWeaponAction, 'ammopicker', 'string', ItemManager.getDisplayName(nodeAmmoItem, true))
-		DB.setValue(nodeWeaponAction, 'ammoshortcut', 'windowreference', 'item', '....inventorylist.' .. DB.getName(nodeAmmo))
+		DB.setValue(nodeWeaponAction, 'ammopickershortcut', 'windowreference', 'item', '....inventorylist.' .. DB.getName(nodeAmmo))
 		local rActor = CharManager.getWeaponAttackRollStructures(nodeWeaponAction)
 		local messagedata = {
 			text = Interface.getString('char_message_reloadammo'),
@@ -83,7 +83,7 @@ function loadAmmo(ammoItem)
 	else
 		moveInventoryAmmunition(nodeWeaponAction)
 		DB.setValue(nodeWeaponAction, 'ammopicker', 'string', '')
-		DB.setValue(nodeWeaponAction, 'ammoshortcut', 'windowreference', 'item', '')
+		DB.setValue(nodeWeaponAction, 'ammopickershortcut', 'windowreference', 'item', '')
 	end
 
 	parentcontrol.window.close()

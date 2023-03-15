@@ -181,6 +181,6 @@ function onInit()
 	local shortcutNode = DB.getChild(getDatabaseNode(), 'shortcut')
 	if not shortcutNode then return end
 
-	local ammoShortcutNode = DB.createChild(getDatabaseNode(), 'ammoshortcut', DB.getType(shortcutNode))
+	local ammoShortcutNode = DB.createChild(getDatabaseNode(), 'ammopickershortcut', DB.getType(shortcutNode))
 	DB.copyNode(shortcutNode, ammoShortcutNode)
 end
