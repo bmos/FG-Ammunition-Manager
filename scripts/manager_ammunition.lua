@@ -38,7 +38,16 @@ end
 --	luacheck: globals getAmmoNode
 function getAmmoNode(nodeWeapon)
 	-- check for saved ammoshortcut windowreference and return if found
-	local ammoNode = getShortcutNode(nodeWeapon, 'ammoshortcut')
+	local ammoNode = getShortcutNode(nodeWeapon, 'ammopickershortcut')
+	if ammoNode then return ammoNode end
+	if not ammoNode then
+		ammoNode = getShortcutNode(nodeWeapon, 'ammoshortcut')
+		local nodeOldNode = DB.getChild(nodeWeapon, 'ammopickernode')
+		if nodeOldNode then
+			DB.setValue(nodeWeapon, 'ammopickernode', 'windowreference', 'item', '....inventorylist.' .. DB.getName(ammoNode))
+			DB.deleteNode(nodeOldNode)
+		end
+	end
 	if ammoNode then return ammoNode end
 
 	-- if ammoshortcut does not provide a good node and weapon is ranged, try searching the inventory.
