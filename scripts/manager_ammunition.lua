@@ -52,20 +52,20 @@ function getAmmoNode(nodeWeapon)
 	Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'))
 
 	local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
-	if DB.getName(nodeInventory) == 'inventorylist' then
-		for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
-			local sItemName
-			if ItemManager.getIDState(nodeItem) then
-				sItemName = DB.getValue(nodeItem, 'name', '')
-			else
-				sItemName = DB.getValue(nodeItem, 'nonid_name', '')
-			end
-			if sItemName == sAmmo then return nodeItem end
-		end
-		Debug.console(Interface.getString('debug_ammo_itemnotfound'))
-	else
+	if DB.getName(nodeInventory) ~= 'inventorylist' then
 		Debug.console(Interface.getString('debug_ammo_noinventoryfound'))
+		return
 	end
+	for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
+		local sItemName
+		if ItemManager.getIDState(nodeItem) then
+			sItemName = DB.getValue(nodeItem, 'name', '')
+		else
+			sItemName = DB.getValue(nodeItem, 'nonid_name', '')
+		end
+		if sItemName == sAmmo then return nodeItem end
+	end
+	Debug.console(Interface.getString('debug_ammo_itemnotfound'))
 end
 
 --	luacheck: globals getWeaponName
