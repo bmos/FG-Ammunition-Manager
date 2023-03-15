@@ -29,6 +29,7 @@
 	<string name="weapon_header_ammo">AMMUNITION</string>
 	<!-- Fields -->
 	<string name="weapon_label_ammopicker">Ammunition</string>
+	<string name="weapon_label_altammopicker">Recover to</string>
 	<string name="weapon_label_expended">Shots</string>
 	<string name="weapon_label_missedshots">Misses</string>
 	<string name="weapon_label_recoverypercentage">Recover</string>

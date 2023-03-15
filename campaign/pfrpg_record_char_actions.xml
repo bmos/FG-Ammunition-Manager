@@ -131,6 +131,20 @@
 				<tooltip textres="weapon_tooltip_recoverammo" />
 				<script file="campaign/scripts/ammo_recover.lua" />
 			</buttoncontrol>
+
+			<combobox_ammo name="altammopicker">
+				<anchored>
+					<top parent="ammopicker" anchor="bottom" offset="18" />
+				</anchored>
+				<itemsheetname><string /><field>subtype</field></itemsheetname>
+				<itemsheetname><string /><field>type</field></itemsheetname>
+			</combobox_ammo>
+			<label_fieldtop name="label_altammopicker">
+				<anchored to="altammopicker" />
+				<static textres="weapon_label_altammopicker" />
+				<readonly />
+				<center />
+			</label_fieldtop>
 		</sheetdata>
 	</windowclass>
 </root>
