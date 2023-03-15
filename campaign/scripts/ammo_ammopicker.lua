@@ -50,10 +50,12 @@ function onInit()
 	local nodeInventory = DB.getChild(getDatabaseNode(), '....inventorylist')
 	if nodeInventory then
 		for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
-			if DB.getValue(nodeItem, 'carried', 0) ~= 0 then
+			if DB.getValue(nodeItem, 'carried', 0) ~= 0 and itemsheetname and type(itemsheetname[1]) == 'table' then
 				local sName = ItemManager.getDisplayName(nodeItem, true)
-				if sName ~= '' then
-					if isAmmo(nodeItem, itemsheetname[1]) or isAmmo(nodeItem, itemsheetaltname[1]) then table.insert(aAutoFill, sName) end
+				for _, v in ipairs(itemsheetname) do
+					if v.field and type(v.field) == 'table' and v.string and isAmmo(nodeItem, v.field[1]) then
+						table.insert(aAutoFill, sName)
+					end
 				end
 			end
 		end

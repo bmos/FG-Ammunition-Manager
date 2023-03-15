@@ -40,13 +40,19 @@
 		<includefile ruleset="4E" source="campaign/4e_record_charmini_main.xml" />
 
 		<includefile ruleset="SFRPG" source="campaign/sfrpg_record_char_inventory.xml" />
+
+		<includefile source="common/templates.xml" />
+
 		<!-- Strings -->
 		<includefile source="strings/strings_ammunition_manager.xml" />
+
 		<!-- Scripts -->
 		<script name="AmmunitionManager" file="scripts/manager_ammunition.lua" />
+
 		<!-- Buttons -->
 		<icon name="button_load" file="graphics/button_load.png" />
 		<icon name="button_unload" file="graphics/button_unload.png" />
+
 		<!-- Chat Graphics -->
 		<icon name="archery_ammomanager" file="graphics/bow-and-arrows.png" />
 	</base>

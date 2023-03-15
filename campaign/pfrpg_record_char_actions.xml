@@ -85,25 +85,10 @@
 				<center />
 			</header_column>
 
-			<combobox name="ammopicker">
-				<frame>
-					<hidereadonly />
-				</frame>
-				<center />
-				<listdirection>up</listdirection>
-				<listmaxsize>15</listmaxsize>
-				<nodrag />
-				<nodrop />
-				<noreset />
-				<anchored width="160" height="20">
-					<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
-					<left offset="5" />
-				</anchored>
-				<default textres="none" />
-				<itemsheetname>subtype</itemsheetname>
-				<itemsheetaltname>type</itemsheetaltname>
-				<script file="campaign/scripts/ammo_ammopicker.lua" />
-			</combobox>
+			<combobox_ammo name="ammopicker">
+				<itemsheetname><string /><field>subtype</field></itemsheetname>
+				<itemsheetname><string /><field>type</field></itemsheetname>
+			</combobox_ammo>
 			<label_fieldtop name="label_ammopicker">
 				<anchored to="ammopicker" />
 				<static textres="weapon_label_ammopicker" />

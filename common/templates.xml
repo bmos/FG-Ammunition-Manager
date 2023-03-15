@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Please see the LICENSE.md file included with this distribution for attribution and copyright information. -->
+
+<root>
+	<template name="combobox_ammo">
+		<combobox name="ammopicker">
+			<frame>
+				<hidereadonly />
+			</frame>
+			<center />
+			<listdirection>up</listdirection>
+			<listmaxsize>15</listmaxsize>
+			<nodrag />
+			<nodrop />
+			<noreset />
+			<anchored width="160" height="20">
+				<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
+				<left offset="5" />
+			</anchored>
+			<default textres="none" />
+			<itemsheetname mergerule="resetandadd" />
+			<script file="campaign/scripts/ammo_ammopicker.lua" />
+		</combobox>
+	</template>
+</root>
