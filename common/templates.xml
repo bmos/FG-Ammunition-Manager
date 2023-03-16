@@ -15,7 +15,7 @@
 			<nodrop />
 			<noreset />
 			<anchored width="160" height="20">
-				<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
+				<top parent="columnanchor" anchor="bottom" relation="relative" offset="20" />
 				<left offset="5" />
 			</anchored>
 			<default textres="none" />
