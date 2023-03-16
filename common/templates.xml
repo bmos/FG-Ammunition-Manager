@@ -15,7 +15,7 @@
 			<nodrop />
 			<noreset />
 			<anchored width="160" height="20">
-				<top parent="columnanchor" anchor="bottom" relation="relative" offset="18" />
+				<top parent="columnanchor" anchor="bottom" relation="relative" offset="22" />
 				<left offset="5" />
 			</anchored>
 			<default textres="none" />
@@ -27,7 +27,7 @@
 
 	<template name="recovershots">
 		<buttoncontrol name="recovermisses">
-			<anchored to="missedshots" position="righthigh" offset="7,0" width="40" height="20" />
+			<anchored to="missedshots" position="righthigh" offset="7,0" width="20" height="20" />
 			<icon normal="button_add" pressed="button_add_down" />
 			<tooltip textres="weapon_tooltip_recoverammo" />
 			<script file="campaign/scripts/ammo_recover.lua" />
