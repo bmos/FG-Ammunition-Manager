@@ -28,6 +28,7 @@
 	<!-- Headers -->
 	<string name="weapon_header_ammo">AMMUNITION</string>
 	<!-- Fields -->
+	<string name="ammo_original">Return to Original Item</string>
 	<string name="weapon_label_ammopicker">Ammunition</string>
 	<string name="weapon_label_altammopicker">Recover to</string>
 	<string name="weapon_label_expended">Shots</string>

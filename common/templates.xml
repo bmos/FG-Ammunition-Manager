@@ -19,6 +19,7 @@
 				<left offset="5" />
 			</anchored>
 			<default textres="none" />
+			<defaultvalue>none</defaultvalue>
 			<itemsheetname mergerule="resetandadd" />
 			<script file="campaign/scripts/ammo_ammopicker.lua" />
 		</combobox>

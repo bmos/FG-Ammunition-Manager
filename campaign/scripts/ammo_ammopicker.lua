@@ -15,7 +15,7 @@ local function isAmmo(nodeItem, sTypeField)
 	end
 end
 
--- luacheck: globals itemsheetname setValue setTooltipText
+-- luacheck: globals itemsheetname setValue setTooltipText defaultvalue
 function onInit()
 	if super then
 		if super.onInit then super.onInit() end
@@ -29,10 +29,11 @@ function onInit()
 			local nodeWeapon = DB.getParent(getDatabaseNode())
 			local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
 			if nodeInventory then
+				local sDefaultValue = Interface.getString(defaultvalue[1])
 				for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
 					local sName = ItemManager.getDisplayName(nodeItem, true)
 					local sShortcutNodeName = DB.getName(getDatabaseNode()) .. 'shortcut'
-					if sValue == '' then
+					if sValue == sDefaultValue then
 						DB.setValue(nodeWeapon, sShortcutNodeName, 'windowreference', 'item', '')
 					elseif sValue == sName then
 						DB.setValue(nodeWeapon, sShortcutNodeName, 'windowreference', 'item', '....inventorylist.' .. DB.getName(nodeItem))
@@ -45,7 +46,7 @@ function onInit()
 	end
 
 	local aAutoFill = {}
-	table.insert(aAutoFill, Interface.getString('none'))
+	table.insert(aAutoFill, Interface.getString(defaultvalue[1]))
 
 	local nodeInventory = DB.getChild(getDatabaseNode(), '....inventorylist')
 	if nodeInventory then

@@ -138,6 +138,8 @@
 				</anchored>
 				<itemsheetname><string /><field>subtype</field></itemsheetname>
 				<itemsheetname><string /><field>type</field></itemsheetname>
+				<default textres="ammo_original" />
+				<defaultvalue>ammo_original</defaultvalue>
 			</combobox_ammo>
 			<label_fieldtop name="label_altammopicker">
 				<anchored to="altammopicker" />
