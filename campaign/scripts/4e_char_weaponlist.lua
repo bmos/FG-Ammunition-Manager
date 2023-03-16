@@ -35,9 +35,11 @@ function toggleDetail()
 	if nodeAmmoLink then
 		if maxammo then maxammo.setLink(DB.getChild(nodeAmmoLink, 'count'), true) end
 		if missedshots then missedshots.setLink(DB.getChild(nodeAmmoLink, 'missedshots'), true) end
+		if hitshots then hitshots.setLink(DB.getChild(nodeAmmoLink, 'hitshots'), true) end
 	else
 		if maxammo then maxammo.setLink() end
 		if missedshots then missedshots.setLink() end
+		if hitshots then hitshots.setLink() end
 	end
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink)
 
@@ -46,13 +48,15 @@ function toggleDetail()
 	if recoverypercentage then recoverypercentage.setVisible(bShow) end
 	if label_ammopercentof then label_ammopercentof.setVisible(bShow) end
 	if missedshots then missedshots.setVisible(bShow) end
+	if hitshots then hitshots.setVisible(bShow) end
 	if recoverammo then recoverammo.setVisible(bShow) end
 	if ammopicker then ammopicker.setComboBoxVisible(bShow) end
+	if altammopicker then altammopicker.setComboBoxVisible(bShow) end
 
-	-- re-build ammopicker list when opening details
+	-- re-build ammopicker and altammopicker lists when opening details
 	if bShow then
-		ammopicker.clear()
-		ammopicker.onInit()
+		ammopicker.clear(); ammopicker.onInit()
+		altammopicker.clear(); altammopicker.onInit()
 	end
 end
 

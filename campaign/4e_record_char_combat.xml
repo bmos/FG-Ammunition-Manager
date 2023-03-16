@@ -79,9 +79,20 @@
 				<script file="common/scripts/number_crosslink_unlink.lua" />
 				<invisible />
 			</basicnumber>
+			<basicnumber name="hitshots">
+				<anchored to="missedshots" width="30" height="20">
+					<top anchor="top" />
+					<left anchor="right" offset="10" />
+				</anchored>
+				<default>0</default>
+				<hideonvalue>0</hideonvalue>
+				<tooltip textres="weapon_tooltip_missedshots" />
+				<script file="common/scripts/number_crosslink_unlink.lua" />
+				<invisible />
+			</basicnumber>
 			<buttoncontrol name="recoverammo">
 				<anchored height="20" width="20">
-					<top parent="missedshots" anchor="top" />
+					<top parent="hitshots" anchor="top" />
 					<right parent="properties" anchor="right" offset="0" />
 				</anchored>
 				<icon normal="button_add" pressed="button_add_down" />

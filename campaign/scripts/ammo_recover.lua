@@ -1,8 +1,9 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
--- luacheck: globals onClickRelease recoverAmmo
+local sRuleset
 
+-- luacheck: globals onClickRelease recoverAmmo
 local function increaseAmmo(messagedata, nodeAmmo, nodeWeapon, nExcess)
 	if nodeAmmo then
 		local nodeItem = AmmunitionManager.getShortcutNode(nodeWeapon, 'altammopickershortcut') or nodeAmmo
@@ -27,9 +28,10 @@ local function notifyQuantity(messagedata, nAmmoRecovered)
 end
 
 local function quantityRecovered(nodeWeapon, nodeAmmo)
-	local nMisses = DB.getValue(nodeAmmo, 'missedshots', 0)
+	local nRecoverCount = DB.getValue(nodeAmmo, target[1], 0)
 	local nPercent = DB.getValue(nodeWeapon, 'recoverypercentage', 50) / 100
-	return math.floor(nMisses * nPercent)
+
+	return math.floor(nRecoverCount * nPercent)
 end
 
 function recoverAmmo()
@@ -41,10 +43,15 @@ function recoverAmmo()
 	notifyQuantity(messagedata, nAmmoRecovered)
 
 	-- reset ammo-specific counter of missed shots
-	DB.setValue(nodeAmmo, 'missedshots', 'number', 0)
+	DB.setValue(nodeAmmo, target[1], 'number', 0)
 
 	local nExcess = excessAmmoQuantity(nodeWeapon, nAmmoRecovered)
 	increaseAmmo(messagedata, nodeAmmo, nodeWeapon, nExcess)
 end
 
 function onClickRelease() recoverAmmo() end
+
+function onInit()
+	if super and super.onInit then super.onInit() end
+	sRuleset = User.getRulesetName()
+end

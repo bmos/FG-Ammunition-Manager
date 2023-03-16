@@ -30,27 +30,29 @@ function parseWeaponCapacity(capacity)
 end
 
 ---	This function finds the correct node for a weapon's ammunition.
---	It first checks for a path saved in ammoshortcut. If found, databasenode record is returned.
+--	It first checks for a path saved in ammopickershortcut. If found, databasenode record is returned.
 --	If no path is found, it checks to see if the ammo name is known.
 --	If ammo name is available, it searches through the inventory for a match.
 --	If found, databasenode record is returned.
 --	If no match is found, nothing is returned.
 --	luacheck: globals getAmmoNode
 function getAmmoNode(nodeWeapon)
-	-- check for saved ammoshortcut windowreference and return if found
+	-- check for saved ammopickershortcut windowreference and return if found
 	local ammoNode = getShortcutNode(nodeWeapon, 'ammopickershortcut')
 	if ammoNode then return ammoNode end
-	if not ammoNode then
-		ammoNode = getShortcutNode(nodeWeapon, 'ammoshortcut')
-		local nodeOldNode = DB.getChild(nodeWeapon, 'ammopickernode')
-		if nodeOldNode then
-			DB.setValue(nodeWeapon, 'ammopickernode', 'windowreference', 'item', '....inventorylist.' .. DB.getName(ammoNode))
-			DB.deleteNode(nodeOldNode)
+
+	-- upgrade node from ammoshortcut to ammopickershortcut
+	ammoNode = getShortcutNode(nodeWeapon, 'ammoshortcut')
+	local nodeOldNode = DB.getChild(nodeWeapon, 'ammoshortcut')
+	if nodeOldNode then
+		if ammoNode then
+			DB.setValue(nodeWeapon, 'ammopickershortcut', 'windowreference', 'item', '....inventorylist.' .. DB.getName(ammoNode))
 		end
+		DB.deleteNode(nodeOldNode)
 	end
 	if ammoNode then return ammoNode end
 
-	-- if ammoshortcut does not provide a good node and weapon is ranged, try searching the inventory.
+	-- if ammopickershortcut does not provide a good node and weapon is ranged, try searching the inventory.
 	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1
 	if User.getRulesetName() == '5E' then bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2 end
 	if not bRanged then return end
@@ -117,10 +119,13 @@ function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 end
 
 local function countShots(nodeAmmoLink, rRoll)
-	local bOnlyCountMisses = StringManager.contains({ '3.5E', 'PFRPG' }, sRuleset)
-	if bOnlyCountMisses and not StringManager.contains({ 'miss', 'fumble' }, rRoll.sResult) then return end
-	-- counting misses
-	DB.setValue(nodeAmmoLink, 'missedshots', 'number', DB.getValue(nodeAmmoLink, 'missedshots', 0) + 1)
+	if StringManager.contains({ 'miss', 'fumble' }, rRoll.sResult) then
+		local nPriorMisses = DB.getValue(nodeAmmoLink, 'missedshots', 0)
+		DB.setValue(nodeAmmoLink, 'missedshots', 'number', nPriorMisses + 1)
+	elseif StringManager.contains({ 'hit', 'crit' }, rRoll.sResult) then
+		local nPriorHits = DB.getValue(nodeAmmoLink, 'hitshots', 0)
+		DB.setValue(nodeAmmoLink, 'hitshots', 'number', nPriorHits + 1)
+	end
 end
 
 local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWeaponName)

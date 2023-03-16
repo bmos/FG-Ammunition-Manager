@@ -68,10 +68,10 @@
 	
 	<windowclass name="char_weapon_editor" merge="join">
 		<placement>
-			<size width="400" height="388" />
+			<size width="400" height="480" />
 		</placement>
 		<sizelimits>
-			<minimum width="400" height="388" />
+			<minimum width="400" height="480" />
 			<dynamic />
 		</sizelimits>
 	</windowclass>
@@ -86,6 +86,9 @@
 			</header_column>
 
 			<combobox_ammo name="ammopicker">
+				<anchored>
+					<right offset="-5" />
+				</anchored>
 				<itemsheetname><string /><field>subtype</field></itemsheetname>
 				<itemsheetname><string /><field>type</field></itemsheetname>
 			</combobox_ammo>
@@ -95,10 +98,27 @@
 				<readonly />
 				<center />
 			</label_fieldtop>
+
+			<combobox_ammo name="altammopicker">
+				<anchored>
+					<right offset="-5" />
+				</anchored>
+				<itemsheetname><string /><field>subtype</field></itemsheetname>
+				<itemsheetname><string /><field>type</field></itemsheetname>
+				<default textres="ammo_original" />
+				<defaultvalue>ammo_original</defaultvalue>
+			</combobox_ammo>
+			<label_fieldtop name="label_altammopicker">
+				<anchored to="altammopicker" />
+				<static textres="weapon_label_altammopicker" />
+				<readonly />
+				<center />
+			</label_fieldtop>
+
 			<basicnumber name="recoverypercentage">
-				<anchored to="ammopicker" width="40" height="20">
-					<top anchor="top" offset="0" />
-					<left anchor="right" offset="10" />
+				<anchored width="40" height="20">
+					<top parent="columnanchor" anchor="bottom" relation="relative" offset="18" />
+					<left offset="5" />
 				</anchored>
 				<default>50</default>
 				<tabtarget prev="ammopicker" next="missedshots" />
@@ -113,6 +133,7 @@
 				<static>% of </static>
 				<center />
 			</label>
+
 			<basicnumber name="missedshots">
 				<anchored to="label_ammopercentof" position="righthigh" offset="5,0" width="40" height="20" />
 				<default>0</default>
@@ -125,28 +146,27 @@
 				<readonly />
 				<center />
 			</label_fieldtop>
-			<buttoncontrol name="recoverammo">
-				<anchored to="missedshots" position="right" offset="7" width="20" />
-				<icon normal="button_add" pressed="button_add_down" />
-				<tooltip textres="weapon_tooltip_recoverammo" />
-				<script file="campaign/scripts/ammo_recover.lua" />
-			</buttoncontrol>
+			<recovershots name="recovermisses">
+				<anchored to="missedshots"/>
+				<target>missedshots</target>
+			</recovershots>
 
-			<combobox_ammo name="altammopicker">
-				<anchored>
-					<top parent="ammopicker" anchor="bottom" offset="18" />
-				</anchored>
-				<itemsheetname><string /><field>subtype</field></itemsheetname>
-				<itemsheetname><string /><field>type</field></itemsheetname>
-				<default textres="ammo_original" />
-				<defaultvalue>ammo_original</defaultvalue>
-			</combobox_ammo>
-			<label_fieldtop name="label_altammopicker">
-				<anchored to="altammopicker" />
-				<static textres="weapon_label_altammopicker" />
+			<basicnumber name="hitshots">
+				<anchored to="recovermisses" position="righthigh" offset="15,0" width="40" height="20" />
+				<default>0</default>
+				<hideonvalue>0</hideonvalue>
+				<script file="common/scripts/number_crosslink_unlink.lua" />
+			</basicnumber>
+			<label_fieldtop name="label_hitshots">
+				<anchored to="hitshots" />
+				<static textres="weapon_label_hitshots" />
 				<readonly />
 				<center />
 			</label_fieldtop>
+			<recovershots name="recoverhits">
+				<anchored to="hitshots"/>
+				<target>hitshots</target>
+			</recovershots>
 		</sheetdata>
 	</windowclass>
 </root>
