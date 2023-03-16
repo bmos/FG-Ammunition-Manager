@@ -2,6 +2,9 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
+-- luacheck: globals missedshots label_missedshots recovermisses hitshots
+-- luacheck: globals label_hitshots recoverhits altammopicker label_altammopicker
+
 local function linkAmmo(nodeWeapon)
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
 	if nodeAmmoLink then

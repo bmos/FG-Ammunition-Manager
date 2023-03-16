@@ -55,8 +55,10 @@ function toggleDetail()
 
 	-- re-build ammopicker and altammopicker lists when opening details
 	if bShow then
-		ammopicker.clear(); ammopicker.onInit()
-		altammopicker.clear(); altammopicker.onInit()
+		ammopicker.clear()
+		ammopicker.onInit()
+		altammopicker.clear()
+		altammopicker.onInit()
 	end
 end
 

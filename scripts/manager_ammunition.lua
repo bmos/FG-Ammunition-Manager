@@ -45,9 +45,7 @@ function getAmmoNode(nodeWeapon)
 	ammoNode = getShortcutNode(nodeWeapon, 'ammoshortcut')
 	local nodeOldNode = DB.getChild(nodeWeapon, 'ammoshortcut')
 	if nodeOldNode then
-		if ammoNode then
-			DB.setValue(nodeWeapon, 'ammopickershortcut', 'windowreference', 'item', '....inventorylist.' .. DB.getName(ammoNode))
-		end
+		if ammoNode then DB.setValue(nodeWeapon, 'ammopickershortcut', 'windowreference', 'item', '....inventorylist.' .. DB.getName(ammoNode)) end
 		DB.deleteNode(nodeOldNode)
 	end
 	if ammoNode then return ammoNode end

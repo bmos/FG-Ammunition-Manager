@@ -1,9 +1,8 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
-local sRuleset
 
--- luacheck: globals onClickRelease recoverAmmo
+-- luacheck: globals onClickRelease recoverAmmo target
 local function increaseAmmo(messagedata, nodeAmmo, nodeWeapon, nExcess)
 	if nodeAmmo then
 		local nodeItem = AmmunitionManager.getShortcutNode(nodeWeapon, 'altammopickershortcut') or nodeAmmo
@@ -53,5 +52,4 @@ function onClickRelease() recoverAmmo() end
 
 function onInit()
 	if super and super.onInit then super.onInit() end
-	sRuleset = User.getRulesetName()
 end

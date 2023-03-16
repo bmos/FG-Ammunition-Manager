@@ -54,9 +54,7 @@ function onInit()
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 and itemsheetname and type(itemsheetname[1]) == 'table' then
 				local sName = ItemManager.getDisplayName(nodeItem, true)
 				for _, v in ipairs(itemsheetname) do
-					if v.field and type(v.field) == 'table' and v.string and isAmmo(nodeItem, v.field[1]) then
-						table.insert(aAutoFill, sName)
-					end
+					if v.field and type(v.field) == 'table' and v.string and isAmmo(nodeItem, v.field[1]) then table.insert(aAutoFill, sName) end
 				end
 			end
 		end
