@@ -28,7 +28,7 @@
 	<template name="recovershots">
 		<buttoncontrol name="recovermisses">
 			<anchored to="missedshots" position="righthigh" offset="7,0" width="20" height="20" />
-			<icon normal="button_add" pressed="button_add_down" />
+			<icon normal="button_recover_ammo" pressed="button_recover_ammo_down" />
 			<tooltip textres="weapon_tooltip_recoverammo" />
 			<script file="campaign/scripts/ammo_recover.lua" />
 			<target>missedshots</target>
