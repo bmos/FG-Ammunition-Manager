@@ -9,7 +9,7 @@
 				<hidereadonly />
 			</frame>
 			<center />
-			<listdirection>up</listdirection>
+			<listdirection>down</listdirection>
 			<listmaxsize>15</listmaxsize>
 			<nodrag />
 			<nodrop />
