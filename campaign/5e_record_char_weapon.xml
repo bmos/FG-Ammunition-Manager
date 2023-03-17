@@ -29,10 +29,10 @@
 
 	<windowclass name="char_weapon_editor" merge="join">
 		<placement>
-			<size width="380" height="388" />
+			<size width="380" height="470" />
 		</placement>
 		<sizelimits>
-			<minimum width="380" height="388" />
+			<minimum width="380" height="470" />
 			<dynamic />
 		</sizelimits>
 	</windowclass>
@@ -46,7 +46,11 @@
 				<static textres="weapon_header_ammo" />
 				<center />
 			</header_column>
-			<combobox_ammo name="ammopicker">
+
+			<combobox_ammo name="ammopicker" source="ammunitionmanager.ammopicker">
+				<anchored>
+					<right offset="-5" />
+				</anchored>
 				<itemsheetname><string /><field>subtype</field></itemsheetname>
 				<itemsheetname><string /><field>type</field></itemsheetname>
 			</combobox_ammo>
@@ -56,42 +60,112 @@
 				<readonly />
 				<center />
 			</label_fieldtop>
-			<basicnumber name="recoverypercentage">
-				<anchored to="ammopicker" width="40" height="20">
+
+			<combobox_ammo name="missammopicker" source="ammunitionmanager.missammopicker">
+				<anchored width="160" height="20">
+					<top parent="columnanchor" anchor="bottom" relation="relative" offset="18" />
+					<left offset="5" />
+				</anchored>
+				<itemsheetname><string /><field>subtype</field></itemsheetname>
+				<itemsheetname><string /><field>type</field></itemsheetname>
+				<default textres="ammo_original" />
+				<defaultvalue>ammo_original</defaultvalue>
+			</combobox_ammo>
+			<label_fieldtop name="label_missammopicker">
+				<anchored to="missammopicker" />
+				<static textres="weapon_label_missammopicker" />
+				<readonly />
+				<center />
+			</label_fieldtop>
+			<basicnumber name="missrecoverypercentage" source="ammunitionmanager.missrecoverypercentage">
+				<anchored to="missammopicker" width="40" height="20">
 					<top anchor="top" offset="0" />
-					<left anchor="right" offset="15" />
+					<left anchor="right" offset="10" />
 				</anchored>
 				<default>50</default>
 				<tabtarget prev="ammopicker" next="missedshots" />
 			</basicnumber>
-			<label_fieldtop name="label_recoverypercentage">
-				<anchored to="recoverypercentage" />
+			<label_fieldtop name="label_missrecoverypercentage">
+				<anchored to="missrecoverypercentage" />
 				<readonly />
 				<center />
 			</label_fieldtop>
-			<label name="label_ammopercentof">
-				<anchored to="recoverypercentage" position="righthigh" offset="5,0" width="35" />
+			<label name="label_missammopercentof">
+				<anchored to="missrecoverypercentage" position="righthigh" offset="5,0" width="35" />
 				<static>% of </static>
 				<center />
 			</label>
-			<basicnumber name="missedshots">
-				<anchored to="label_ammopercentof" position="righthigh" offset="5,0" width="40" height="20" />
+			<basicnumber name="missedshots" source="ammunitionmanager.missedshots">
+				<anchored to="label_missammopercentof" position="righthigh" offset="5,0" width="40" height="20" />
 				<default>0</default>
 				<hideonvalue>0</hideonvalue>
 				<script file="common/scripts/number_crosslink_unlink.lua" />
 			</basicnumber>
 			<label_fieldtop name="label_missedshots">
 				<anchored to="missedshots" />
-				<static textres="weapon_label_expended" />
+				<static textres="weapon_label_missedshots" />
 				<readonly />
 				<center />
 			</label_fieldtop>
-			<buttoncontrol name="recoverammo">
+			<recovershots name="recovermisses">
 				<anchored to="missedshots" position="right" offset="7" width="20" />
-				<icon normal="button_add" pressed="button_add_down" />
-				<tooltip textres="weapon_tooltip_recoverammo" />
-				<script file="campaign/scripts/ammo_recover.lua" />
-			</buttoncontrol>
+				<counter>missedshots</counter>
+				<ammopicker>missammopicker</ammopicker>
+				<percent>missrecoverypercentage</percent>
+			</recovershots>
+
+			<combobox_ammo name="hitammopicker" source="ammunitionmanager.hitammopicker">
+				<anchored width="160" height="20">
+					<top parent="missammopicker" anchor="bottom" relation="relative" offset="18" />
+					<left offset="5" />
+				</anchored>
+				<itemsheetname><string /><field>subtype</field></itemsheetname>
+				<itemsheetname><string /><field>type</field></itemsheetname>
+				<default textres="ammo_original" />
+				<defaultvalue>ammo_original</defaultvalue>
+			</combobox_ammo>
+			<label_fieldtop name="label_hitammopicker">
+				<anchored to="hitammopicker" />
+				<static textres="weapon_label_hitammopicker" />
+				<readonly />
+				<center />
+			</label_fieldtop>
+			<basicnumber name="hitrecoverypercentage" source="ammunitionmanager.hitrecoverypercentage">
+				<anchored to="hitammopicker" width="40" height="20">
+					<top anchor="top" offset="0" />
+					<left anchor="right" offset="10" />
+				</anchored>
+				<default>50</default>
+				<tabtarget prev="ammopicker" next="missedshots" />
+			</basicnumber>
+			<label_fieldtop name="label_hitrecoverypercentage">
+				<anchored to="hitrecoverypercentage" />
+				<readonly />
+				<center />
+			</label_fieldtop>
+			<label name="label_hitammopercentof">
+				<anchored to="hitrecoverypercentage" position="righthigh" offset="5,0" width="35" />
+				<static>% of </static>
+				<center />
+			</label>
+			<basicnumber name="hitshots" source="ammunitionmanager.hitshots">
+				<anchored to="label_hitammopercentof" position="righthigh" offset="5,0" width="40" height="20" />
+				<default>0</default>
+				<hideonvalue>0</hideonvalue>
+				<script file="common/scripts/number_crosslink_unlink.lua" />
+			</basicnumber>
+			<label_fieldtop name="label_hitshots">
+				<anchored to="hitshots" />
+				<static textres="weapon_label_hitshots" />
+				<readonly />
+				<center />
+			</label_fieldtop>
+			<recovershots name="recoverhits">
+				<anchored to="hitshots" position="right" offset="7" width="20" />
+				<counter>hitshots</counter>
+				<ammopicker>hitammopicker</ammopicker>
+				<percent>hitrecoverypercentage</percent>
+			</recovershots>
 		</sheetdata>
 	</windowclass>
 </root>

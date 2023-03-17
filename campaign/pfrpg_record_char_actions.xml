@@ -68,10 +68,10 @@
 	
 	<windowclass name="char_weapon_editor" merge="join">
 		<placement>
-			<size width="400" height="480" />
+			<size width="400" height="470" />
 		</placement>
 		<sizelimits>
-			<minimum width="400" height="480" />
+			<minimum width="400" height="470" />
 			<dynamic />
 		</sizelimits>
 	</windowclass>
