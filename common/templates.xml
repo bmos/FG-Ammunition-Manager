@@ -4,7 +4,7 @@
 
 <root>
 	<template name="combobox_ammo">
-		<combobox name="ammopicker">
+		<combobox>
 			<frame>
 				<hidereadonly />
 			</frame>
@@ -14,7 +14,7 @@
 			<nodrag />
 			<nodrop />
 			<noreset />
-			<anchored width="160" height="20">
+			<anchored height="20">
 				<top parent="columnanchor" anchor="bottom" relation="relative" offset="20" />
 				<left offset="5" />
 			</anchored>
@@ -26,8 +26,8 @@
 	</template>
 
 	<template name="recovershots">
-		<buttoncontrol name="recovermisses">
-			<anchored to="missedshots" position="righthigh" offset="7,0" width="20" height="20" />
+		<buttoncontrol>
+			<anchored to="missedshots" position="righthigh" offset="7,0"/>
 			<icon normal="button_recover_ammo" pressed="button_recover_ammo_down" />
 			<tooltip textres="weapon_tooltip_recoverammo" />
 			<script file="campaign/scripts/ammo_recover.lua" />
