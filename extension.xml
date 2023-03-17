@@ -41,6 +41,7 @@
 
 		<!-- Scripts -->
 		<script name="AmmunitionManager" file="scripts/manager_ammunition.lua" />
+		<script name="AmmunitionManagerUpgrades" file="scripts/manager_ammunition_upgrades.lua" />
 
 		<!-- Buttons -->
 		<icon name="button_load" file="graphics/button_load.png" />
