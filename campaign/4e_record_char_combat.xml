@@ -54,7 +54,7 @@
 				<static textres="weapon_label_ammopicker" />
 				<invisible />
 			</label>
-			<basicnumber name="recoverypercentage">
+			<basicnumber name="missrecoverypercentage" source="ammunitionmanager.missrecoverypercentage" >
 				<anchored width="30" height="20">
 					<top parent="ammunition_label" />
 					<left parent="ammunition_label" anchor="right" offset="5" />
@@ -62,14 +62,14 @@
 				<default>50</default>
 				<invisible />
 			</basicnumber>
-			<label name="label_ammopercentof">
-				<anchored to="recoverypercentage" position="righthigh" offset="10,0" width="32" />
+			<label name="label_missammopercentof">
+				<anchored to="missrecoverypercentage" position="righthigh" offset="10,0" width="32" />
 				<static>% of </static>
 				<center />
 				<invisible />
 			</label>
 			<basicnumber name="missedshots">
-				<anchored to="recoverypercentage" width="30" height="20">
+				<anchored to="missrecoverypercentage" width="30" height="20">
 					<top anchor="top" />
 					<left anchor="right" offset="52" />
 				</anchored>
@@ -79,28 +79,18 @@
 				<script file="common/scripts/number_crosslink_unlink.lua" />
 				<invisible />
 			</basicnumber>
-			<basicnumber name="hitshots">
-				<anchored to="missedshots" width="30" height="20">
-					<top anchor="top" />
-					<left anchor="right" offset="10" />
-				</anchored>
-				<default>0</default>
-				<hideonvalue>0</hideonvalue>
-				<tooltip textres="weapon_tooltip_missedshots" />
-				<script file="common/scripts/number_crosslink_unlink.lua" />
-				<invisible />
-			</basicnumber>
-			<buttoncontrol name="recoverammo">
-				<anchored height="20" width="20">
-					<top parent="hitshots" anchor="top" />
-					<right parent="properties" anchor="right" offset="0" />
-				</anchored>
-				<icon normal="button_add" pressed="button_add_down" />
-				<tooltip textres="weapon_tooltip_recoverammo" />
-				<script file="campaign/scripts/ammo_recover.lua" />
-				<invisible />
-			</buttoncontrol>
+			<recovershots name="recovermisses">
+				<anchored to="missedshots" position="right" offset="7" width="20" />
+				<counter>missedshots</counter>
+				<ammopicker>missammopicker</ammopicker>
+				<percent>missrecoverypercentage</percent>
+			</recovershots>
 			<combobox_ammo name="ammopicker">
+				<anchored height="20">
+					<top parent="missedshots" anchor="top" />
+					<left parent="missedshots" anchor="right" offset="15" />
+					<right parent="recovermisses" anchor="left" offset="-7" />
+				</anchored>
 				<itemsheetname><string /><field>class</field></itemsheetname>
 				<itemsheetname><string /><field>subclass</field></itemsheetname>
 			</combobox_ammo>
