@@ -20,9 +20,6 @@
 		<ruleset>
 			<name>5E</name>
 		</ruleset>
-		<ruleset>
-			<name>SFRPG</name>
-		</ruleset>
 		<loadorder>34</loadorder>
 	</properties>
 
@@ -30,16 +27,12 @@
 
 	<base>
 		<!-- Campaign Records -->
-		<includefile ruleset="SFRPG" source="campaign/sfrpg_record_char_actions.xml" />
 		<includefile ruleset="PFRPG|3.5E" source="campaign/pfrpg_record_char_actions.xml" />
 		<includefile ruleset="4E" source="campaign/4e_record_char_combat.xml" />
 		<includefile ruleset="5E" source="campaign/5e_record_char_weapon.xml" />
 
-		<includefile ruleset="SFRPG" source="campaign/sfrpg_record_charmini_actions.xml" />
 		<includefile ruleset="PFRPG|3.5E" source="campaign/pfrpg_record_charmini_actions.xml" />
 		<includefile ruleset="4E" source="campaign/4e_record_charmini_main.xml" />
-
-		<includefile ruleset="SFRPG" source="campaign/sfrpg_record_char_inventory.xml" />
 
 		<includefile source="common/templates.xml" />
 
