@@ -29,6 +29,13 @@ function parseWeaponCapacity(capacity)
 	return tonumber(splitCapacity[1]), splitCapacity[2]
 end
 
+-- luacheck: globals isWeaponRanged
+function isWeaponRanged(nodeWeapon)
+	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1
+	if User.getRulesetName() == '5E' then bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2 end
+	return bRanged
+end
+
 ---	This function finds the correct node for a weapon's ammunition.
 --	It first checks for a path saved in ammopickershortcut. If found, databasenode record is returned.
 --	If no path is found, it checks to see if the ammo name is known.
@@ -37,23 +44,14 @@ end
 --	If no match is found, nothing is returned.
 --	luacheck: globals getAmmoNode
 function getAmmoNode(nodeWeapon)
+	local bRanged = isWeaponRanged(nodeWeapon)
+	if not bRanged then return end
+
 	-- check for saved ammopickershortcut windowreference and return if found
 	local ammoNode = getShortcutNode(nodeWeapon, 'ammopickershortcut')
 	if ammoNode then return ammoNode end
 
-	-- upgrade node from ammoshortcut to ammopickershortcut
-	ammoNode = getShortcutNode(nodeWeapon, 'ammoshortcut')
-	local nodeOldNode = DB.getChild(nodeWeapon, 'ammoshortcut')
-	if nodeOldNode then
-		if ammoNode then DB.setValue(nodeWeapon, 'ammopickershortcut', 'windowreference', 'item', '....inventorylist.' .. DB.getName(ammoNode)) end
-		DB.deleteNode(nodeOldNode)
-	end
-	if ammoNode then return ammoNode end
-
 	-- if ammopickershortcut does not provide a good node and weapon is ranged, try searching the inventory.
-	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1
-	if User.getRulesetName() == '5E' then bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2 end
-	if not bRanged then return end
 
 	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '')
 	if sAmmo == '' then return end
@@ -228,4 +226,6 @@ function onInit()
 	elseif sRuleset == 'SFRPG' then -- reregister onPostAttackResolve if using SFRPG
 		ActionAttack.onPostAttackResolve = onPostAttackResolve_starfinder
 	end
+
+	if Session.IsHost then AmmunitionManagerUpgrades.upgradeData() end
 end
