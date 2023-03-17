@@ -54,7 +54,7 @@
 				<static textres="weapon_label_ammopicker" />
 				<invisible />
 			</label>
-			<basicnumber name="missrecoverypercentage" source="ammunitionmanager.missrecoverypercentage" >
+			<basicnumber name="missrecoverypercentage" source="ammunitionmanager.missrecoverypercentage">
 				<anchored width="30" height="20">
 					<top parent="ammunition_label" />
 					<left parent="ammunition_label" anchor="right" offset="5" />
@@ -68,7 +68,7 @@
 				<center />
 				<invisible />
 			</label>
-			<basicnumber name="missedshots">
+			<basicnumber name="missedshots" source="ammunitionmanager.missedshots">
 				<anchored to="missrecoverypercentage" width="30" height="20">
 					<top anchor="top" />
 					<left anchor="right" offset="52" />
@@ -85,7 +85,7 @@
 				<ammopicker>missammopicker</ammopicker>
 				<percent>missrecoverypercentage</percent>
 			</recovershots>
-			<combobox_ammo name="ammopicker">
+			<combobox_ammo name="ammopicker" source="ammunitionmanager.ammopicker">
 				<anchored height="20">
 					<top parent="missedshots" anchor="top" />
 					<left parent="missedshots" anchor="right" offset="15" />
