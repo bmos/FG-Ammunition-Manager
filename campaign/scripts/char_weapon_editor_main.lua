@@ -55,7 +55,7 @@ local function setHitRecoveryVisibility(bRanged)
 end
 
 local function setAmmoVisibility(nodeWeapon)
-	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1
+	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
 	if User.getRulesetName() == '5E' then bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2 end
 
 	header_ammo.setVisible(bRanged)

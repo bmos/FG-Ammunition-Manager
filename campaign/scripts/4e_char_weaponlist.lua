@@ -24,7 +24,7 @@ function toggleDetail()
 	if super and super.toggleDetail then super.toggleDetail() end
 
 	local nodeWeapon = getDatabaseNode()
-	local bRanged = (DB.getValue(nodeWeapon, 'type', 0) == 1)
+	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
 	isloaded.setVisible(bRanged and hasLoadAction())
 
 	local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))

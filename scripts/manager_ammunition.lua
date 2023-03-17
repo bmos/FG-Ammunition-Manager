@@ -44,7 +44,7 @@ end
 --	If no match is found, nothing is returned.
 --	luacheck: globals getAmmoNode
 function getAmmoNode(nodeWeapon)
-	local bRanged = isWeaponRanged(nodeWeapon)
+	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
 	if not bRanged then return end
 
 	-- check for saved ammopickershortcut windowreference and return if found

@@ -5,7 +5,7 @@
 function hasLoadAction(nodeWeapon)
 	local bHasLoadAction
 	--	luacheck: globals type
-	local bRanged = (type.getValue() == 1)
+	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
 	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
 	for _, v in pairs(AmmunitionManager.tLoadWeapons) do
 		if string.find(sWeaponName, v) then
@@ -55,7 +55,7 @@ function onDataChanged()
 	local _, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, nodeAmmoLink)
 
 	--	luacheck: globals type
-	local bRanged = (type.getValue() == 1)
+	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
 	label_range.setVisible(bRanged)
 	rangeincrement.setVisible(bRanged)
 

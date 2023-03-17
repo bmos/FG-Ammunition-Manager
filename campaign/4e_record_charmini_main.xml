@@ -14,7 +14,7 @@
 					local function automateAmmo(nodeWeapon)
 						local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0);
 						DB.setValue(nodeWeapon, 'isloaded', 'number', 0);
-						local bRanged = (window.type.getValue() == 1);
+						local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon);
 						if bRanged and bNotLoaded and window.hasLoadAction() then
 							local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'));
 							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'));
