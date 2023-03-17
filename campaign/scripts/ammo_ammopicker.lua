@@ -4,7 +4,7 @@
 --
 local function isAmmo(nodeItem, sTypeField)
 	local bThrown = false
-	if User.getRulesetName() == '5E' then bThrown = DB.getValue(getDatabaseNode(), '..type', 0) == 2 end
+	if User.getRulesetName() == '5E' then bThrown = DB.getValue(getDatabaseNode(), '...type', 0) == 2 end
 	if sTypeField and DB.getChild(nodeItem, sTypeField) then
 		local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower()
 		if bThrown then
@@ -26,17 +26,20 @@ function onInit()
 			super.refreshSelectionDisplay()
 
 			-- save node to weapon node when choosing ammo
-			local nodeWeapon = DB.getParent(getDatabaseNode())
+			local nodeWeapon = DB.getChild(getDatabaseNode(), '...')
 			local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
 			if nodeInventory then
 				local sDefaultValue = Interface.getString(defaultvalue[1])
 				for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
 					local sName = ItemManager.getDisplayName(nodeItem, true)
-					local sShortcutNodeName = DB.getName(getDatabaseNode()) .. 'shortcut'
-					if sValue == sDefaultValue then
-						DB.setValue(nodeWeapon, sShortcutNodeName, 'windowreference', 'item', '')
-					elseif sValue == sName then
-						DB.setValue(nodeWeapon, sShortcutNodeName, 'windowreference', 'item', '....inventorylist.' .. DB.getName(nodeItem))
+					local nodeAmmoManager = DB.getParent(getDatabaseNode())
+					if DB.getName(nodeAmmoManager) == 'ammunitionmanager' then
+						local sShortcutNodeName = DB.getName(getDatabaseNode()) .. 'shortcut'
+						if sValue == sDefaultValue then
+							DB.setValue(nodeAmmoManager, sShortcutNodeName, 'windowreference', 'item', '')
+						elseif sValue == sName then
+							DB.setValue(nodeAmmoManager, sShortcutNodeName, 'windowreference', 'item', '....inventorylist.' .. DB.getName(nodeItem))
+						end
 					end
 				end
 			end
@@ -48,7 +51,7 @@ function onInit()
 	local aAutoFill = {}
 	table.insert(aAutoFill, Interface.getString(defaultvalue[1]))
 
-	local nodeInventory = DB.getChild(getDatabaseNode(), '....inventorylist')
+	local nodeInventory = DB.getChild(getDatabaseNode(), '.....inventorylist')
 	if nodeInventory then
 		for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 and itemsheetname and type(itemsheetname[1]) == 'table' then

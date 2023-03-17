@@ -2,8 +2,7 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
--- luacheck: globals missedshots label_missedshots recovermisses hitshots
--- luacheck: globals label_hitshots recoverhits altammopicker label_altammopicker
+-- luacheck: globals hitshots missedshots
 
 local function linkAmmo(nodeWeapon)
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
@@ -27,6 +26,34 @@ local function linkAmmo(nodeWeapon)
 	end
 end
 
+-- luacheck: globals missammopicker label_missammopicker missrecoverypercentage label_missrecoverypercentage
+-- luacheck: globals label_missammopercentof  missedshots label_missedshots recovermisses
+local function setMissRecoveryVisibility(bRanged)
+	missammopicker.setComboBoxVisible(bRanged)
+	label_missammopicker.setVisible(bRanged)
+
+	missrecoverypercentage.setVisible(bRanged)
+	label_missrecoverypercentage.setVisible(bRanged)
+	label_missammopercentof.setVisible(bRanged)
+	missedshots.setVisible(bRanged)
+	label_missedshots.setVisible(bRanged)
+	recovermisses.setVisible(bRanged)
+end
+
+-- luacheck: globals hitammopicker label_hitammopicker hitrecoverypercentage label_hitrecoverypercentage
+-- luacheck: globals label_hitammopercentof  hitshots label_hitshots recoverhits
+local function setHitRecoveryVisibility(bRanged)
+	hitammopicker.setComboBoxVisible(bRanged)
+	label_hitammopicker.setVisible(bRanged)
+
+	hitrecoverypercentage.setVisible(bRanged)
+	label_hitrecoverypercentage.setVisible(bRanged)
+	label_hitammopercentof.setVisible(bRanged)
+	hitshots.setVisible(bRanged)
+	label_hitshots.setVisible(bRanged)
+	recoverhits.setVisible(bRanged)
+end
+
 local function setAmmoVisibility(nodeWeapon)
 	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1
 	if User.getRulesetName() == '5E' then bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2 end
@@ -36,21 +63,8 @@ local function setAmmoVisibility(nodeWeapon)
 	ammopicker.setComboBoxVisible(bRanged)
 	label_ammopicker.setVisible(bRanged)
 
-	altammopicker.setComboBoxVisible(bRanged)
-	label_altammopicker.setVisible(bRanged)
-
-	recoverypercentage.setVisible(bRanged)
-	label_recoverypercentage.setVisible(bRanged)
-
-	label_ammopercentof.setVisible(bRanged)
-
-	missedshots.setVisible(bRanged)
-	label_missedshots.setVisible(bRanged)
-	recovermisses.setVisible(bRanged)
-
-	hitshots.setVisible(bRanged)
-	label_hitshots.setVisible(bRanged)
-	recoverhits.setVisible(bRanged)
+	setMissRecoveryVisibility(bRanged)
+	setHitRecoveryVisibility(bRanged)
 end
 
 -- luacheck: globals onDataChanged

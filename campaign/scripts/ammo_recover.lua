@@ -2,11 +2,11 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
--- luacheck: globals onClickRelease recoverAmmo target
+-- luacheck: globals onClickRelease recoverAmmo counter percent ammopicker
 local function increaseAmmo(messagedata, nodeAmmo, nodeWeapon, nExcess)
 	if nExcess < 1 then return end
 	if nodeAmmo then
-		local nodeItem = AmmunitionManager.getShortcutNode(nodeWeapon, 'altammopickershortcut') or nodeAmmo
+		local nodeItem = AmmunitionManager.getShortcutNode(nodeWeapon, ammopicker[1]) or nodeAmmo
 		local nCount = DB.getValue(nodeItem, 'count', 0)
 		DB.setValue(nodeItem, 'count', 'number', nCount + nExcess)
 		messagedata.text = string.format(Interface.getString('char_actions_excessammunition_auto'), nExcess)
@@ -28,8 +28,8 @@ local function notifyQuantity(messagedata, nAmmoRecovered)
 end
 
 local function quantityRecovered(nodeWeapon, nodeAmmo)
-	local nRecoverCount = DB.getValue(nodeAmmo, target[1], 0)
-	local nPercent = DB.getValue(nodeWeapon, 'recoverypercentage', 50) / 100
+	local nRecoverCount = DB.getValue(nodeAmmo, counter[1], 0)
+	local nPercent = DB.getValue(nodeWeapon, percent[1], 50) / 100
 
 	return math.floor(nRecoverCount * nPercent)
 end
@@ -43,7 +43,7 @@ function recoverAmmo()
 	notifyQuantity(messagedata, nAmmoRecovered)
 
 	-- reset ammo-specific counter of missed shots
-	DB.setValue(nodeAmmo, target[1], 'number', 0)
+	DB.setValue(nodeAmmo, counter[1], 'number', 0)
 
 	local nExcess = excessAmmoQuantity(nodeWeapon, nAmmoRecovered)
 	increaseAmmo(messagedata, nodeAmmo, nodeWeapon, nExcess)
