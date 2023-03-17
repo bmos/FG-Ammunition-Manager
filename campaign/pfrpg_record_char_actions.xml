@@ -100,7 +100,7 @@
 			</label_fieldtop>
 
 			<combobox_ammo name="missammopicker" source="ammunitionmanager.missammopicker">
-				<anchored width="160" height="20">
+				<anchored width="160">
 					<top parent="columnanchor" anchor="bottom" relation="relative" offset="18" />
 					<left offset="5" />
 				</anchored>
@@ -153,7 +153,7 @@
 			</recovershots>
 
 			<combobox_ammo name="hitammopicker" source="ammunitionmanager.hitammopicker">
-				<anchored width="160" height="20">
+				<anchored width="160">
 					<top parent="missammopicker" anchor="bottom" relation="relative" offset="18" />
 					<left offset="5" />
 				</anchored>
