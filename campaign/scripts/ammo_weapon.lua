@@ -2,24 +2,25 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
+local function hasSubstring(string, table)
+	for _, v in pairs(table) do
+		if string.find(string, v) then return true end
+	end
+end
+
 --	luacheck: globals hasLoadAction
 function hasLoadAction(nodeWeapon)
 	if not AmmunitionManager.isWeaponRanged(nodeWeapon) then return false end
 
 	local sWeaponProps = string.lower(DB.getValue(nodeWeapon, 'properties', ''))
 	local bNoLoad = string.lower(sWeaponProps):find('noload')
+	if bNoLoad then return false end
 
-	for _, v in pairs(AmmunitionManager.tLoadWeaponProps) do
-		if not bNoLoad and string.find(sWeaponProps, v) then
-			return true
-		end
-	end
-
-	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
-	for _, v in pairs(AmmunitionManager.tLoadWeapons) do
-		if not bNoLoad and string.find(sWeaponName, v) then
-			return true
-		end
+	if
+		hasSubstring(sWeaponProps, AmmunitionManager.tLoadWeaponProps)
+		or hasSubstring(string.lower(DB.getValue(nodeWeapon, 'name', '')), AmmunitionManager.tLoadWeapons)
+	then
+		return true
 	end
 
 	return false
