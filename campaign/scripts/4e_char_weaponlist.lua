@@ -2,22 +2,6 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
---	luacheck: globals hasLoadAction
-function hasLoadAction()
-	local bHasLoadAction = false
-	local nodeWeapon = getDatabaseNode()
-	local sWeaponProperties = string.lower(DB.getValue(nodeWeapon, 'properties', ''))
-	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
-	for _, v in pairs(AmmunitionManager.tLoadWeapons) do
-		if string.find(sWeaponName, v) then
-			bHasLoadAction = true
-			break
-		end
-	end
-	local bNoLoad = sWeaponProperties:find('load free') or sWeaponProperties:find('noload')
-
-	return (bHasLoadAction and not bNoLoad)
-end
 
 --	luacheck: globals toggleDetail maxammo.setLink
 function toggleDetail()
@@ -25,7 +9,7 @@ function toggleDetail()
 
 	local nodeWeapon = getDatabaseNode()
 	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
-	isloaded.setVisible(bRanged and hasLoadAction())
+	isloaded.setVisible(bRanged and AmmunitionManager.hasLoadAction(nodeWeapon))
 
 	local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)

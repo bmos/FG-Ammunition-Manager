@@ -2,9 +2,11 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 --	This table exists so people can add search terms for weapons that should have a load button.
---	luacheck: globals tLoadWeapons tLoadWeaponProps
-tLoadWeapons = { 'loadaction' }
+--	luacheck: globals tLoadWeapons tLoadWeaponProps tNoLoadWeapons tNoLoadWeaponProps
+tLoadWeapons = {}
 tLoadWeaponProps = { 'loadaction' }
+tNoLoadWeapons = {}
+tNoLoadWeaponProps = { 'noload' }
 
 -- luacheck: globals sAmmunitionManagerSubnode sLinkedCount sUnlinkedAmmo sUnlinkedMaxAmmo sRuleset
 sAmmunitionManagerSubnode = 'ammunitionmanager.'
@@ -17,6 +19,24 @@ sRuleset = ''
 function calculateMargin(nDC, nTotal)
 	Debug.console('AmmunitionManager.calculateMargin - DEPRECATED - 2022-07-13 - Use AttackMargins.calculateMargin')
 	if AttackMargins and AttackMargins.calculateMargin then AttackMargins.calculateMargin(nDC, nTotal) end
+end
+
+local function hasSubstring(string, table)
+	for _, v in pairs(table) do
+		if string.find(string, v) then return true end
+	end
+end
+
+--	luacheck: globals hasLoadAction
+function hasLoadAction(nodeWeapon)
+	if not AmmunitionManager.isWeaponRanged(nodeWeapon) then return false end
+
+	local sWeaponProps = string.lower(DB.getValue(nodeWeapon, 'properties', ''))
+	local bNoLoad = hasSubstring(sWeaponProps, tNoLoadWeaponProps)
+	if bNoLoad then return false end
+
+	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', ''))
+	return (hasSubstring(sWeaponName, tLoadWeapons) and not hasSubstring(sWeaponName, tNoLoadWeapons)) or hasSubstring(sWeaponProps, tLoadWeaponProps)
 end
 
 --	luacheck: globals getShortcutNode
@@ -190,10 +210,16 @@ function onInit()
 	onPostAttackResolve_old = ActionAttack.onPostAttackResolve
 	ActionAttack.onPostAttackResolve = onPostAttackResolve_new
 	if sRuleset == 'PFRPG' or sRuleset == '3.5E' then
-		tLoadWeapons = { 'loadaction', 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', 'sling' }
-	elseif sRuleset == '4E' then
-		tLoadWeapons = { 'loadaction', 'ballista' }
+		table.insert(tLoadWeapons, 'firearm')
+		table.insert(tLoadWeapons, 'crossbow')
+		table.insert(tLoadWeapons, 'javelin')
+		table.insert(tLoadWeapons, 'ballista')
+		table.insert(tLoadWeapons, 'windlass')
+		table.insert(tLoadWeapons, 'pistol')
+		table.insert(tLoadWeapons, 'rifle')
+		table.insert(tLoadWeapons, 'sling')
 	elseif sRuleset == '5E' then
+		table.insert(tLoadWeaponProps, 'loading')
 		CharWeaponManager.decrementAmmo = noDecrementAmmo
 	end
 

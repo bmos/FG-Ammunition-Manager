@@ -14,7 +14,7 @@
 						DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0)
 
 						local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
-						if bRanged and bNotLoaded and window.hasLoadAction() then
+						if bRanged and bNotLoaded and AmmunitionManager.hasLoadAction(nodeWeapon) then
 							local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 							local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
 							
