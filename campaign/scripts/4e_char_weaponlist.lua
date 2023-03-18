@@ -23,21 +23,21 @@ function toggleDetail()
 		if maxammo then maxammo.setLink() end
 		if missedshots then missedshots.setLink() end
 	end
+
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink)
 
 	local bShow = bRanged and activatedetail and (activatedetail.getValue() == 1)
+
+	-- re-build ammopicker list when opening details
+	ammopicker.clear()
+	ammopicker.findItems()
+
 	if ammunition_label then ammunition_label.setVisible(bShow) end
 	if missrecoverypercentage then missrecoverypercentage.setVisible(bShow) end
 	if label_missammopercentof then label_missammopercentof.setVisible(bShow) end
 	if missedshots then missedshots.setVisible(bShow) end
 	if recoverammo then recoverammo.setVisible(bShow) end
 	if ammopicker then ammopicker.setComboBoxVisible(bShow) end
-
-	-- re-build ammopicker list when opening details
-	if bShow then
-		ammopicker.clear()
-		ammopicker.onInit()
-	end
 end
 
 --	luacheck: globals onTypeChanged

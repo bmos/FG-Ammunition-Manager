@@ -18,7 +18,26 @@ local function isAmmo(nodeItem, sTypeField)
 	end
 end
 
--- luacheck: globals itemsheetname setValue setTooltipText defaultvalue
+-- luacheck: globals itemsheetname defaultvalue findItems
+function findItems()
+	local aAutoFill = {}
+	table.insert(aAutoFill, Interface.getString(defaultvalue[1]))
+
+	local nodeInventory = DB.getChild(getDatabaseNode(), '.....inventorylist')
+	if nodeInventory then
+		for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
+			if DB.getValue(nodeItem, 'carried', 0) ~= 0 and itemsheetname and type(itemsheetname[1]) == 'table' then
+				local sName = ItemManager.getDisplayName(nodeItem, true)
+				for _, v in ipairs(itemsheetname) do
+					if v.field and type(v.field) == 'table' and v.string and isAmmo(nodeItem, v.field[1]) then table.insert(aAutoFill, sName) end
+				end
+			end
+		end
+	end
+	super.addItems(aAutoFill)
+end
+
+-- luacheck: globals setValue setTooltipText
 function onInit()
 	if super then
 		if super.onInit then super.onInit() end
@@ -50,19 +69,5 @@ function onInit()
 		super.setListValue = setListValue_new
 	end
 
-	local aAutoFill = {}
-	table.insert(aAutoFill, Interface.getString(defaultvalue[1]))
-
-	local nodeInventory = DB.getChild(getDatabaseNode(), '.....inventorylist')
-	if nodeInventory then
-		for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
-			if DB.getValue(nodeItem, 'carried', 0) ~= 0 and itemsheetname and type(itemsheetname[1]) == 'table' then
-				local sName = ItemManager.getDisplayName(nodeItem, true)
-				for _, v in ipairs(itemsheetname) do
-					if v.field and type(v.field) == 'table' and v.string and isAmmo(nodeItem, v.field[1]) then table.insert(aAutoFill, sName) end
-				end
-			end
-		end
-	end
-	super.addItems(aAutoFill)
+	findItems()
 end
