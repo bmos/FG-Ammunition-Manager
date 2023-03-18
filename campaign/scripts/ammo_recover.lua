@@ -5,7 +5,8 @@
 -- luacheck: globals onClickRelease recoverAmmo counter percent ammopicker
 local function increaseAmmo(messagedata, nodeAmmo, nodeWeapon, nExcess)
 	if nExcess < 1 then return end
-	local sNameAmmoPickerShortcut = AmmunitionManager.sAmmunitionManagerSubnode .. ammopicker[1] .. AmmunitionManager.sShortcutSuffix
+	local sNameAmmoPickerShortcut = AmmunitionManager.sAmmunitionManagerSubnode .. ammopicker[1] .. 'shortcut'
+	Debug.chat(AmmunitionManager.getShortcutNode(nodeWeapon, sNameAmmoPickerShortcut))
 	local nodeItem = AmmunitionManager.getShortcutNode(nodeWeapon, sNameAmmoPickerShortcut) or nodeAmmo
 	if nodeItem then
 		local nCount = DB.getValue(nodeItem, AmmunitionManager.sLinkedCount, 0)

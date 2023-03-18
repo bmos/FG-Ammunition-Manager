@@ -19,7 +19,7 @@ local function upgradeDataV400()
 				if upgradeNode then
 					if v.type == 'windowreference' then
 						local upgradeType, upgradeValue = DB.getValue(upgradeNode)
-						upgradeValue = string.gsub(upgradeValue, 'charsheet%.id%-%d+%.', '....') -- keep path relative
+						upgradeValue = string.gsub(upgradeValue, 'charsheet%.id%-%d+%.', '.....') -- keep path relative
 						DB.setValue(nodeAmmoManager, v.newname, v.type, upgradeType, upgradeValue)
 					else
 						local upgradeValue = DB.getValue(upgradeNode)

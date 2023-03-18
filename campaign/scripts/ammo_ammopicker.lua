@@ -4,7 +4,10 @@
 --
 local function isAmmo(nodeItem, sTypeField)
 	local bThrown = false
-	if User.getRulesetName() == '5E' then bThrown = DB.getValue(getDatabaseNode(), '...type', 0) == 2 end
+	if User.getRulesetName() == '5E' then
+		local nodeWeapon = DB.getChild(getDatabaseNode(), '...')
+		bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2
+	end
 	if sTypeField and DB.getChild(nodeItem, sTypeField) then
 		local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower()
 		if bThrown then
@@ -27,20 +30,19 @@ function onInit()
 
 			-- save node to weapon node when choosing ammo
 			local nodeWeapon = DB.getChild(getDatabaseNode(), '...')
+
 			local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
-			if nodeInventory then
-				local sDefaultValue = Interface.getString(defaultvalue[1])
-				for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
-					local sName = ItemManager.getDisplayName(nodeItem, true)
-					local nodeAmmoManager = DB.getParent(getDatabaseNode())
-					if DB.getName(nodeAmmoManager) == 'ammunitionmanager' then
-						local sShortcutNodeName = DB.getName(getDatabaseNode()) .. 'shortcut'
-						if sValue == sDefaultValue then
-							DB.setValue(nodeAmmoManager, sShortcutNodeName, 'windowreference', 'item', '')
-						elseif sValue == sName then
-							DB.setValue(nodeAmmoManager, sShortcutNodeName, 'windowreference', 'item', '....inventorylist.' .. DB.getName(nodeItem))
-						end
-					end
+			local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
+			if not nodeAmmoManager or not nodeInventory then return end
+
+			local sDefaultValue = Interface.getString(defaultvalue[1])
+			for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
+				local sName = ItemManager.getDisplayName(nodeItem, true)
+				local sShortcutNodeName = DB.getName(getDatabaseNode()) .. 'shortcut'
+				if sValue == sDefaultValue then
+					DB.setValue(nodeAmmoManager, sShortcutNodeName, 'windowreference', 'item', '')
+				elseif sValue == sName then
+					DB.setValue(nodeAmmoManager, sShortcutNodeName, 'windowreference', 'item', '.....inventorylist.' .. DB.getName(nodeItem))
 				end
 			end
 		end

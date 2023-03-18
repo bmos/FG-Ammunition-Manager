@@ -6,10 +6,8 @@
 tLoadWeapons = { 'loadaction' }
 tLoadWeaponProps = { 'loadaction' }
 
--- luacheck: globals sAmmunitionManagerSubnode sDefaultPicker sShortcutSuffix sLinkedCount sUnlinkedAmmo sUnlinkedMaxAmmo sRuleset
+-- luacheck: globals sAmmunitionManagerSubnode sLinkedCount sUnlinkedAmmo sUnlinkedMaxAmmo sRuleset
 sAmmunitionManagerSubnode = 'ammunitionmanager.'
-sDefaultPicker = 'ammopicker'
-sShortcutSuffix = 'shortcut'
 sLinkedCount = 'count'
 sUnlinkedAmmo = 'ammo'
 sUnlinkedMaxAmmo = 'maxammo'
@@ -23,11 +21,7 @@ end
 
 --	luacheck: globals getShortcutNode
 function getShortcutNode(nodeWeapon, shortcutName)
-	--Debug.chat(nodeWeapon, shortcutName)
-	local node = DB.getChild(nodeWeapon, 'ammunitionmanager')
-	if not node then return end
-	local _, sRecord = DB.getValue(node, shortcutName or sDefaultPicker .. sShortcutSuffix)
-	--Debug.chat(node, sRecord)
+	local _, sRecord = DB.getValue(nodeWeapon, shortcutName or 'ammunitionmanager.ammopickershortcut')
 	if sRecord and sRecord ~= '' then return DB.findNode(sRecord) end
 end
 
@@ -63,7 +57,7 @@ function getAmmoNode(nodeWeapon)
 
 	-- if ammopickershortcut does not provide a good node and weapon is ranged, try searching the inventory.
 
-	local sAmmo = DB.getValue(nodeWeapon, sAmmunitionManagerSubnode .. sDefaultPicker, '')
+	local sAmmo = DB.getValue(nodeWeapon, sAmmunitionManagerSubnode .. 'ammopicker', '')
 	if sAmmo == '' then return end
 
 	Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'))
