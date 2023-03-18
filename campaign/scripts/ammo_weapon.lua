@@ -16,14 +16,9 @@ function hasLoadAction(nodeWeapon)
 	local bNoLoad = string.lower(sWeaponProps):find('noload')
 	if bNoLoad then return false end
 
-	if
-		hasSubstring(sWeaponProps, AmmunitionManager.tLoadWeaponProps)
-		or hasSubstring(string.lower(DB.getValue(nodeWeapon, 'name', '')), AmmunitionManager.tLoadWeapons)
-	then
-		return true
-	end
-
-	return false
+	return
+		hasSubstring(sWeaponProps, AmmunitionManager.tLoadWeaponProps) or
+		hasSubstring(string.lower(DB.getValue(nodeWeapon, 'name', '')), AmmunitionManager.tLoadWeapons)
 end
 
 --	luacheck: globals automateAmmo
