@@ -170,33 +170,6 @@ function ammoTracker(rSource, rRoll)
 	end
 end
 
--- luacheck: globals getWeaponUsage
-function getWeaponUsage(attackNode)
-	local nodeLinkedWeapon = AmmunitionManager.getShortcutNode(attackNode, 'shortcut')
-	if nodeLinkedWeapon then return tonumber(DB.getValue(nodeLinkedWeapon, 'usage', 1)) or 1 end
-	return 1
-end
-
--- luacheck: globals useAmmoStarfinder
-function useAmmoStarfinder(rSource, rRoll)
-	local attackNode
-	if rRoll.sAttackNode then attackNode = DB.findNode(rRoll.sAttackNode) end
-	if attackNode and DB.getValue(attackNode, 'type', 0) == 1 then -- ranged attack
-		local ammoNode = AmmunitionManager.getAmmoNode(attackNode)
-		local nAmmoCount, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rSource, attackNode, ammoNode)
-		if bInfiniteAmmo then return end
-		local weaponUsage = AmmunitionManager.getWeaponUsage(attackNode)
-		local remainingAmmo = nAmmoCount - weaponUsage
-		DB.setValue(ammoNode, 'count', 'number', remainingAmmo)
-		if remainingAmmo <= 0 then
-			local attackName = DB.getValue(attackNode, 'name', '')
-			local messageText = string.format(Interface.getString('char_actions_usedallammo'), attackName)
-			local messagedata = { text = messageText, sender = ActorManager.resolveActor(DB.getChild(attackNode, '...')).sName, font = 'emotefont' }
-			Comm.deliverChatMessage(messagedata)
-		end
-	end
-end
-
 local function noDecrementAmmo() end
 
 -- Function Overrides
@@ -205,11 +178,6 @@ local onPostAttackResolve_old
 local function onPostAttackResolve_new(rSource, rTarget, rRoll, rMessage, ...)
 	onPostAttackResolve_old(rSource, rTarget, rRoll, rMessage, ...)
 	AmmunitionManager.ammoTracker(rSource, rRoll)
-end
-
-local function onPostAttackResolve_starfinder(rSource, rTarget, rRoll, rMessage, ...)
-	onPostAttackResolve_old(rSource, rTarget, rRoll, rMessage, ...)
-	AmmunitionManager.useAmmoStarfinder(rSource, rRoll)
 end
 
 function onInit()
@@ -223,8 +191,6 @@ function onInit()
 		tLoadWeapons = { 'loadaction', 'ballista' }
 	elseif sRuleset == '5E' then
 		CharWeaponManager.decrementAmmo = noDecrementAmmo
-	elseif sRuleset == 'SFRPG' then -- reregister onPostAttackResolve if using SFRPG
-		ActionAttack.onPostAttackResolve = onPostAttackResolve_starfinder
 	end
 
 	if Session.IsHost then AmmunitionManagerUpgrades.upgradeData() end

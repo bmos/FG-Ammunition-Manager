@@ -35,6 +35,4 @@
 	<string name="weapon_label_missedshots">Misses</string>
 	<string name="weapon_label_hitshots">Hits</string>
 	<string name="weapon_label_recoverypercentage">Recover</string>
-	<string ruleset="SFRPG" name="char_label_weaponammo">Ammo</string>
-	<string ruleset="SFRPG" name="char_label_weapon_ammopicker_enabled">Use Linked Ammunition</string>
 </root>
