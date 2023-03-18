@@ -13,21 +13,19 @@ local function upgradeDataV400()
 
 	for _, nodeChar in ipairs(DB.getChildList('charsheet')) do
 		for _, nodeWeapon in ipairs(DB.getChildList(nodeChar, 'weaponlist')) do
-			if AmmunitionManager.isWeaponRanged(nodeWeapon) then
-				local nodeAmmoManager = DB.createChild(nodeWeapon, 'ammunitionmanager')
-				for k, v in pairs(upgradeVals) do
-					local upgradeNode = DB.getChild(nodeWeapon, k)
-					if upgradeNode then
-						if v.type == 'windowreference' then
-							local upgradeType, upgradeValue = DB.getValue(upgradeNode)
-							upgradeValue = string.gsub(upgradeValue, 'charsheet%.id%-%d+%.', '....') -- keep path relative
-							DB.setValue(nodeAmmoManager, v.newname, v.type, upgradeType, upgradeValue)
-						else
-							local upgradeValue = DB.getValue(upgradeNode)
-							DB.setValue(nodeAmmoManager, v.newname, v.type, upgradeValue)
-						end
-						DB.deleteNode(upgradeNode)
+			local nodeAmmoManager = DB.createChild(nodeWeapon, 'ammunitionmanager')
+			for k, v in pairs(upgradeVals) do
+				local upgradeNode = DB.getChild(nodeWeapon, k)
+				if upgradeNode then
+					if v.type == 'windowreference' then
+						local upgradeType, upgradeValue = DB.getValue(upgradeNode)
+						upgradeValue = string.gsub(upgradeValue, 'charsheet%.id%-%d+%.', '....') -- keep path relative
+						DB.setValue(nodeAmmoManager, v.newname, v.type, upgradeType, upgradeValue)
+					else
+						local upgradeValue = DB.getValue(upgradeNode)
+						DB.setValue(nodeAmmoManager, v.newname, v.type, upgradeValue)
 					end
+					DB.deleteNode(upgradeNode)
 				end
 			end
 		end
