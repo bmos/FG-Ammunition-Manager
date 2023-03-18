@@ -8,9 +8,6 @@
 		<sheetdata>
 			<genericcontrol name="attackicon">
 				<script>
-					function onHover(bOnControl)
-						window.highlightAttack(bOnControl);
-					end
 					local function automateAmmo(nodeWeapon)
 						local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
 						local bNotLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 0
@@ -52,7 +49,7 @@
 					<left offset="30" />
 				</anchored>
 			</label>
-			<buttonfield name="isloaded">
+			<buttonfield name="isloaded" source="ammunitionmanager.isloaded">
 				<anchored width="27" height="10">
 					<top parent="name" anchor="bottom" offset="11" />
 					<left offset="-2" />
