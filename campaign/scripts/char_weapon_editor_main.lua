@@ -5,7 +5,6 @@
 -- luacheck: globals hitshots missedshots
 
 local function linkAmmo(nodeWeapon)
-	if not missedshots then return end
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
 	if nodeAmmoLink then
 		local nodeAmmoMisses = DB.getChild(nodeAmmoLink, 'missedshots')
@@ -27,16 +26,44 @@ local function linkAmmo(nodeWeapon)
 	end
 end
 
+-- luacheck: globals missammopicker label_missammopicker missrecoverypercentage label_missrecoverypercentage
+-- luacheck: globals label_missammopercentof  missedshots label_missedshots recovermisses
+local function setMissRecoveryVisibility(bRanged)
+	missammopicker.setComboBoxVisible(bRanged)
+	label_missammopicker.setVisible(bRanged)
+
+	missrecoverypercentage.setVisible(bRanged)
+	label_missrecoverypercentage.setVisible(bRanged)
+	label_missammopercentof.setVisible(bRanged)
+	missedshots.setVisible(bRanged)
+	label_missedshots.setVisible(bRanged)
+	recovermisses.setVisible(bRanged)
+end
+
+-- luacheck: globals hitammopicker label_hitammopicker hitrecoverypercentage label_hitrecoverypercentage
+-- luacheck: globals label_hitammopercentof  hitshots label_hitshots recoverhits
+local function setHitRecoveryVisibility(bRanged)
+	hitammopicker.setComboBoxVisible(bRanged)
+	label_hitammopicker.setVisible(bRanged)
+
+	hitrecoverypercentage.setVisible(bRanged)
+	label_hitrecoverypercentage.setVisible(bRanged)
+	label_hitammopercentof.setVisible(bRanged)
+	hitshots.setVisible(bRanged)
+	label_hitshots.setVisible(bRanged)
+	recoverhits.setVisible(bRanged)
+end
+
 local function setAmmoVisibility(nodeWeapon)
 	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
 
 	header_ammo.setVisible(bRanged)
-	if bRanged then
-		weapon_editor_ammunition_column.setValue('char_weapon_editor_ammo', getDatabaseNode())
-	else
-		weapon_editor_ammunition_column.setValue('', '')
 
-	end
+	ammopicker.setComboBoxVisible(bRanged)
+	label_ammopicker.setVisible(bRanged)
+
+	setMissRecoveryVisibility(bRanged)
+	setHitRecoveryVisibility(bRanged)
 end
 
 -- luacheck: globals onDataChanged

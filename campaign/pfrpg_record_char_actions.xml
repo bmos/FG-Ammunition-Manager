@@ -84,15 +84,6 @@
 				<center />
 			</header_column>
 
-			<sub_column name="weapon_editor_ammunition_column" />
-		</sheetdata>
-	</windowclass>
-
-	<windowclass name="char_weapon_editor_ammo">
-		<margins control="0,0,0,2" />
-		<sheetdata>
-			<anchor_column name="columnanchor" />
-
 			<combobox_ammo name="ammopicker" source="ammunitionmanager.ammopicker">
 				<anchored>
 					<right offset="-5" />
