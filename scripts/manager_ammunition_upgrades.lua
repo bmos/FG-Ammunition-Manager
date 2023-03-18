@@ -8,6 +8,7 @@ local function upgradeDataV400()
 		ammoshortcut = { type = 'windowreference', newname = 'ammopickershortcut' },
 		recoverypercentage = { type = 'number', newname = 'missrecoverypercentage' },
 		missedshots = { type = 'number', newname = 'missedshots' },
+		isloaded = { type = 'number', newname = 'isloaded' },
 	}
 
 	for _, nodeChar in ipairs(DB.getChildList('charsheet')) do

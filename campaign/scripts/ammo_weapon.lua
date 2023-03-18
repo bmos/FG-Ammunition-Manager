@@ -16,15 +16,16 @@ function hasLoadAction(nodeWeapon)
 	local bNoLoad = string.lower(sWeaponProps):find('noload')
 	if bNoLoad then return false end
 
-	return
-		hasSubstring(sWeaponProps, AmmunitionManager.tLoadWeaponProps) or
-		hasSubstring(string.lower(DB.getValue(nodeWeapon, 'name', '')), AmmunitionManager.tLoadWeapons)
+	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', ''))
+	return hasSubstring(sWeaponProps, AmmunitionManager.tLoadWeaponProps) or hasSubstring(sWeaponName, AmmunitionManager.tLoadWeapons)
 end
 
 --	luacheck: globals automateAmmo
 function automateAmmo(nodeWeapon)
-	local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0)
-	DB.setValue(nodeWeapon, 'isloaded', 'number', 0)
+	local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
+	local bNotLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 0
+	DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0)
+
 	if not hasLoadAction(nodeWeapon) or bNotLoaded then return false end
 	local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))

@@ -20,7 +20,7 @@
 				<script file="campaign/scripts/ammo_attack.lua" />
 			</number_charweaponattacktotal>
 			
-			<buttonfield name="isloaded">
+			<buttonfield name="isloaded" source="ammunitionmanager.isloaded">
 				<anchored width="27" height="10">
 					<top parent="name" anchor="bottom" offset="11" />
 					<left offset="2" />

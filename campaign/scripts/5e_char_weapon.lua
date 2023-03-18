@@ -70,16 +70,18 @@ function onInit()
 
 				-- only allow attacks when 'loading' weapons have been loaded
 				local bLoading = isLoading(nodeWeapon)
-				local bIsLoaded = DB.getValue(nodeWeapon, 'isloaded', 0) == 1
+
+				local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
+				local bIsLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 1
 				if not bLoading or (bLoading and bIsLoaded) then
 					if bInfiniteAmmo or nAmmo > 0 then
-						if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0) end
+						if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
 						return onAttackAction_old(draginfo, ...)
 					else
 						messagedata.text = Interface.getString('char_message_atkwithnoammo')
 						Comm.deliverChatMessage(messagedata)
 
-						if bLoading then DB.setValue(nodeWeapon, 'isloaded', 'number', 0) end
+						if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
 					end
 				else
 					local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
