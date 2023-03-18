@@ -92,7 +92,7 @@
 			</label_fieldtop>
 			<label name="label_missammopercentof">
 				<anchored to="missrecoverypercentage" position="righthigh" offset="5,0" width="35" />
-				<static>% of </static>
+				<static>% of</static>
 				<center />
 			</label>
 			<basicnumber name="missedshots" source="ammunitionmanager.missedshots">

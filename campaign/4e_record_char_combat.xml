@@ -66,7 +66,7 @@
 			</basicnumber>
 			<label name="label_missammopercentof">
 				<anchored to="missrecoverypercentage" position="righthigh" offset="10,0" width="32" />
-				<static>% of </static>
+				<static>% of</static>
 				<center />
 				<invisible />
 			</label>
@@ -89,10 +89,11 @@
 			</recovershots>
 			<combobox_ammo name="ammopicker" source="ammunitionmanager.ammopicker">
 				<anchored height="20">
-					<top parent="missedshots" anchor="top" />
-					<left parent="missedshots" anchor="right" offset="15" />
-					<right parent="recovermisses" anchor="left" offset="-7" />
+					<top parent="recovermisses" anchor="top" offset="0" />
+					<left parent="recovermisses" anchor="right" offset="6" />
+					<right parent="criticalframe" anchor="right" offset="-2" />
 				</anchored>
+				<listdirection>up</listdirection>
 				<itemsheetname><string /><field>class</field></itemsheetname>
 				<itemsheetname><string /><field>subclass</field></itemsheetname>
 			</combobox_ammo>
