@@ -5,20 +5,20 @@
 -- luacheck: globals onClickRelease recoverAmmo counter percent ammopicker
 local function increaseAmmo(messagedata, nodeAmmo, nodeWeapon, nExcess)
 	if nExcess < 1 then return end
-	if nodeAmmo then
-		local nodeItem = AmmunitionManager.getShortcutNode(nodeWeapon, 'ammunitionmanager.' .. ammopicker[1]) or nodeAmmo
-		local nCount = DB.getValue(nodeItem, 'count', 0)
-		DB.setValue(nodeItem, 'count', 'number', nCount + nExcess)
-		messagedata.text = string.format(Interface.getString('char_actions_excessammunition_auto'), nExcess)
+	local sNameAmmoPickerShortcut = AmmunitionManager.sAmmunitionManagerSubnode .. ammopicker[1] .. AmmunitionManager.sShortcutSuffix
+	local nodeItem = AmmunitionManager.getShortcutNode(nodeWeapon, sNameAmmoPickerShortcut) or nodeAmmo
+	if nodeItem then
+		local nCount = DB.getValue(nodeItem, AmmunitionManager.sLinkedCount, 0)
+		DB.setValue(nodeItem, AmmunitionManager.sLinkedCount, 'number', nCount + nExcess)
 	else
-		DB.setValue(nodeWeapon, 'ammo', 'number', math.max(-1 * nExcess, 0))
+		DB.setValue(nodeWeapon, AmmunitionManager.sUnlinkedAmmo, 'number', math.max(-1 * nExcess, 0))
 		messagedata.text = string.format(Interface.getString('char_actions_excessammunition'), nExcess)
+		Comm.deliverChatMessage(messagedata)
 	end
-	Comm.deliverChatMessage(messagedata)
 end
 
 local function excessAmmoQuantity(nodeWeapon, nAmmoRecovered)
-	local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0)
+	local nAmmoUsed = DB.getValue(nodeWeapon, AmmunitionManager.sUnlinkedAmmo, 0)
 	return math.max(nAmmoRecovered - nAmmoUsed, 0)
 end
 
@@ -29,7 +29,7 @@ end
 
 local function quantityRecovered(nodeWeapon, nodeAmmo)
 	local nRecoverCount = DB.getValue(nodeAmmo, counter[1], 0)
-	local nPercent = DB.getValue(nodeWeapon, 'ammunitionmanager.' .. percent[1], 50) / 100
+	local nPercent = DB.getValue(nodeWeapon, AmmunitionManager.sAmmunitionManagerSubnode .. percent[1], 50) / 100
 	return math.floor(nRecoverCount * nPercent)
 end
 

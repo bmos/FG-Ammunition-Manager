@@ -6,7 +6,14 @@
 tLoadWeapons = { 'loadaction' }
 tLoadWeaponProps = { 'loadaction' }
 
-local sRuleset
+-- luacheck: globals sAmmunitionManagerSubnode sDefaultPicker sShortcutSuffix sLinkedCount sUnlinkedAmmo sUnlinkedMaxAmmo sRuleset
+sAmmunitionManagerSubnode = 'ammunitionmanager.'
+sDefaultPicker = 'ammopicker'
+sShortcutSuffix = 'shortcut'
+sLinkedCount = 'count'
+sUnlinkedAmmo = 'ammo'
+sUnlinkedMaxAmmo = 'maxammo'
+sRuleset = ''
 
 --	luacheck: globals calculateMargin
 function calculateMargin(nDC, nTotal)
@@ -15,9 +22,12 @@ function calculateMargin(nDC, nTotal)
 end
 
 --	luacheck: globals getShortcutNode
-function getShortcutNode(node, shortcutName)
-	local shortcutNodeName = shortcutName or 'shortcut'
-	local _, sRecord = DB.getValue(node, shortcutNodeName, '')
+function getShortcutNode(nodeWeapon, shortcutName)
+	--Debug.chat(nodeWeapon, shortcutName)
+	local node = DB.getChild(nodeWeapon, 'ammunitionmanager')
+	if not node then return end
+	local _, sRecord = DB.getValue(node, shortcutName or sDefaultPicker .. sShortcutSuffix)
+	--Debug.chat(node, sRecord)
 	if sRecord and sRecord ~= '' then return DB.findNode(sRecord) end
 end
 
@@ -48,12 +58,12 @@ function getAmmoNode(nodeWeapon)
 	if not bRanged then return end
 
 	-- check for saved ammopickershortcut windowreference and return if found
-	local ammoNode = getShortcutNode(nodeWeapon, 'ammunitionmanager.ammopickershortcut')
+	local ammoNode = AmmunitionManager.getShortcutNode(nodeWeapon)
 	if ammoNode then return ammoNode end
 
 	-- if ammopickershortcut does not provide a good node and weapon is ranged, try searching the inventory.
 
-	local sAmmo = DB.getValue(nodeWeapon, 'ammunitionmanager.ammopicker', '')
+	local sAmmo = DB.getValue(nodeWeapon, sAmmunitionManagerSubnode .. sDefaultPicker, '')
 	if sAmmo == '' then return end
 
 	Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'))
@@ -103,10 +113,10 @@ function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
 	local nAmmo = 0
 	if not bInfiniteAmmo then
 		if nodeAmmoLink then
-			nAmmo = DB.getValue(nodeAmmoLink, 'count', 0)
+			nAmmo = DB.getValue(nodeAmmoLink, sLinkedCount, 0)
 		else
-			local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-			local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0)
+			local nMaxAmmo = DB.getValue(nodeWeapon, sUnlinkedMaxAmmo, 0)
+			local nAmmoUsed = DB.getValue(nodeWeapon, sUnlinkedAmmo, 0)
 			nAmmo = nMaxAmmo - nAmmoUsed
 			if nMaxAmmo == 0 then bInfiniteAmmo = true end
 		end
@@ -131,17 +141,17 @@ local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWea
 			messagedata.text = string.format(Interface.getString('char_actions_usedallammo'), sWeaponName)
 			Comm.deliverChatMessage(messagedata)
 
-			DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining)
+			DB.setValue(nodeAmmoLink, sLinkedCount, 'number', nAmmoRemaining)
 		else
-			DB.setValue(nodeAmmoLink, 'count', 'number', nAmmoRemaining)
+			DB.setValue(nodeAmmoLink, sLinkedCount, 'number', nAmmoRemaining)
 		end
 	else
 		if nAmmoRemaining <= 0 then
 			messagedata.text = string.format(Interface.getString('char_actions_usedallammo'), sWeaponName)
 			Comm.deliverChatMessage(messagedata)
 		end
-		local nMaxAmmo = DB.getValue(nodeWeapon, 'maxammo', 0)
-		DB.setValue(nodeWeapon, 'ammo', 'number', nMaxAmmo - nAmmoRemaining)
+		local nMaxAmmo = DB.getValue(nodeWeapon, sUnlinkedMaxAmmo, 0)
+		DB.setValue(nodeWeapon, sUnlinkedAmmo, 'number', nMaxAmmo - nAmmoRemaining)
 	end
 end
 

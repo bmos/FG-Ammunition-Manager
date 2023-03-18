@@ -1,31 +1,28 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
+
 --	luacheck: globals hasLoadAction
 function hasLoadAction(nodeWeapon)
-	local bHasLoadAction
-	--	luacheck: globals type
-	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
-	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
-	for _, v in pairs(AmmunitionManager.tLoadWeapons) do
-		if string.find(sWeaponName, v) then
-			bHasLoadAction = true
-			break
-		end
-	end
+	if not AmmunitionManager.isWeaponRanged(nodeWeapon) then return false end
 
 	local sWeaponProps = string.lower(DB.getValue(nodeWeapon, 'properties', ''))
+	local bNoLoad = string.lower(sWeaponProps):find('noload')
+
 	for _, v in pairs(AmmunitionManager.tLoadWeaponProps) do
-		if bHasLoadAction then
-			break
-		elseif string.find(sWeaponProps, v) then
-			bHasLoadAction = true
-			break
+		if not bNoLoad and string.find(sWeaponProps, v) then
+			return true
 		end
 	end
-	local bNoLoad = string.lower(DB.getValue(nodeWeapon, 'properties', '')):find('noload')
 
-	return (bRanged and bHasLoadAction and not bNoLoad)
+	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
+	for _, v in pairs(AmmunitionManager.tLoadWeapons) do
+		if not bNoLoad and string.find(sWeaponName, v) then
+			return true
+		end
+	end
+
+	return false
 end
 
 --	luacheck: globals automateAmmo
@@ -66,23 +63,19 @@ function onDataChanged()
 
 	if not maxammo.setLink then return end
 
-	if nodeAmmoLink then
-		maxammo.setLink(DB.getChild(nodeAmmoLink, 'count'), true)
-	else
-		maxammo.setLink()
-	end
+	local nodeLinkedCount = DB.getChild(nodeAmmoLink, AmmunitionManager.sLinkedCount)
+	maxammo.setLink(nodeLinkedCount, nodeLinkedCount ~= nil)
 end
 
 function onInit()
-	super.registerMenuItem(Interface.getString('menu_deleteweapon'), 'delete', 4)
-	super.registerMenuItem(Interface.getString('list_menu_deleteconfirm'), 'delete', 4, 3)
-
+	if super and super.onInit then super.onInit() end
 	local sNode = DB.getPath(getDatabaseNode())
 	DB.addHandler(sNode, 'onChildUpdate', onDataChanged)
 	onDataChanged()
 end
 
 function onClose()
+	if super and super.onClose then super.onClose() end
 	local sNode = DB.getPath(getDatabaseNode())
 	DB.removeHandler(sNode, 'onChildUpdate', onDataChanged)
 end
