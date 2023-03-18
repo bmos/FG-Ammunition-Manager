@@ -4,25 +4,22 @@
 
 -- luacheck: globals hitshots missedshots
 
-local function linkAmmo(nodeWeapon)
-	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
-	if nodeAmmoLink then
-		local nodeAmmoMisses = DB.getChild(nodeAmmoLink, 'missedshots')
-		if not nodeAmmoMisses then
-			DB.setValue(nodeAmmoLink, 'missedshots', 'number', 0)
-			nodeAmmoMisses = DB.getChild(nodeAmmoLink, 'missedshots')
-		end
-		missedshots.setLink(nodeAmmoMisses, true)
+-- Returns requested shots counter node. If not found, creates it.
+local function createShotCounter(nodeAmmo, sShotCounter)
+	local nodeShotCounter = DB.getChild(nodeAmmo, sShotCounter)
+	if not nodeShotCounter then
+		DB.setValue(nodeAmmo, sShotCounter, 'number', 0)
+		nodeShotCounter = DB.getChild(nodeAmmo, sShotCounter)
+	end
+	return nodeShotCounter
+end
 
-		local nodeAmmoHits = DB.getChild(nodeAmmoLink, 'hitshots')
-		if not nodeAmmoHits then
-			DB.setValue(nodeAmmoLink, 'hitshots', 'number', 0)
-			nodeAmmoHits = DB.getChild(nodeAmmoLink, 'hitshots')
-		end
-		hitshots.setLink(nodeAmmoHits, true)
-	else
-		missedshots.setLink()
-		hitshots.setLink()
+-- Finds all configured shot counters and links them. If ammopicker has not been set, unlinks them.
+local function linkShotCounters(nodeWeapon)
+	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
+	for _, sCounter in ipairs({ 'missedshots' , 'hitshots' }) do
+		local nodeShotCounter = createShotCounter(nodeAmmoLink, sCounter)
+		self[sCounter].setLink(nodeShotCounter, nodeShotCounter ~= nil)
 	end
 end
 
@@ -71,7 +68,7 @@ function onDataChanged()
 	if super and super.onDataChanged then super.onDataChanged() end
 	local nodeWeapon = getDatabaseNode()
 	setAmmoVisibility(nodeWeapon)
-	linkAmmo(nodeWeapon)
+	linkShotCounters(nodeWeapon)
 end
 
 function onInit()
