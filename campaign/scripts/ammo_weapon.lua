@@ -30,16 +30,15 @@ end
 function automateAmmo(nodeWeapon)
 	local bNotLoaded = (DB.getValue(nodeWeapon, 'isloaded') == 0)
 	DB.setValue(nodeWeapon, 'isloaded', 'number', 0)
-	if hasLoadAction(nodeWeapon) and bNotLoaded then
-		local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
-		local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
+	if not hasLoadAction(nodeWeapon) or bNotLoaded then return false end
+	local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
+	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
 
-		local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
-		messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName)
-		Comm.deliverChatMessage(messagedata)
+	local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
+	messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName)
+	Comm.deliverChatMessage(messagedata)
 
-		return true
-	end
+	return true
 end
 
 -- luacheck: globals onDataChanged maxammo.setLink
