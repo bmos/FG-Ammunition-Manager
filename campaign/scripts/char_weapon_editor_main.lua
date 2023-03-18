@@ -35,32 +35,26 @@ local function setAmmoVisibility(nodeWeapon)
 	ammopicker.setComboBoxVisible(bRanged)
 	label_ammopicker.setVisible(bRanged)
 
-	setCounterVisibility(
-		bRanged,
-		{
-			hitammopicker = 'setComboBoxVisible',
-			label_hitammopicker = 'setVisible',
-			hitrecoverypercentage = 'setVisible',
-			label_hitrecoverypercentage = 'setVisible',
-			label_hitammopercentof = 'setVisible',
-			hitshots = 'setVisible',
-			label_hitshots = 'setVisible',
-			recoverhits = 'setVisible',
-		}
-	)
-	setCounterVisibility(
-		bRanged,
-		{
-			missammopicker = 'setComboBoxVisible',
-			label_missammopicker = 'setVisible',
-			missrecoverypercentage = 'setVisible',
-			label_missrecoverypercentage = 'setVisible',
-			label_missammopercentof = 'setVisible',
-			missedshots = 'setVisible',
-			label_missedshots = 'setVisible',
-			recovermisses = 'setVisible',
-		}
-	)
+	setCounterVisibility(bRanged, {
+		hitammopicker = 'setComboBoxVisible',
+		label_hitammopicker = 'setVisible',
+		hitrecoverypercentage = 'setVisible',
+		label_hitrecoverypercentage = 'setVisible',
+		label_hitammopercentof = 'setVisible',
+		hitshots = 'setVisible',
+		label_hitshots = 'setVisible',
+		recoverhits = 'setVisible',
+	})
+	setCounterVisibility(bRanged, {
+		missammopicker = 'setComboBoxVisible',
+		label_missammopicker = 'setVisible',
+		missrecoverypercentage = 'setVisible',
+		label_missrecoverypercentage = 'setVisible',
+		label_missammopercentof = 'setVisible',
+		missedshots = 'setVisible',
+		label_missedshots = 'setVisible',
+		recovermisses = 'setVisible',
+	})
 end
 
 -- luacheck: globals onDataChanged
