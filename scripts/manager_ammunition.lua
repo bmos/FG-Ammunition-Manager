@@ -48,12 +48,12 @@ function getAmmoNode(nodeWeapon)
 	if not bRanged then return end
 
 	-- check for saved ammopickershortcut windowreference and return if found
-	local ammoNode = getShortcutNode(nodeWeapon, 'ammopickershortcut')
+	local ammoNode = getShortcutNode(nodeWeapon, 'ammunitionmanager.ammopickershortcut')
 	if ammoNode then return ammoNode end
 
 	-- if ammopickershortcut does not provide a good node and weapon is ranged, try searching the inventory.
 
-	local sAmmo = DB.getValue(nodeWeapon, 'ammopicker', '')
+	local sAmmo = DB.getValue(nodeWeapon, 'ammunitionmanager.ammopicker', '')
 	if sAmmo == '' then return end
 
 	Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'))

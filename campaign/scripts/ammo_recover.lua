@@ -6,7 +6,7 @@
 local function increaseAmmo(messagedata, nodeAmmo, nodeWeapon, nExcess)
 	if nExcess < 1 then return end
 	if nodeAmmo then
-		local nodeItem = AmmunitionManager.getShortcutNode(nodeWeapon, ammopicker[1]) or nodeAmmo
+		local nodeItem = AmmunitionManager.getShortcutNode(nodeWeapon, 'ammunitionmanager.' .. ammopicker[1]) or nodeAmmo
 		local nCount = DB.getValue(nodeItem, 'count', 0)
 		DB.setValue(nodeItem, 'count', 'number', nCount + nExcess)
 		messagedata.text = string.format(Interface.getString('char_actions_excessammunition_auto'), nExcess)
@@ -29,8 +29,7 @@ end
 
 local function quantityRecovered(nodeWeapon, nodeAmmo)
 	local nRecoverCount = DB.getValue(nodeAmmo, counter[1], 0)
-	local nPercent = DB.getValue(nodeWeapon, percent[1], 50) / 100
-
+	local nPercent = DB.getValue(nodeWeapon, 'ammunitionmanager.' .. percent[1], 50) / 100
 	return math.floor(nRecoverCount * nPercent)
 end
 
