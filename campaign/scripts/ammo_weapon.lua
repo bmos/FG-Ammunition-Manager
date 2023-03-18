@@ -23,10 +23,10 @@ end
 --	luacheck: globals automateAmmo
 function automateAmmo(nodeWeapon)
 	local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
-	local bNotLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 0
+	local bIsLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 1
 	DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0)
 
-	if not hasLoadAction(nodeWeapon) or bNotLoaded then return false end
+	if not hasLoadAction(nodeWeapon) or bIsLoaded then return false end
 	local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
 
