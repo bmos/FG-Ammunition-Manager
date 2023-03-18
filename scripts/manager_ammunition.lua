@@ -16,16 +16,16 @@ end
 
 --	luacheck: globals getShortcutNode
 function getShortcutNode(node, shortcutName)
-	shortcutName = shortcutName or 'shortcut'
-	local _, sRecord = DB.getValue(node, shortcutName, '')
+	local shortcutNodeName = shortcutName or 'shortcut'
+	local _, sRecord = DB.getValue(node, shortcutNodeName, '')
 	if sRecord and sRecord ~= '' then return DB.findNode(sRecord) end
 end
 
 -- luacheck: globals parseWeaponCapacity
 function parseWeaponCapacity(capacity)
-	capacity = capacity:lower()
-	if capacity == 'drawn' then return 0, capacity end
-	local splitCapacity = StringManager.splitWords(capacity)
+	local sCapacityLower = capacity:lower()
+	if sCapacityLower == 'drawn' then return 0, sCapacityLower end
+	local splitCapacity = StringManager.splitWords(sCapacityLower)
 	return tonumber(splitCapacity[1]), splitCapacity[2]
 end
 
