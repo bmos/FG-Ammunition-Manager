@@ -14,9 +14,10 @@
 			<nodrag />
 			<nodrop />
 			<noreset />
-			<anchored height="20">
-				<top parent="columnanchor" anchor="bottom" relation="relative" offset="20" />
+			<anchored height="22">
+				<top parent="columnanchor" anchor="bottom" relation="relative" offset="18" />
 				<left offset="5" />
+				<right offset="-163" />
 			</anchored>
 			<default textres="none" />
 			<defaultvalue>none</defaultvalue>

@@ -99,10 +99,6 @@
 			</label_fieldtop>
 
 			<combobox_ammo name="missammopicker" source="ammunitionmanager.missammopicker">
-				<anchored width="160">
-					<top parent="columnanchor" anchor="bottom" relation="relative" offset="18" />
-					<left offset="5" />
-				</anchored>
 				<itemsheetname><string /><field>subtype</field></itemsheetname>
 				<itemsheetname><string /><field>type</field></itemsheetname>
 				<default textres="ammo_original" />
@@ -115,9 +111,9 @@
 				<center />
 			</label_fieldtop>
 			<basicnumber name="missrecoverypercentage" source="ammunitionmanager.missrecoverypercentage">
-				<anchored to="missammopicker" width="40" height="20">
-					<top anchor="top" offset="0" />
-					<left anchor="right" offset="10" />
+				<anchored width="40" height="20">
+					<top parent="missammopicker" anchor="top" offset="0" />
+					<right offset="-113" />
 				</anchored>
 				<default>50</default>
 				<tabtarget prev="ammopicker" next="missedshots" />
@@ -152,9 +148,8 @@
 			</recovershots>
 
 			<combobox_ammo name="hitammopicker" source="ammunitionmanager.hitammopicker">
-				<anchored width="160">
-					<top parent="missammopicker" anchor="bottom" relation="relative" offset="18" />
-					<left offset="5" />
+				<anchored>
+					<top parent="missammopicker" />
 				</anchored>
 				<itemsheetname><string /><field>subtype</field></itemsheetname>
 				<itemsheetname><string /><field>type</field></itemsheetname>
@@ -168,9 +163,9 @@
 				<center />
 			</label_fieldtop>
 			<basicnumber name="hitrecoverypercentage" source="ammunitionmanager.hitrecoverypercentage">
-				<anchored to="hitammopicker" width="40" height="20">
-					<top anchor="top" offset="0" />
-					<left anchor="right" offset="10" />
+				<anchored width="40" height="20">
+					<top parent="hitammopicker" anchor="top" offset="0" />
+					<right offset="-113" />
 				</anchored>
 				<default>50</default>
 				<tabtarget prev="ammopicker" next="missedshots" />
