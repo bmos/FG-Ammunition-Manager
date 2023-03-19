@@ -2,6 +2,9 @@
 -- Please see the LICENSE.md file included with this distribution for
 -- attribution and copyright information.
 --
+
+-- luacheck: globals itemsheetaltname itemsheetname
+
 local function isAmmo(nodeItem, sTypeField)
 	local bThrown = false
 	if User.getRulesetName() == '5E' then bThrown = DB.getValue(getDatabaseNode(), '..type', 0) == 2 end
