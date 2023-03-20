@@ -219,7 +219,6 @@ function onInit()
 		table.insert(tLoadWeapons, 'rifle')
 		table.insert(tLoadWeapons, 'sling')
 	elseif sRuleset == '5E' then
-		table.insert(tLoadWeaponProps, 'loading')
 		CharWeaponManager.decrementAmmo = noDecrementAmmo
 	end
 
