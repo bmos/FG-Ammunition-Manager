@@ -46,11 +46,12 @@ function onDataChanged(nodeWeapon)
 	isloaded.setVisible(bLoading)
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
 	ammocounter.setVisible(not nodeAmmoLink)
+
+	local nodeCount
 	if nodeAmmoLink then
-		maxammo.setLink(DB.getChild(nodeAmmoLink, 'count'), true)
-	else
-		maxammo.setLink()
+		nodeCount = DB.getChild(nodeAmmoLink, 'count')
 	end
+	maxammo.setLink(nodeCount, nodeCount ~= nil)
 end
 
 function onInit()
