@@ -4,7 +4,7 @@
 This extension aids in tracking whether some ranged weapons are loaded and assists in ammo tracking for all ranged weapons.
 
 # Compatibility and Instructions
-This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) v4.3.5 (2023-03-07).
+This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) v4.3.6 (2023-03-16).
 
 This extension works with the 3.5E, PFRPG, 4E, and 5E rulesets.
 
