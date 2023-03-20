@@ -3,16 +3,6 @@
 -- attribution and copyright information.
 --
 
---	luacheck: globals isLoading
-function isLoading(nodeWeapon)
-	local sProps = DB.getValue(nodeWeapon, 'properties', ''):lower()
-
-	local bCrossbow = DB.getValue(nodeWeapon, 'name', 'weapon'):lower():find('crossbow')
-		and CharManager.hasFeature(DB.getChild(nodeWeapon, '...'), 'crossbow expert')
-
-	return not bCrossbow and sProps:find('loading') and not sProps:find('noload')
-end
-
 --	luacheck: globals onDamageAction
 function onDamageAction(draginfo)
 	local nodeWeapon = getDatabaseNode()
@@ -46,7 +36,7 @@ end
 function onDataChanged(nodeWeapon)
 	if super and super.onDataChanged then super.onDataChanged() end
 
-	local bLoading = isLoading(nodeWeapon)
+	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
 	isloaded.setVisible(bLoading)
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
 	ammocounter.setVisible(not nodeAmmoLink)
@@ -68,21 +58,19 @@ function onInit()
 				local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
 				local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
 
-				-- only allow attacks when 'loading' weapons have been loaded
-				local bLoading = isLoading(nodeWeapon)
+				local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
 
 				local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
 				local bIsLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 1
-				if not bLoading or (bLoading and bIsLoaded) then
+				if not bLoading or bIsLoaded then
 					if bInfiniteAmmo or nAmmo > 0 then
 						if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
 						return onAttackAction_old(draginfo, ...)
-					else
-						messagedata.text = Interface.getString('char_message_atkwithnoammo')
-						Comm.deliverChatMessage(messagedata)
-
-						if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
 					end
+					messagedata.text = Interface.getString('char_message_atkwithnoammo')
+					Comm.deliverChatMessage(messagedata)
+
+					if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
 				else
 					local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
 					messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor)
