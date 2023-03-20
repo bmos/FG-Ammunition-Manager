@@ -3,6 +3,12 @@
 -- attribution and copyright information.
 --
 
+--	luacheck: globals isLoading
+function isLoading(nodeWeapon)
+	Debug.console('AmmunitionManager char_weapon isLoading - DEPRECATED - 2023-03-20 - Use AmmunitionManager.hasLoadAction')
+	return AmmunitionManager.hasLoadAction(nodeWeapon)
+end
+
 --	luacheck: globals onDamageAction
 function onDamageAction(draginfo)
 	local nodeWeapon = getDatabaseNode()
