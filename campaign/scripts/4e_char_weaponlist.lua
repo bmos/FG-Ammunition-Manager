@@ -36,7 +36,7 @@ function toggleDetail()
 	if missrecoverypercentage then missrecoverypercentage.setVisible(bShow) end
 	if label_missammopercentof then label_missammopercentof.setVisible(bShow) end
 	if missedshots then missedshots.setVisible(bShow) end
-	if recoverammo then recoverammo.setVisible(bShow) end
+	if recovermisses then recovermisses.setVisible(bShow) end
 	if ammopicker then ammopicker.setComboBoxVisible(bShow) end
 end
 
