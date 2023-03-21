@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Please see the LICENSE.md file included with this distribution for attribution and copyright information. -->
+
+<root>
+	<template name="combobox_ammo">
+		<combobox>
+			<frame>
+				<hidereadonly />
+			</frame>
+			<center />
+			<listdirection>down</listdirection>
+			<listmaxsize>15</listmaxsize>
+			<nodrag />
+			<nodrop />
+			<noreset />
+			<anchored height="22">
+				<top parent="columnanchor" anchor="bottom" relation="relative" offset="18" />
+				<left offset="5" />
+				<right offset="-163" />
+			</anchored>
+			<default textres="none" />
+			<defaultvalue>none</defaultvalue>
+			<itemsheetname mergerule="resetandadd" />
+			<script file="campaign/scripts/ammo_ammopicker.lua" />
+		</combobox>
+	</template>
+
+	<template name="recovershots">
+		<buttoncontrol>
+			<anchored to="missedshots" position="righthigh" offset="7,0"/>
+			<icon normal="button_recover_ammo" pressed="button_recover_ammo_down" />
+			<tooltip textres="weapon_tooltip_recoverammo" />
+			<script file="campaign/scripts/ammo_recover.lua" />
+			<target>missedshots</target>
+		</buttoncontrol>
+	</template>
+</root>

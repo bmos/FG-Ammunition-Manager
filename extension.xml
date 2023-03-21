@@ -5,7 +5,7 @@
 <root version='3.3' release='3'>
 	<properties>
 		<name>Feature: Ammunition Manager</name>
-		<version>3.14</version>
+		<version>4.0</version>
 		<author>bmos (Wil Thieme)</author>
 		<description>This extension aids in tracking ammunition and whether ranged weapons are loaded.</description>
 		<ruleset>
@@ -20,34 +20,38 @@
 		<ruleset>
 			<name>5E</name>
 		</ruleset>
-		<ruleset>
-			<name>SFRPG</name>
-		</ruleset>
 		<loadorder>34</loadorder>
 	</properties>
 
-	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v3.14:\nThis extension aids in tracking ammunition and whether ranged weapons are loaded." font="emotefont" icon="archery_ammomanager" />
+	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v4.0-rc.2:\nThis extension aids in tracking ammunition and whether ranged weapons are loaded." font="emotefont" icon="archery_ammomanager" />
 
 	<base>
 		<!-- Campaign Records -->
-		<includefile ruleset="SFRPG" source="campaign/sfrpg_record_char_actions.xml" />
 		<includefile ruleset="PFRPG|3.5E" source="campaign/pfrpg_record_char_actions.xml" />
 		<includefile ruleset="4E" source="campaign/4e_record_char_combat.xml" />
 		<includefile ruleset="5E" source="campaign/5e_record_char_weapon.xml" />
 
-		<includefile ruleset="SFRPG" source="campaign/sfrpg_record_charmini_actions.xml" />
 		<includefile ruleset="PFRPG|3.5E" source="campaign/pfrpg_record_charmini_actions.xml" />
 		<includefile ruleset="4E" source="campaign/4e_record_charmini_main.xml" />
 
-		<includefile ruleset="SFRPG" source="campaign/sfrpg_record_char_inventory.xml" />
+		<includefile source="common/templates.xml" />
+
 		<!-- Strings -->
 		<includefile source="strings/strings_ammunition_manager.xml" />
+
 		<!-- Scripts -->
 		<script name="AmmunitionManager" file="scripts/manager_ammunition.lua" />
+		<script name="AmmunitionManagerUpgrades" file="scripts/manager_ammunition_upgrades.lua" />
+
 		<!-- Buttons -->
 		<icon name="button_load" file="graphics/button_load.png" />
 		<icon name="button_unload" file="graphics/button_unload.png" />
+
 		<!-- Chat Graphics -->
 		<icon name="archery_ammomanager" file="graphics/bow-and-arrows.png" />
+
+		<!-- Interface Graphics -->
+		<icon name="button_recover_ammo" file="graphics/buttons/button_action_heal.png" />
+		<icon name="button_recover_ammo_down" file="graphics/buttons/button_action_heal.png" />
 	</base>
 </root>

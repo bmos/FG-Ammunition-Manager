@@ -1,35 +1,56 @@
 --
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
--- luacheck: globals onClickRelease
-function onClickRelease()
+
+-- luacheck: globals onClickRelease recoverAmmo counter percent ammopicker
+local function increaseAmmo(messagedata, nodeAmmo, nodeWeapon, nExcess)
+	if nExcess < 1 then return end
+	local sNameAmmoPickerShortcut = AmmunitionManager.sAmmunitionManagerSubnode .. ammopicker[1] .. 'shortcut'
+	Debug.chat(AmmunitionManager.getShortcutNode(nodeWeapon, sNameAmmoPickerShortcut))
+	local nodeItem = AmmunitionManager.getShortcutNode(nodeWeapon, sNameAmmoPickerShortcut) or nodeAmmo
+	if nodeItem then
+		local nCount = DB.getValue(nodeItem, AmmunitionManager.sLinkedCount, 0)
+		DB.setValue(nodeItem, AmmunitionManager.sLinkedCount, 'number', nCount + nExcess)
+	else
+		DB.setValue(nodeWeapon, AmmunitionManager.sUnlinkedAmmo, 'number', math.max(-1 * nExcess, 0))
+		messagedata.text = string.format(Interface.getString('char_actions_excessammunition'), nExcess)
+		Comm.deliverChatMessage(messagedata)
+	end
+end
+
+local function excessAmmoQuantity(nodeWeapon, nAmmoRecovered)
+	local nAmmoUsed = DB.getValue(nodeWeapon, AmmunitionManager.sUnlinkedAmmo, 0)
+	return math.max(nAmmoRecovered - nAmmoUsed, 0)
+end
+
+local function notifyQuantity(messagedata, nAmmoRecovered)
+	messagedata.text = string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered)
+	Comm.deliverChatMessage(messagedata)
+end
+
+local function quantityRecovered(nodeWeapon, nodeAmmo)
+	local nRecoverCount = DB.getValue(nodeAmmo, counter[1], 0)
+	local nPercent = DB.getValue(nodeWeapon, AmmunitionManager.sAmmunitionManagerSubnode .. percent[1], 50) / 100
+	return math.floor(nRecoverCount * nPercent)
+end
+
+function recoverAmmo()
 	local nodeWeapon = window.getDatabaseNode()
 	local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon)
 
-	local nMisses = DB.getValue(nodeAmmo, 'missedshots', 0)
-	if nMisses > 0 then
-		local nPercent = DB.getValue(nodeWeapon, 'recoverypercentage', 50) / 100
-		local nAmmoRecovered = math.floor(nMisses * nPercent)
-		local messagedata = { text = '', sender = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...')).sName, font = 'emotefont' }
-		messagedata.text = string.format(Interface.getString('char_actions_recoveredammunition'), nAmmoRecovered)
-		Comm.deliverChatMessage(messagedata)
+	local nAmmoRecovered = quantityRecovered(nodeWeapon, nodeAmmo)
+	local messagedata = { text = '', sender = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...')).sName, font = 'emotefont' }
+	notifyQuantity(messagedata, nAmmoRecovered)
 
-		local nAmmoUsed = DB.getValue(nodeWeapon, 'ammo', 0)
-		local nExcess = nAmmoRecovered - nAmmoUsed
-		DB.setValue(nodeWeapon, 'ammo', 'number', math.max(-1 * nExcess, 0))
+	-- reset ammo-specific counter of missed shots
+	DB.setValue(nodeAmmo, counter[1], 'number', 0)
 
-		if nExcess > 0 then
-			if nodeAmmo then
-				local nCount = DB.getValue(nodeAmmo, 'count', 0)
-				DB.setValue(nodeAmmo, 'count', 'number', nCount + nExcess)
-				messagedata.text = string.format(Interface.getString('char_actions_excessammunition_auto'), nExcess)
-				Comm.deliverChatMessage(messagedata)
-			else
-				messagedata.text = string.format(Interface.getString('char_actions_excessammunition'), nExcess)
-				Comm.deliverChatMessage(messagedata)
-			end
-		end
+	local nExcess = excessAmmoQuantity(nodeWeapon, nAmmoRecovered)
+	increaseAmmo(messagedata, nodeAmmo, nodeWeapon, nExcess)
+end
 
-		DB.setValue(nodeAmmo, 'missedshots', 'number', 0)
-	end
+function onClickRelease() recoverAmmo() end
+
+function onInit()
+	if super and super.onInit then super.onInit() end
 end
