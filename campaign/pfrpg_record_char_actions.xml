@@ -106,7 +106,7 @@
 			</combobox_ammo>
 			<label_fieldtop name="label_missammopicker">
 				<anchored to="missammopicker" />
-				<static textres="weapon_label_missammopicker" />
+				<static textres="weapon_label_altammopicker" />
 				<readonly />
 				<center />
 			</label_fieldtop>
@@ -158,7 +158,7 @@
 			</combobox_ammo>
 			<label_fieldtop name="label_hitammopicker">
 				<anchored to="hitammopicker" />
-				<static textres="weapon_label_hitammopicker" />
+				<static textres="weapon_label_altammopicker" />
 				<readonly />
 				<center />
 			</label_fieldtop>
