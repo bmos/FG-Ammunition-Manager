@@ -52,6 +52,6 @@
 
 		<!-- Interface Graphics -->
 		<icon name="button_recover_ammo" file="graphics/buttons/button_action_heal.png" />
-		<icon name="button_recover_ammo_down" file="graphics/buttons/button_action_heal.png" />
+		<icon name="button_recover_ammo_down" file="graphics/buttons/button_action_heal_down.png" />
 	</base>
 </root>
