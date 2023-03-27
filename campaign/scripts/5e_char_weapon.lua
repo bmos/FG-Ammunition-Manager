@@ -44,6 +44,7 @@ function onDataChanged(nodeWeapon)
 
 	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
 	isloaded.setVisible(bLoading)
+
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
 	ammocounter.setVisible(not nodeAmmoLink)
 
