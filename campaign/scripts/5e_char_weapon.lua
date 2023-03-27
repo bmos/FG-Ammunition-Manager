@@ -38,10 +38,8 @@ function onDamageAction(draginfo)
 	return true
 end
 
---	luacheck: globals onDataChanged maxammo.setLink
-function onDataChanged(nodeWeapon)
-	if super and super.onDataChanged then super.onDataChanged() end
-
+--	luacheck: globals setAmmoVis maxammo.setLink
+function setAmmoVis(nodeWeapon)
 	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
 	isloaded.setVisible(bLoading)
 
@@ -51,6 +49,13 @@ function onDataChanged(nodeWeapon)
 	local nodeCount
 	if nodeAmmoLink then nodeCount = DB.getChild(nodeAmmoLink, 'count') end
 	maxammo.setLink(nodeCount, nodeCount ~= nil)
+end
+
+--	luacheck: globals onDataChanged
+function onDataChanged(nodeWeapon)
+	if super and super.onDataChanged then super.onDataChanged() end
+
+	self.setAmmoVis(nodeWeapon)
 end
 
 function onInit()
