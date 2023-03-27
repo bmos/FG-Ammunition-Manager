@@ -34,7 +34,7 @@ end
 
 local function extractSemanticVersion(sVersion)
 	local sMajor, sMinor, sPatch = string.match(sVersion, 'v?(%d+)%.(%d*)%.(%d*).*')
-	return { major = tonumber(sMajor or 0), minor = tonumber(sMinor or 0), patch = tonumber(sPatch or 0)}
+	return { major = tonumber(sMajor or 0), minor = tonumber(sMinor or 0), patch = tonumber(sPatch or 0) }
 end
 
 local function atLeastNotOver(sVersion, sLowVer, sHighVer)
@@ -42,13 +42,11 @@ local function atLeastNotOver(sVersion, sLowVer, sHighVer)
 	local tLow = extractSemanticVersion(sLowVer)
 	local tHigh = extractSemanticVersion(sHighVer)
 
-	local nVersion = tVersion.major * 10^6 + tVersion.minor * 10^3 + tVersion.patch
-	local nLowVer = tLow.major * 10^6 + tLow.minor * 10^3 + tLow.patch
-	local nHighVer = tHigh.major * 10^6 + tHigh.minor * 10^3 + tHigh.patch
+	local nVersion = tVersion.major * 10 ^ 6 + tVersion.minor * 10 ^ 3 + tVersion.patch
+	local nLowVer = tLow.major * 10 ^ 6 + tLow.minor * 10 ^ 3 + tLow.patch
+	local nHighVer = tHigh.major * 10 ^ 6 + tHigh.minor * 10 ^ 3 + tHigh.patch
 
-	if (nVersion < nHighVer) and (nVersion >= nLowVer) then
-		return true
-	end
+	if (nVersion < nHighVer) and (nVersion >= nLowVer) then return true end
 	return false
 end
 
