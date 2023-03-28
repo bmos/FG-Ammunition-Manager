@@ -58,52 +58,59 @@ function onDataChanged(nodeWeapon)
 	self.setAmmoVis(nodeWeapon)
 end
 
+local onAttackAction_old
+local function onAttackAction_new(draginfo, ...)
+	local nodeWeapon = getDatabaseNode()
+	local nodeChar = DB.getChild(nodeWeapon, '...')
+	local rActor = ActorManager.resolveActor(nodeChar)
+	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
+	local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
+
+	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
+
+	local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
+	local bIsLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 1
+	if not bLoading or bIsLoaded then
+		if bInfiniteAmmo or nAmmo > 0 then
+			if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
+			return onAttackAction_old(draginfo, ...)
+		end
+		messagedata.text = Interface.getString('char_message_atkwithnoammo')
+		Comm.deliverChatMessage(messagedata)
+
+		if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
+	else
+		local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
+		messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor)
+		Comm.deliverChatMessage(messagedata)
+	end
+	-- end bmos only allowing attacks when ammo is sufficient
+end
+
 function onInit()
+	if super and super.onInit then super.onInit() end
+
 	if super then
 		if super.onAttackAction then
-			local onAttackAction_old
-			local function onAttackAction_new(draginfo, ...)
-				local nodeWeapon = getDatabaseNode()
-				local nodeChar = DB.getChild(nodeWeapon, '...')
-				local rActor = ActorManager.resolveActor(nodeChar)
-				local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
-				local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
-
-				local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
-
-				local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
-				local bIsLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 1
-				if not bLoading or bIsLoaded then
-					if bInfiniteAmmo or nAmmo > 0 then
-						if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
-						return onAttackAction_old(draginfo, ...)
-					end
-					messagedata.text = Interface.getString('char_message_atkwithnoammo')
-					Comm.deliverChatMessage(messagedata)
-
-					if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
-				else
-					local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
-					messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor)
-					Comm.deliverChatMessage(messagedata)
-				end
-				-- end bmos only allowing attacks when ammo is sufficient
-			end
-
 			onAttackAction_old = super.onAttackAction
 			super.onAttackAction = onAttackAction_new
 		end
-		if super.onInit then super.onInit() end
 	end
 
 	local nodeWeapon = getDatabaseNode()
 	DB.addHandler(DB.getPath(nodeWeapon), 'onChildUpdate', onDataChanged)
 
-	onDataChanged(nodeWeapon)
+	self.onDataChanged(nodeWeapon)
 end
 
 function onClose()
 	if super and super.onClose then super.onClose() end
+
+	if super then
+		if super.onAttackAction then
+			super.onAttackAction = onAttackAction_old
+		end
+	end
 
 	local nodeWeapon = getDatabaseNode()
 	DB.removeHandler(DB.getPath(nodeWeapon), 'onChildUpdate', onDataChanged)
