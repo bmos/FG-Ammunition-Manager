@@ -39,7 +39,9 @@ function onDamageAction(draginfo)
 end
 
 --	luacheck: globals setAmmoVis maxammo.setLink
-function setAmmoVis(nodeWeapon)
+function setAmmoVis(nodeWeapon, ...)
+	if super and super.setAmmoVis then super.setAmmoVis(nodeWeapon, ...) end
+
 	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
 	isloaded.setVisible(bLoading)
 
@@ -53,7 +55,7 @@ end
 
 --	luacheck: globals onDataChanged
 function onDataChanged(nodeWeapon)
-	if super and super.onDataChanged then super.onDataChanged() end
+	if super and super.onDataChanged then super.onDataChanged(nodeWeapon) end
 
 	self.setAmmoVis(nodeWeapon)
 end
