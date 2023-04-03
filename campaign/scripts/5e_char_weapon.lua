@@ -55,8 +55,6 @@ end
 
 --	luacheck: globals onDataChanged
 function onDataChanged(nodeWeapon)
-	if super and super.onDataChanged then super.onDataChanged(nodeWeapon) end
-
 	self.setAmmoVis(nodeWeapon)
 end
 
