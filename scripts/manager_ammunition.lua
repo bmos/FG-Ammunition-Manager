@@ -209,6 +209,7 @@ function onInit()
 
 	onPostAttackResolve_old = ActionAttack.onPostAttackResolve
 	ActionAttack.onPostAttackResolve = onPostAttackResolve_new
+
 	if sRuleset == 'PFRPG' or sRuleset == '3.5E' then
 		table.insert(tLoadWeapons, 'firearm')
 		table.insert(tLoadWeapons, 'crossbow')
