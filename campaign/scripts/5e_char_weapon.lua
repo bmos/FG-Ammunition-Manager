@@ -46,7 +46,10 @@ function setAmmoVis(nodeWeapon, ...)
 	isloaded.setVisible(bLoading)
 
 	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
-	ammocounter.setVisible(not nodeAmmoLink)
+	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
+	ammocounter.setVisible(bRanged and not nodeAmmoLink)
+	ammopicker.setComboBoxVisible(bRanged and nodeAmmoLink)
+	ammopicker.setComboBoxReadOnly(true)
 
 	local nodeCount
 	if nodeAmmoLink then nodeCount = DB.getChild(nodeAmmoLink, 'count') end
@@ -90,11 +93,9 @@ end
 function onInit()
 	if super and super.onInit then super.onInit() end
 
-	if super then
-		if super.onAttackAction then
-			onAttackAction_old = super.onAttackAction
-			super.onAttackAction = onAttackAction_new
-		end
+	if super and super.onAttackAction then
+		onAttackAction_old = super.onAttackAction
+		super.onAttackAction = onAttackAction_new
 	end
 
 	local nodeWeapon = getDatabaseNode()
@@ -106,10 +107,8 @@ end
 function onClose()
 	if super and super.onClose then super.onClose() end
 
-	if super then
-		if super.onAttackAction then
-			super.onAttackAction = onAttackAction_old
-		end
+	if super and super.onAttackAction then
+		super.onAttackAction = onAttackAction_old
 	end
 
 	local nodeWeapon = getDatabaseNode()

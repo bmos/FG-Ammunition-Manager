@@ -38,6 +38,8 @@ function onDataChanged()
 	label_ammo.setVisible(bRanged)
 	maxammo.setVisible(bRanged)
 	ammocounter.setVisible(bRanged and not bInfiniteAmmo and not nodeAmmoLink)
+	ammopicker.setComboBoxVisible(bRanged and not bInfiniteAmmo and nodeAmmoLink)
+	ammopicker.setComboBoxReadOnly(true)
 
 	if not maxammo.setLink then return end
 

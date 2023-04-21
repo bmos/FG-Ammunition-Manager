@@ -63,6 +63,16 @@
 			<basicnumber name="maxammo">
 				<script file="common/scripts/number_crosslink_unlink.lua" />
 			</basicnumber>
+			<combobox_ammo name="ammopicker" source="ammunitionmanager.ammopicker">
+				<anchored>
+					<top parent="maxammo" anchor="top" offset="0" />
+					<bottom parent="maxammo" anchor="bottom" offset="2" />
+					<left parent="maxammo" anchor="right" offset="15" />
+					<right parent="attackframe" anchor="right" offset="15" />
+				</anchored>
+				<itemsheetname><string /><field>subtype</field></itemsheetname>
+				<itemsheetname><string /><field>type</field></itemsheetname>
+  			</combobox_ammo>
 		</sheetdata>
 	</windowclass>
 	
