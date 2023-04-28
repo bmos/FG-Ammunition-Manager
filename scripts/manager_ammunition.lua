@@ -99,43 +99,37 @@ function getAmmoNode(nodeWeapon)
 	Debug.console(Interface.getString('debug_ammo_itemnotfound'))
 end
 
---	luacheck: globals getWeaponName
-function getWeaponName(s)
-	local sWeaponName = s:gsub('%[ATTACK%s#?%d*%s?%(%u%)%]', '')
-	sWeaponName = sWeaponName:gsub('%[%u+%]', '')
-	if sWeaponName:match('%[USING ') then sWeaponName = sWeaponName:match('%[USING (.-)%]') end
-	sWeaponName = sWeaponName:gsub('%[.+%]', '')
-	sWeaponName = sWeaponName:gsub(' %(vs%. .+%)', '')
-	sWeaponName = StringManager.trim(sWeaponName)
+local function trimAttackDescription(s)
+	local sTrim = s:gsub('%[ATTACK%s#?%d*%s?%(%u%)%]', '')
+	sTrim = sTrim:gsub('%[%u+%s*%-*%d*%]', '')
+	if sTrim:match('%[USING ') then sTrim = sTrim:match('%[USING (.-)%]') end
+	--sTrim = sTrim:gsub('%*.+%*', '') -- compat with Dropped Order extension
+	sTrim = sTrim:gsub('%[.+%]', '')
+	sTrim = sTrim:gsub(' %(vs%. .+%)', '')
+	sTrim = StringManager.trim(sTrim)
 
-	return sWeaponName or ''
+	return sTrim or ''
+end
+
+local function isInfiniteAmmo(rSource, nodeWeapon)
+	local bInfiniteAmmo = DB.getValue(nodeWeapon, 'type', 0) ~= 1
+	if sRuleset == '5E' then
+		local bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2
+		bInfiniteAmmo = (bInfiniteAmmo and not bThrown)
+	end
+	return bInfiniteAmmo or EffectManager.hasCondition(rSource, 'INFAMMO')
 end
 
 --	luacheck: globals getAmmoRemaining
 function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
-	local function isInfiniteAmmo()
-		local bInfiniteAmmo = DB.getValue(nodeWeapon, 'type', 0) ~= 1
-		if sRuleset == '5E' then
-			local bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2
-			bInfiniteAmmo = (bInfiniteAmmo and not bThrown)
-		end
-		return bInfiniteAmmo or EffectManager.hasCondition(rSource, 'INFAMMO')
-	end
+	if isInfiniteAmmo(rSource, nodeWeapon) then return 0, true end
+	if nodeAmmoLink then return DB.getValue(nodeAmmoLink, sLinkedCount, 0), false end
 
-	local bInfiniteAmmo = isInfiniteAmmo()
+	local nMaxAmmo = DB.getValue(nodeWeapon, sUnlinkedMaxAmmo, 0)
+	local nAmmoUsed = DB.getValue(nodeWeapon, sUnlinkedAmmo, 0)
+	local nAmmo = nMaxAmmo - nAmmoUsed
 
-	local nAmmo = 0
-	if not bInfiniteAmmo then
-		if nodeAmmoLink then
-			nAmmo = DB.getValue(nodeAmmoLink, sLinkedCount, 0)
-		else
-			local nMaxAmmo = DB.getValue(nodeWeapon, sUnlinkedMaxAmmo, 0)
-			local nAmmoUsed = DB.getValue(nodeWeapon, sUnlinkedAmmo, 0)
-			nAmmo = nMaxAmmo - nAmmoUsed
-			if nMaxAmmo == 0 then bInfiniteAmmo = true end
-		end
-	end
-	return nAmmo, bInfiniteAmmo
+	return nAmmo, nMaxAmmo == 0
 end
 
 local function countShots(nodeAmmoLink, rRoll)
@@ -169,31 +163,34 @@ local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWea
 	end
 end
 
+local function trackWeaponAmmo(rSource, rRoll, nodeWeapon, sWeaponNameFromSource)
+	if sWeaponNameFromSource ~= DB.getValue(nodeWeapon, 'name', '') then return false end
+	if not rRoll.sDesc:match('%[ATTACK%s#?%d*%s?%(R%)%]') then return false end
+	if DB.getValue(nodeWeapon, 'type', 0) == 0 then return false end
+
+	local nodeAmmoLink = getAmmoNode(nodeWeapon)
+	local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
+	if bInfiniteAmmo then return true end
+
+	writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponNameFromSource)
+	countShots(nodeAmmoLink or nodeWeapon, rRoll)
+	return true
+end
+
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
 --	luacheck: globals ammoTracker
 function ammoTracker(rSource, rRoll)
-	if not ActorManager.isPC(rSource) then return end
+	if not ActorManager.isPC(rSource) or rRoll.sDesc:match('%[CONFIRM%]') then return end
 
-	local sWeaponName = getWeaponName(rRoll.sDesc)
-	if rRoll.sDesc:match('%[CONFIRM%]') or sWeaponName == '' then return end
-	local nodeWeaponList = DB.getChild(ActorManager.getCreatureNode(rSource), 'weaponlist')
-	for _, nodeWeapon in ipairs(DB.getChildList(nodeWeaponList)) do
-		local sWeaponNameFromNode = getWeaponName(DB.getValue(nodeWeapon, 'name', ''))
-		if sWeaponNameFromNode == sWeaponName then
-			local bMelee = DB.getValue(nodeWeapon, 'type', 0) == 0
-			if rRoll.sDesc:match('%[ATTACK%s#?%d*%s?%(R%)%]') and not bMelee then
-				local nodeAmmoLink = getAmmoNode(nodeWeapon)
-				local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
-				if not bInfiniteAmmo then
-					writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponName)
-					countShots(nodeAmmoLink or nodeWeapon, rRoll)
-				end
-				break
-			end
-		end
+	local sWeaponNameFromSource = trimAttackDescription(rRoll.sDesc)
+	if sWeaponNameFromSource == '' then return end
+
+	for _, nodeWeapon in ipairs(DB.getChildList(ActorManager.getCreatureNode(rSource), 'weaponlist')) do
+		if trackWeaponAmmo(rSource, rRoll, nodeWeapon, sWeaponNameFromSource) then break end
 	end
 end
 
+-- placeholder function to negate in-built pre-attack ammo tracking
 local function noDecrementAmmo() end
 
 -- Function Overrides
