@@ -7,6 +7,7 @@ This extension aids in tracking whether some ranged weapons are loaded and assis
 This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) v4.3.8 (2023-04-25).
 
 This extension works with the 3.5E, PFRPG, 4E, and 5E rulesets.
+When used with 4E, the option "Power: Show item used" must be enabled for ammo tracking to work from the Powers tab (unless the power has the same name as the weapon used).
 
 # Features
 * Adds a checkbox to the left of the ammo label on the weapons section of the actions tab; this checkbox is only shown for some weapons (those with 'firearm', 'crossbow', 'javelin', 'ballista', 'windlass', 'pistol', 'rifle', or 'loadaction' in the weapon name). Loading these weapon will post a message to chat to help monitor the action-economy. Attacks attempted with these weapons without loading them first will post a message to chat and the attack will not go through. If you want to disable this on a per-weapon basis, add the weapon property 'noload.'
