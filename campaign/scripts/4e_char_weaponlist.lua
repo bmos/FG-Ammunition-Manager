@@ -29,8 +29,8 @@ function toggleDetail()
 	local bShow = bRanged and activatedetail and (activatedetail.getValue() == 1)
 
 	-- re-build ammopicker list when opening details
-	ammopicker.clear()
-	ammopicker.findItems()
+	if ammopicker then ammopicker.clear() end
+	if ammopicker then ammopicker.findItems() end
 
 	if ammunition_label then ammunition_label.setVisible(bShow) end
 	if missrecoverypercentage then missrecoverypercentage.setVisible(bShow) end
