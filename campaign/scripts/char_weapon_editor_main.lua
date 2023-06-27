@@ -2,7 +2,7 @@
 -- Please see the LICENSE.md file included with this distribution for attribution and copyright information.
 --
 
--- luacheck: globals onDataChanged
+-- luacheck: globals onDataChanged weapon_ammo_subwindow
 function onDataChanged()
 	if super and super.onDataChanged then super.onDataChanged() end
 
