@@ -57,9 +57,7 @@ function setAmmoVis(nodeWeapon, ...)
 end
 
 --	luacheck: globals onDataChanged
-function onDataChanged(nodeWeapon)
-	self.setAmmoVis(nodeWeapon)
-end
+function onDataChanged(nodeWeapon) self.setAmmoVis(nodeWeapon) end
 
 local onAttackAction_old
 local function onAttackAction_new(draginfo, ...)
@@ -107,9 +105,7 @@ end
 function onClose()
 	if super and super.onClose then super.onClose() end
 
-	if super and super.onAttackAction then
-		super.onAttackAction = onAttackAction_old
-	end
+	if super and super.onAttackAction then super.onAttackAction = onAttackAction_old end
 
 	local nodeWeapon = getDatabaseNode()
 	DB.removeHandler(DB.getPath(nodeWeapon), 'onChildUpdate', onDataChanged)
