@@ -4,7 +4,7 @@
 This extension aids in tracking whether some ranged weapons are loaded and assists in ammo tracking for all ranged weapons.
 
 # Compatibility and Instructions
-This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) v4.3.8 (2023-04-25).
+This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) v4.4.2 (2023-06-28).
 
 This extension works with the 3.5E, PFRPG, 4E, and 5E rulesets.
 When used with 4E, the option "Power: Show item used" must be enabled for ammo tracking to work from the Powers tab (unless the power has the same name as the weapon used).
