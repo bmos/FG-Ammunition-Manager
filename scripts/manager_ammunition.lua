@@ -164,7 +164,7 @@ local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWea
 end
 
 local function trackWeaponAmmo(rSource, rRoll, nodeWeapon, sWeaponNameFromSource)
-	if sWeaponNameFromSource ~= DB.getValue(nodeWeapon, 'name', '') then return false end
+	if sWeaponNameFromSource:lower() ~= DB.getValue(nodeWeapon, 'name', ''):lower() then return false end
 	if not rRoll.sDesc:match('%[ATTACK%s#?%d*%s?%(R%)%]') then return false end
 	if DB.getValue(nodeWeapon, 'type', 0) == 0 then return false end
 
