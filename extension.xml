@@ -17,9 +17,9 @@
 		<ruleset>
 			<name>PFRPG</name>
 		</ruleset>
-		<!--<ruleset>
+		<ruleset>
 			<name>PFRPG2</name>
-		</ruleset>-->
+		</ruleset>
 		<ruleset>
 			<name>5E</name>
 		</ruleset>
