@@ -6,7 +6,7 @@ This extension aids in tracking whether some ranged weapons are loaded and assis
 # Compatibility and Instructions
 This extension has been tested with [FantasyGrounds Unity](https://www.fantasygrounds.com/home/FantasyGroundsUnity.php) v4.4.2 (2023-06-28).
 
-This extension works with the 3.5E, PFRPG, 4E, and 5E rulesets.
+This extension works with the 3.5E, PFRPG, PFRPG2, 4E, and 5E rulesets.
 When used with 4E, the option "Power: Show item used" must be enabled for ammo tracking to work from the Powers tab (unless the power has the same name as the weapon used).
 
 It used to work for SFRPG, but that has now spun off into its own extension maintained by SoxMax.
