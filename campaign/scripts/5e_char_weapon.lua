@@ -4,9 +4,8 @@
 --
 
 --	luacheck: globals setAmmoVis maxammo.setLink
-local function setAmmoVis(nodeWeapon, ...)
-	if super and super.setAmmoVis then super.setAmmoVis(nodeWeapon, ...) end
-
+local function setAmmoVis()
+	local nodeWeapon = getDatabaseNode()
 	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
 	isloaded.setVisible(bLoading)
 
@@ -58,12 +57,12 @@ function onLinkChanged()
 end
 
 --	luacheck: globals onAttackChanged onDamageChanged
-function onDataChanged(nodeWeapon)
+function onDataChanged()
 	onLinkChanged();
 	onAttackChanged();
 	onDamageChanged();
 
-	setAmmoVis(nodeWeapon)
+	setAmmoVis()
 end
 
 --	luacheck: globals highlightAttack
