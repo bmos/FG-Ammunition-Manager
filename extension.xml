@@ -5,7 +5,7 @@
 <root version='3.3' release='3'>
 	<properties>
 		<name>Feature: Ammunition Manager</name>
-		<version>4.4</version>
+		<version>4.5</version>
 		<author>bmos (Wil Thieme)</author>
 		<description>This extension aids in tracking ammunition and whether ranged weapons are loaded.</description>
 		<ruleset>
@@ -21,17 +21,20 @@
 			<name>PFRPG2</name>
 		</ruleset>
 		<ruleset>
+			<name>PFRPG2-Legacy</name>
+		</ruleset>
+		<ruleset>
 			<name>5E</name>
 		</ruleset>
 		<loadorder>34</loadorder>
 	</properties>
 
-	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v4.4-hotfix.2:\nThis extension aids in tracking ammunition and whether ranged weapons are loaded." font="emotefont" icon="archery_ammomanager" />
+	<announcement text="https://github.com/bmos/FG-PFRPG-Ammunition-Manager\nAmmunition Manager v4.5:\nThis extension aids in tracking ammunition and whether ranged weapons are loaded." font="emotefont" icon="archery_ammomanager" />
 
 	<base>
 		<!-- Campaign Records -->
 		<includefile ruleset="PFRPG|3.5E" source="campaign/pfrpg_record_char_actions.xml" />
-		<includefile ruleset="PFRPG2" source="campaign/pfrpg2_record_char_actions.xml" />
+		<includefile ruleset="PFRPG2|PFRPG2-Legacy" source="campaign/pfrpg2_record_char_actions.xml" />
 		<includefile ruleset="4E" source="campaign/4e_record_char_combat.xml" />
 		<includefile ruleset="5E" source="campaign/5e_record_char_weapon.xml" />
 
