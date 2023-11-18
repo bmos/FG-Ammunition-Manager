@@ -3,45 +3,16 @@
 -- attribution and copyright information.
 --
 
---	luacheck: globals setAmmoVis maxammo.setLink
-local function setAmmoVis()
-	local nodeWeapon = getDatabaseNode()
-	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
-	isloaded.setVisible(bLoading)
-
-	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
-	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
-	ammocounter.setVisible(bRanged and not nodeAmmoLink)
-	ammopicker.setComboBoxVisible(bRanged and nodeAmmoLink)
-	ammopicker.setComboBoxReadOnly(true)
-
-	local nodeCount
-	if nodeAmmoLink then nodeCount = DB.getChild(nodeAmmoLink, 'count') end
-	maxammo.setLink(nodeCount, nodeCount ~= nil)
+--	luacheck: globals isLoading
+function isLoading(nodeWeapon)
+	Debug.console('AmmunitionManager char_weapon isLoading - DEPRECATED - 2023-03-20 - Use AmmunitionManager.hasLoadAction')
+	return AmmunitionManager.hasLoadAction(nodeWeapon)
 end
 
---	luacheck: globals onDataChanged
-function onInit()
-	local nodeWeapon = getDatabaseNode();
-	local nodeChar = DB.getChild(nodeWeapon, "...");
-	DB.addHandler(nodeWeapon, "onChildUpdate", onDataChanged);
-	DB.addHandler(DB.getPath(nodeChar, "abilities.*.score"), "onUpdate", onDataChanged);
-	DB.addHandler(DB.getPath(nodeChar, "weapon.twoweaponfighting"), "onUpdate", onDataChanged);
 
-	onDataChanged(nodeWeapon);
-end
-
-function onClose()
-	local nodeWeapon = getDatabaseNode();
-	local nodeChar = DB.getChild(nodeWeapon, "...");
-	DB.removeHandler(nodeWeapon, "onChildUpdate", onDataChanged);
-	DB.removeHandler(DB.getPath(nodeChar, "abilities.*.score"), "onUpdate", onDataChanged);
-	DB.removeHandler(DB.getPath(nodeChar, "weapon.twoweaponfighting"), "onUpdate", onDataChanged);
-end
-
---	luacheck: globals onLinkChanged
 local m_sClass = "";
 local m_sRecord = "";
+--	luacheck: globals onLinkChanged
 function onLinkChanged()
 	local node = getDatabaseNode();
 	local sClass, sRecord = DB.getValue(node, "shortcut", "", "");
@@ -54,86 +25,6 @@ function onLinkChanged()
 			carried.setLink(DB.findNode(DB.getPath(sRecord, "carried")));
 		end
 	end
-end
-
---	luacheck: globals onAttackChanged onDamageChanged
-function onDataChanged()
-	onLinkChanged();
-	onAttackChanged();
-	onDamageChanged();
-
-	setAmmoVis()
-end
-
---	luacheck: globals highlightAttack
-function highlightAttack(bOnControl)
-	if bOnControl then
-		attackshade.setFrame("rowshade");
-	else
-		attackshade.setFrame(nil);
-	end
-end
-
-function onAttackChanged()
-	local nodeWeapon = getDatabaseNode();
-	local nodeChar = DB.getChild(nodeWeapon, "...")
-
-	local nMod = CharWeaponManager.getAttackBonus(nodeChar, nodeWeapon);
-
-	attackview.setValue(nMod);
-end
-
---	luacheck: globals onAttackAction
-function onAttackAction(draginfo)
-	local nodeWeapon = getDatabaseNode();
-	local nodeChar = DB.getChild(nodeWeapon, "...")
-
-	-- Build basic attack action record
-	local rAction = CharWeaponManager.buildAttackAction(nodeChar, nodeWeapon);
-
-	-- Decrement ammo
-	if rAction.range == "R" then
-		CharWeaponManager.decrementAmmo(nodeChar, nodeWeapon);
-	end
-
-	-- Perform action
-	local rActor = ActorManager.resolveActor(nodeChar);
-
-	-- AMMUNITION MANAGER CHANGES
-	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
-	local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
-
-	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
-
-	local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
-	local bIsLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 1
-	if not bLoading or bIsLoaded then
-		if bInfiniteAmmo or nAmmo > 0 then
-			if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
-		end
-		messagedata.text = Interface.getString('char_message_atkwithnoammo')
-		Comm.deliverChatMessage(messagedata)
-
-		if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
-	else
-		local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
-		messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor)
-		Comm.deliverChatMessage(messagedata)
-		return false
-	end
-	-- END AMMUNITION MANAGER CHANGES
-
-	ActionAttack.performRoll(draginfo, rActor, rAction);
-	return true;
-end
-
-function onDamageChanged()
-	local nodeWeapon = getDatabaseNode();
-	local nodeChar = DB.getChild(nodeWeapon, "...")
-
-	local sDamage = CharWeaponManager.buildDamageString(nodeChar, nodeWeapon);
-
-	damageview.setValue(sDamage);
 end
 
 --	luacheck: globals onDamageAction
@@ -163,4 +54,77 @@ function onDamageAction(draginfo)
 
 	ActionDamage.performRoll(draginfo, rActor, rAction)
 	return true
+end
+
+--	luacheck: globals setAmmoVis maxammo.setLink
+function setAmmoVis(nodeWeapon, ...)
+	if super and super.setAmmoVis then super.setAmmoVis(nodeWeapon, ...) end
+
+	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
+	isloaded.setVisible(bLoading)
+
+	local nodeAmmoLink = AmmunitionManager.getAmmoNode(nodeWeapon)
+	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
+	ammocounter.setVisible(bRanged and not nodeAmmoLink)
+	ammopicker.setComboBoxVisible(bRanged and nodeAmmoLink)
+	ammopicker.setComboBoxReadOnly(true)
+
+	local nodeCount
+	if nodeAmmoLink then nodeCount = DB.getChild(nodeAmmoLink, 'count') end
+	maxammo.setLink(nodeCount, nodeCount ~= nil)
+end
+
+--	luacheck: globals onDataChanged
+function onDataChanged(nodeWeapon) self.setAmmoVis(nodeWeapon) end
+
+local onAttackAction_old
+local function onAttackAction_new(draginfo, ...)
+	local nodeWeapon = getDatabaseNode()
+	local nodeChar = DB.getChild(nodeWeapon, '...')
+	local rActor = ActorManager.resolveActor(nodeChar)
+	local nAmmo, bInfiniteAmmo = AmmunitionManager.getAmmoRemaining(rActor, nodeWeapon, AmmunitionManager.getAmmoNode(nodeWeapon))
+	local messagedata = { text = '', sender = rActor.sName, font = 'emotefont' }
+
+	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
+
+	local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
+	local bIsLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 1
+	if not bLoading or bIsLoaded then
+		if bInfiniteAmmo or nAmmo > 0 then
+			if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
+			return onAttackAction_old(draginfo, ...)
+		end
+		messagedata.text = Interface.getString('char_message_atkwithnoammo')
+		Comm.deliverChatMessage(messagedata)
+
+		if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
+	else
+		local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
+		messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor)
+		Comm.deliverChatMessage(messagedata)
+	end
+	-- end bmos only allowing attacks when ammo is sufficient
+end
+
+function onInit()
+	if super and super.onInit then super.onInit() end
+
+	if super and super.onAttackAction then
+		onAttackAction_old = super.onAttackAction
+		super.onAttackAction = onAttackAction_new
+	end
+
+	local nodeWeapon = getDatabaseNode()
+	DB.addHandler(DB.getPath(nodeWeapon), 'onChildUpdate', onDataChanged)
+
+	self.onDataChanged(nodeWeapon)
+end
+
+function onClose()
+	if super and super.onClose then super.onClose() end
+
+	if super and super.onAttackAction then super.onAttackAction = onAttackAction_old end
+
+	local nodeWeapon = getDatabaseNode()
+	DB.removeHandler(DB.getPath(nodeWeapon), 'onChildUpdate', onDataChanged)
 end
