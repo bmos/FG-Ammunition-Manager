@@ -3,29 +3,6 @@
 -- attribution and copyright information.
 --
 
---	luacheck: globals isLoading
-function isLoading(nodeWeapon)
-	Debug.console('AmmunitionManager char_weapon isLoading - DEPRECATED - 2023-03-20 - Use AmmunitionManager.hasLoadAction')
-	return AmmunitionManager.hasLoadAction(nodeWeapon)
-end
-
-local m_sClass = ''
-local m_sRecord = ''
---	luacheck: globals onLinkChanged
-function onLinkChanged()
-	local nodeWeapon = getDatabaseNode()
-	local sClass, sRecord = DB.getValue(nodeWeapon, 'shortcut', '', '')
-	if sClass ~= m_sClass or sRecord ~= m_sRecord then
-		m_sClass = sClass
-		m_sRecord = sRecord
-
-		local sInvList = DB.getPath(DB.getChild(nodeWeapon, '...'), 'inventorylist') .. '.'
-		if sRecord:sub(1, #sInvList) == sInvList then
-			carried.setLink(DB.findNode(DB.getPath(sRecord, 'carried')))
-		end
-	end
-end
-
 --	luacheck: globals onDamageAction
 function onDamageAction(draginfo)
 	local nodeWeapon = getDatabaseNode()
@@ -79,8 +56,10 @@ function setAmmoVis(nodeWeapon, ...)
 	maxammo.setLink(nodeCount, nodeCount ~= nil)
 end
 
---	luacheck: globals onDataChanged
-function onDataChanged(nodeWeapon)
+--	luacheck: globals onDataChanged_new
+local onDataChanged_old
+function onDataChanged_new(nodeWeapon)
+	onDataChanged_old(nodeWeapon)
 	self.setAmmoVis(nodeWeapon)
 end
 
@@ -127,8 +106,13 @@ function onInit()
 		super.onAttackAction = onAttackAction_new
 	end
 
+	if super and super.onDataChanged then
+		onDataChanged_old = super.onDataChanged
+		super.onDataChanged = onDataChanged_new
+	end
+
 	local nodeWeapon = getDatabaseNode()
-	DB.addHandler(DB.getPath(nodeWeapon), 'onChildUpdate', onDataChanged)
+	DB.addHandler(DB.getPath(nodeWeapon), 'onChildUpdate', self.onDataChanged)
 
 	self.onDataChanged(nodeWeapon)
 end
@@ -143,5 +127,5 @@ function onClose()
 	end
 
 	local nodeWeapon = getDatabaseNode()
-	DB.removeHandler(DB.getPath(nodeWeapon), 'onChildUpdate', onDataChanged)
+	DB.removeHandler(DB.getPath(nodeWeapon), 'onChildUpdate', self.onDataChanged)
 end
