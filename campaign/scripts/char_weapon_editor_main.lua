@@ -4,13 +4,17 @@
 
 -- luacheck: globals onDataChanged weapon_ammo_subwindow
 function onDataChanged()
-	if super and super.onDataChanged then super.onDataChanged() end
+	if super and super.onDataChanged then
+		super.onDataChanged()
+	end
 
 	weapon_ammo_subwindow.setVisible(AmmunitionManager.isWeaponRanged(getDatabaseNode()))
 end
 
 function onInit()
-	if super and super.onInit then super.onInit() end
+	if super and super.onInit then
+		super.onInit()
+	end
 
 	local sNode = DB.getPath(getDatabaseNode())
 	DB.addHandler(sNode, 'onChildUpdate', onDataChanged)
@@ -19,7 +23,9 @@ function onInit()
 end
 
 function onClose()
-	if super and super.onClose then super.onClose() end
+	if super and super.onClose then
+		super.onClose()
+	end
 
 	local sNode = DB.getPath(getDatabaseNode())
 	DB.removeHandler(sNode, 'onChildUpdate', onDataChanged)

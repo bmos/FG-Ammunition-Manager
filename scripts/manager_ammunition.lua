@@ -18,22 +18,30 @@ sRuleset = ''
 --	luacheck: globals calculateMargin
 function calculateMargin(nDC, nTotal)
 	Debug.console('AmmunitionManager.calculateMargin - DEPRECATED - 2022-07-13 - Use AttackMargins.calculateMargin')
-	if AttackMargins and AttackMargins.calculateMargin then AttackMargins.calculateMargin(nDC, nTotal) end
+	if AttackMargins and AttackMargins.calculateMargin then
+		AttackMargins.calculateMargin(nDC, nTotal)
+	end
 end
 
 local function hasSubstring(string, table)
 	for _, v in pairs(table) do
-		if string.find(string, v) then return true end
+		if string.find(string, v) then
+			return true
+		end
 	end
 end
 
 --	luacheck: globals hasLoadAction
 function hasLoadAction(nodeWeapon)
-	if not AmmunitionManager.isWeaponRanged(nodeWeapon) then return false end
+	if not AmmunitionManager.isWeaponRanged(nodeWeapon) then
+		return false
+	end
 
 	local sWeaponProps = string.lower(DB.getValue(nodeWeapon, 'properties', ''))
 	local bNoLoad = hasSubstring(sWeaponProps, tNoLoadWeaponProps)
-	if bNoLoad then return false end
+	if bNoLoad then
+		return false
+	end
 
 	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', ''))
 	return (hasSubstring(sWeaponName, tLoadWeapons) and not hasSubstring(sWeaponName, tNoLoadWeapons)) or hasSubstring(sWeaponProps, tLoadWeaponProps)
@@ -42,13 +50,17 @@ end
 --	luacheck: globals getShortcutNode
 function getShortcutNode(nodeWeapon, shortcutName)
 	local _, sRecord = DB.getValue(nodeWeapon, shortcutName or 'ammunitionmanager.ammopickershortcut')
-	if sRecord and sRecord ~= '' then return DB.findNode(sRecord) end
+	if sRecord and sRecord ~= '' then
+		return DB.findNode(sRecord)
+	end
 end
 
 -- luacheck: globals parseWeaponCapacity
 function parseWeaponCapacity(capacity)
 	local sCapacityLower = capacity:lower()
-	if sCapacityLower == 'drawn' then return 0, sCapacityLower end
+	if sCapacityLower == 'drawn' then
+		return 0, sCapacityLower
+	end
 	local splitCapacity = StringManager.splitWords(sCapacityLower)
 	return tonumber(splitCapacity[1]), splitCapacity[2]
 end
@@ -56,7 +68,9 @@ end
 -- luacheck: globals isWeaponRanged
 function isWeaponRanged(nodeWeapon)
 	local bRanged = DB.getValue(nodeWeapon, 'type', 0) == 1
-	if User.getRulesetName() == '5E' then bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2 end
+	if User.getRulesetName() == '5E' then
+		bRanged = bRanged or DB.getValue(nodeWeapon, 'type', 0) == 2
+	end
 	return bRanged
 end
 
@@ -69,16 +83,22 @@ end
 --	luacheck: globals getAmmoNode
 function getAmmoNode(nodeWeapon)
 	local bRanged = AmmunitionManager.isWeaponRanged(nodeWeapon)
-	if not bRanged then return end
+	if not bRanged then
+		return
+	end
 
 	-- check for saved ammopickershortcut windowreference and return if found
 	local ammoNode = AmmunitionManager.getShortcutNode(nodeWeapon)
-	if ammoNode then return ammoNode end
+	if ammoNode then
+		return ammoNode
+	end
 
 	-- if ammopickershortcut does not provide a good node and weapon is ranged, try searching the inventory.
 
 	local sAmmo = DB.getValue(nodeWeapon, sAmmunitionManagerSubnode .. 'ammopicker', '')
-	if sAmmo == '' then return end
+	if sAmmo == '' then
+		return
+	end
 
 	Debug.console(Interface.getString('debug_ammo_noammoshortcutfound'))
 
@@ -94,7 +114,9 @@ function getAmmoNode(nodeWeapon)
 		else
 			sItemName = DB.getValue(nodeItem, 'nonid_name', '')
 		end
-		if sItemName == sAmmo then return nodeItem end
+		if sItemName == sAmmo then
+			return nodeItem
+		end
 	end
 	Debug.console(Interface.getString('debug_ammo_itemnotfound'))
 end
@@ -102,7 +124,9 @@ end
 local function trimAttackDescription(s)
 	local sTrim = s:gsub('%[ATTACK%s#?%d*%s?%(%u%)%]', '')
 	sTrim = sTrim:gsub('%[%u+%s*%-*%d*%]', '')
-	if sTrim:match('%[USING ') then sTrim = sTrim:match('%[USING (.-)%]') end
+	if sTrim:match('%[USING ') then
+		sTrim = sTrim:match('%[USING (.-)%]')
+	end
 	--sTrim = sTrim:gsub('%*.+%*', '') -- compat with Dropped Order extension
 	sTrim = sTrim:gsub('%[.+%]', '')
 	sTrim = sTrim:gsub(' %(vs%. .+%)', '')
@@ -122,8 +146,12 @@ end
 
 --	luacheck: globals getAmmoRemaining
 function getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
-	if isInfiniteAmmo(rSource, nodeWeapon) then return 0, true end
-	if nodeAmmoLink then return DB.getValue(nodeAmmoLink, sLinkedCount, 0), false end
+	if isInfiniteAmmo(rSource, nodeWeapon) then
+		return 0, true
+	end
+	if nodeAmmoLink then
+		return DB.getValue(nodeAmmoLink, sLinkedCount, 0), false
+	end
 
 	local nMaxAmmo = DB.getValue(nodeWeapon, sUnlinkedMaxAmmo, 0)
 	local nAmmoUsed = DB.getValue(nodeWeapon, sUnlinkedAmmo, 0)
@@ -164,13 +192,21 @@ local function writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining, sWea
 end
 
 local function trackWeaponAmmo(rSource, rRoll, nodeWeapon, sWeaponNameFromSource)
-	if sWeaponNameFromSource:lower() ~= DB.getValue(nodeWeapon, 'name', ''):lower() then return false end
-	if not rRoll.sDesc:match('%[ATTACK%s#?%d*%s?%(R%)%]') then return false end
-	if DB.getValue(nodeWeapon, 'type', 0) == 0 then return false end
+	if sWeaponNameFromSource:lower() ~= DB.getValue(nodeWeapon, 'name', ''):lower() then
+		return false
+	end
+	if not rRoll.sDesc:match('%[ATTACK%s#?%d*%s?%(R%)%]') then
+		return false
+	end
+	if DB.getValue(nodeWeapon, 'type', 0) == 0 then
+		return false
+	end
 
 	local nodeAmmoLink = getAmmoNode(nodeWeapon)
 	local nAmmoRemaining, bInfiniteAmmo = getAmmoRemaining(rSource, nodeWeapon, nodeAmmoLink)
-	if bInfiniteAmmo then return true end
+	if bInfiniteAmmo then
+		return true
+	end
 
 	writeAmmoRemaining(nodeWeapon, nodeAmmoLink, nAmmoRemaining - 1, sWeaponNameFromSource)
 	countShots(nodeAmmoLink or nodeWeapon, rRoll)
@@ -180,13 +216,19 @@ end
 --	tick off used ammunition, count misses, post 'out of ammo' chat message
 --	luacheck: globals ammoTracker
 function ammoTracker(rSource, rRoll)
-	if not ActorManager.isPC(rSource) or rRoll.sDesc:match('%[CONFIRM%]') then return end
+	if not ActorManager.isPC(rSource) or rRoll.sDesc:match('%[CONFIRM%]') then
+		return
+	end
 
 	local sWeaponNameFromSource = trimAttackDescription(rRoll.sDesc)
-	if sWeaponNameFromSource == '' then return end
+	if sWeaponNameFromSource == '' then
+		return
+	end
 
 	for _, nodeWeapon in ipairs(DB.getChildList(ActorManager.getCreatureNode(rSource), 'weaponlist')) do
-		if trackWeaponAmmo(rSource, rRoll, nodeWeapon, sWeaponNameFromSource) then break end
+		if trackWeaponAmmo(rSource, rRoll, nodeWeapon, sWeaponNameFromSource) then
+			break
+		end
 	end
 end
 
@@ -220,5 +262,7 @@ function onInit()
 		CharWeaponManager.decrementAmmo = noDecrementAmmo
 	end
 
-	if Session.IsHost then AmmunitionManagerUpgrades.upgradeData() end
+	if Session.IsHost then
+		AmmunitionManagerUpgrades.upgradeData()
+	end
 end

@@ -8,7 +8,9 @@ function action(draginfo)
 
 	local rActor, rAttack = CharManager.getWeaponAttackRollStructures(nodeWeapon)
 
-	if window.automateAmmo(nodeWeapon) then return end
+	if window.automateAmmo(nodeWeapon) then
+		return
+	end
 
 	local rRolls = {}
 	for i = 1, getValue() do
@@ -38,6 +40,10 @@ function action(draginfo)
 end
 
 function onInit()
-	if super and super.onInit then super.onInit() end
-	if super then super.action = action end
+	if super and super.onInit then
+		super.onInit()
+	end
+	if super then
+		super.action = action
+	end
 end

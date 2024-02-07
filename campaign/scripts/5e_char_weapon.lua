@@ -9,20 +9,19 @@ function isLoading(nodeWeapon)
 	return AmmunitionManager.hasLoadAction(nodeWeapon)
 end
 
-
-local m_sClass = "";
-local m_sRecord = "";
+local m_sClass = ''
+local m_sRecord = ''
 --	luacheck: globals onLinkChanged
 function onLinkChanged()
-	local node = getDatabaseNode();
-	local sClass, sRecord = DB.getValue(node, "shortcut", "", "");
+	local nodeWeapon = getDatabaseNode()
+	local sClass, sRecord = DB.getValue(nodeWeapon, 'shortcut', '', '')
 	if sClass ~= m_sClass or sRecord ~= m_sRecord then
-		m_sClass = sClass;
-		m_sRecord = sRecord;
+		m_sClass = sClass
+		m_sRecord = sRecord
 
-		local sInvList = DB.getPath(DB.getChild(node, "..."), "inventorylist") .. ".";
+		local sInvList = DB.getPath(DB.getChild(nodeWeapon, '...'), 'inventorylist') .. '.'
 		if sRecord:sub(1, #sInvList) == sInvList then
-			carried.setLink(DB.findNode(DB.getPath(sRecord, "carried")));
+			carried.setLink(DB.findNode(DB.getPath(sRecord, 'carried')))
 		end
 	end
 end
@@ -48,7 +47,9 @@ function onDamageAction(draginfo)
 	-- add this in the onDamageAction function of other effects to maintain compatibility
 	if AmmunitionManager then
 		local nodeAmmo = AmmunitionManager.getAmmoNode(nodeWeapon, rActor)
-		if nodeAmmo then rActor.ammoPath = DB.getPath(nodeAmmo) end
+		if nodeAmmo then
+			rActor.ammoPath = DB.getPath(nodeAmmo)
+		end
 	end
 	-- end bmos adding ammoPath
 
@@ -58,7 +59,9 @@ end
 
 --	luacheck: globals setAmmoVis maxammo.setLink
 function setAmmoVis(nodeWeapon, ...)
-	if super and super.setAmmoVis then super.setAmmoVis(nodeWeapon, ...) end
+	if super and super.setAmmoVis then
+		super.setAmmoVis(nodeWeapon, ...)
+	end
 
 	local bLoading = AmmunitionManager.hasLoadAction(nodeWeapon)
 	isloaded.setVisible(bLoading)
@@ -70,12 +73,16 @@ function setAmmoVis(nodeWeapon, ...)
 	ammopicker.setComboBoxReadOnly(true)
 
 	local nodeCount
-	if nodeAmmoLink then nodeCount = DB.getChild(nodeAmmoLink, 'count') end
+	if nodeAmmoLink then
+		nodeCount = DB.getChild(nodeAmmoLink, 'count')
+	end
 	maxammo.setLink(nodeCount, nodeCount ~= nil)
 end
 
 --	luacheck: globals onDataChanged
-function onDataChanged(nodeWeapon) self.setAmmoVis(nodeWeapon) end
+function onDataChanged(nodeWeapon)
+	self.setAmmoVis(nodeWeapon)
+end
 
 local onAttackAction_old
 local function onAttackAction_new(draginfo, ...)
@@ -91,13 +98,17 @@ local function onAttackAction_new(draginfo, ...)
 	local bIsLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 1
 	if not bLoading or bIsLoaded then
 		if bInfiniteAmmo or nAmmo > 0 then
-			if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
+			if bLoading then
+				DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0)
+			end
 			return onAttackAction_old(draginfo, ...)
 		end
 		messagedata.text = Interface.getString('char_message_atkwithnoammo')
 		Comm.deliverChatMessage(messagedata)
 
-		if bLoading then DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0) end
+		if bLoading then
+			DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0)
+		end
 	else
 		local sWeaponName = DB.getValue(nodeWeapon, 'name', 'weapon')
 		messagedata.text = string.format(Interface.getString('char_actions_notloaded'), sWeaponName, true, rActor)
@@ -107,7 +118,9 @@ local function onAttackAction_new(draginfo, ...)
 end
 
 function onInit()
-	if super and super.onInit then super.onInit() end
+	if super and super.onInit then
+		super.onInit()
+	end
 
 	if super and super.onAttackAction then
 		onAttackAction_old = super.onAttackAction
@@ -121,9 +134,13 @@ function onInit()
 end
 
 function onClose()
-	if super and super.onClose then super.onClose() end
+	if super and super.onClose then
+		super.onClose()
+	end
 
-	if super and super.onAttackAction then super.onAttackAction = onAttackAction_old end
+	if super and super.onAttackAction then
+		super.onAttackAction = onAttackAction_old
+	end
 
 	local nodeWeapon = getDatabaseNode()
 	DB.removeHandler(DB.getPath(nodeWeapon), 'onChildUpdate', onDataChanged)

@@ -32,7 +32,9 @@ function findItems()
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 and itemsheetname and type(itemsheetname[1]) == 'table' then
 				local sName = ItemManager.getDisplayName(nodeItem, true)
 				for _, v in ipairs(itemsheetname) do
-					if v.field and type(v.field) == 'table' and v.string and isAmmo(nodeItem, v.field[1]) then table.insert(aAutoFill, sName) end
+					if v.field and type(v.field) == 'table' and v.string and isAmmo(nodeItem, v.field[1]) then
+						table.insert(aAutoFill, sName)
+					end
 				end
 			end
 		end
@@ -43,7 +45,9 @@ end
 -- luacheck: globals setValue setTooltipText
 function onInit()
 	if super then
-		if super.onInit then super.onInit() end
+		if super.onInit then
+			super.onInit()
+		end
 
 		local function setListValue_new(sValue)
 			setValue(sValue)
@@ -55,7 +59,9 @@ function onInit()
 
 			local nodeInventory = DB.getChild(nodeWeapon, '...inventorylist')
 			local nodeAmmoManager = DB.getChild(nodeWeapon, 'ammunitionmanager')
-			if not nodeAmmoManager or not nodeInventory then return end
+			if not nodeAmmoManager or not nodeInventory then
+				return
+			end
 
 			local sDefaultValue = Interface.getString(defaultvalue[1])
 			for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do

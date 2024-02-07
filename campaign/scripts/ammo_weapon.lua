@@ -8,7 +8,9 @@ function automateAmmo(nodeWeapon)
 	local bIsLoaded = DB.getValue(nodeAmmoManager, 'isloaded') == 1
 	DB.setValue(nodeAmmoManager, 'isloaded', 'number', 0)
 
-	if not AmmunitionManager.hasLoadAction(nodeWeapon) or bIsLoaded then return false end
+	if not AmmunitionManager.hasLoadAction(nodeWeapon) or bIsLoaded then
+		return false
+	end
 	local rActor = ActorManager.resolveActor(DB.getChild(nodeWeapon, '...'))
 	local sWeaponName = string.lower(DB.getValue(nodeWeapon, 'name', 'ranged weapon'))
 
@@ -41,21 +43,27 @@ function onDataChanged()
 	ammopicker.setComboBoxVisible(bRanged and not bInfiniteAmmo and nodeAmmoLink)
 	ammopicker.setComboBoxReadOnly(true)
 
-	if not maxammo.setLink then return end
+	if not maxammo.setLink then
+		return
+	end
 
 	local nodeLinkedCount = DB.getChild(nodeAmmoLink, AmmunitionManager.sLinkedCount)
 	maxammo.setLink(nodeLinkedCount, nodeLinkedCount ~= nil)
 end
 
 function onInit()
-	if super and super.onInit then super.onInit() end
+	if super and super.onInit then
+		super.onInit()
+	end
 	local sNode = DB.getPath(getDatabaseNode())
 	DB.addHandler(sNode, 'onChildUpdate', onDataChanged)
 	onDataChanged()
 end
 
 function onClose()
-	if super and super.onClose then super.onClose() end
+	if super and super.onClose then
+		super.onClose()
+	end
 	local sNode = DB.getPath(getDatabaseNode())
 	DB.removeHandler(sNode, 'onChildUpdate', onDataChanged)
 end

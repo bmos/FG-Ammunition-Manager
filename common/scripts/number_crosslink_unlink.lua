@@ -7,20 +7,28 @@ local sLink = nil
 local widget = nil
 
 function onInit()
-	if super and super.onInit then super.onInit() end
+	if super and super.onInit then
+		super.onInit()
+	end
 
-	if self.update then self.update() end
+	if self.update then
+		self.update()
+	end
 
 	onLinkUpdated()
 end
 
 function onClose()
-	if sLink then DB.removeHandler(sLink, 'onUpdate', onLinkUpdated) end
+	if sLink then
+		DB.removeHandler(sLink, 'onUpdate', onLinkUpdated)
+	end
 end
 
 function onDrop(_, _, draginfo)
 	if Session.IsHost then
-		if draginfo.getType() ~= 'number' then return false end
+		if draginfo.getType() ~= 'number' then
+			return false
+		end
 
 		if self.handleDrop then
 			self.handleDrop(draginfo)
@@ -34,14 +42,20 @@ function onValueChanged()
 		if not bLocked then
 			bLocked = true
 
-			if sLink and not isReadOnly() then DB.setValue(sLink, 'number', getValue()) end
+			if sLink and not isReadOnly() then
+				DB.setValue(sLink, 'number', getValue())
+			end
 
-			if self.update then self.update() end
+			if self.update then
+				self.update()
+			end
 
 			bLocked = false
 		end
 	else
-		if self.update then self.update() end
+		if self.update then
+			self.update()
+		end
 	end
 end
 
@@ -51,7 +65,9 @@ function onLinkUpdated()
 
 		setValue(DB.getValue(sLink, 0))
 
-		if self.update then self.update() end
+		if self.update then
+			self.update()
+		end
 
 		bLocked = false
 	end

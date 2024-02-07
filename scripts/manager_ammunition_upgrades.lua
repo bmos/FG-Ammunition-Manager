@@ -46,7 +46,9 @@ local function atLeastNotOver(sVersion, sLowVer, sHighVer)
 	local nLowVer = tLow.major * 10 ^ 6 + tLow.minor * 10 ^ 3 + tLow.patch
 	local nHighVer = tHigh.major * 10 ^ 6 + tHigh.minor * 10 ^ 3 + tHigh.patch
 
-	if (nVersion < nHighVer) and (nVersion >= nLowVer) then return true end
+	if (nVersion < nHighVer) and (nVersion >= nLowVer) then
+		return true
+	end
 	return false
 end
 
