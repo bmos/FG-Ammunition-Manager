@@ -251,11 +251,51 @@ local function onPostAttackResolve_new(rSource, rTarget, rRoll, rMessage, ...)
 	AmmunitionManager.ammoTracker(rSource, rRoll)
 end
 
+-- Handles multi-item ammo packages like "Arrows (20)" by breaking them into individual items
+local function itemizeAmmunitionPackage(nodeItem)
+	if not isAmmo(nodeItem, nil, 'subtype') and not isAmmo(nodeItem, nil, 'type') then
+		return nodeItem
+	end
+
+	local sItemName = DB.getValue(nodeItem, 'name', '')
+	local nPackageCount
+	sItemName, nPackageCount = string.match(sItemName, '^(.-) %((%d+)%)$')
+	if not nPackageCount then
+		return nodeItem
+	end
+
+	local nCount = DB.getValue(nodeItem, 'count', 1)
+	local nWeight = DB.getValue(nodeItem, 'weight', 0)
+	local sCost = string.lower(DB.getValue(nodeItem, 'cost', ''))
+	local nVal, nCurr = string.match(sCost, '(%d+) ([gscp]p)')
+	Debug.chat(nVal, nCurr)
+	if nVal and nCurr then
+		sCost = tostring(nVal / nPackageCount) .. ' ' .. nCurr
+	end
+
+	DB.setValue(nodeItem, 'name', 'string', sItemName)
+	DB.setValue(nodeItem, 'count', 'number', nCount * nPackageCount)
+	DB.setValue(nodeItem, 'weight', 'number', nWeight / nPackageCount)
+	DB.setValue(nodeItem, 'cost', 'string', sCost)
+
+	return nodeItem
+end
+
+local addItemToList_old
+local function addItemToList_new(vList, sClass, vSource, bTransferAll, nTransferCount, ...)
+	local nodeItem = addItemToList_old(vList, sClass, vSource, bTransferAll, nTransferCount, ...)
+	nodeItem = itemizeAmmunitionPackage(nodeItem)
+	return nodeItem
+end
+
 function onInit()
 	sRuleset = User.getRulesetName()
 
 	onPostAttackResolve_old = ActionAttack.onPostAttackResolve
 	ActionAttack.onPostAttackResolve = onPostAttackResolve_new
+
+	addItemToList_old = ItemManager.addItemToList
+	ItemManager.addItemToList = addItemToList_new
 
 	if sRuleset == 'PFRPG' or sRuleset == '3.5E' then
 		table.insert(tLoadWeapons, 'firearm')
