@@ -15,14 +15,6 @@ sUnlinkedAmmo = 'ammo'
 sUnlinkedMaxAmmo = 'maxammo'
 sRuleset = ''
 
---	luacheck: globals calculateMargin
-function calculateMargin(nDC, nTotal)
-	Debug.console('AmmunitionManager.calculateMargin - DEPRECATED - 2022-07-13 - Use AttackMargins.calculateMargin')
-	if AttackMargins and AttackMargins.calculateMargin then
-		AttackMargins.calculateMargin(nDC, nTotal)
-	end
-end
-
 local function hasSubstring(string, table)
 	for _, v in pairs(table) do
 		if string.find(string, v) then

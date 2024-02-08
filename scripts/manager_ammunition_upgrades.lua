@@ -56,7 +56,7 @@ end
 function upgradeData()
 	local sExtension = 'bmosammomanager'
 	local aUpgrades = { -- should execute first, second, third, etc
-		{ min = '0.0.0', max = '4.0.0', fn = upgradeDataV400 },
+		{ min = '0.0.0', max = '4.6.0', fn = upgradeDataV400 },
 	}
 
 	local nodeUpdateNotifier = DB.createChild(DB.getRoot(), 'extensionvcupgrades')
