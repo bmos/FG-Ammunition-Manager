@@ -3,24 +3,6 @@
 -- attribution and copyright information.
 --
 
--- luacheck: globals itemsheetaltname itemsheetname
-
-local function isAmmo(nodeItem, sTypeField)
-	local bThrown = false
-	if User.getRulesetName() == '5E' then
-		local nodeWeapon = DB.getChild(getDatabaseNode(), '...')
-		bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2
-	end
-	if sTypeField and DB.getChild(nodeItem, sTypeField) then
-		local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower()
-		if bThrown then
-			return (sItemType:match('weapon') ~= nil)
-		else
-			return (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil)
-		end
-	end
-end
-
 -- luacheck: globals itemsheetname defaultvalue findItems
 function findItems()
 	local aAutoFill = {}
@@ -31,8 +13,9 @@ function findItems()
 		for _, nodeItem in ipairs(DB.getChildList(nodeInventory)) do
 			if DB.getValue(nodeItem, 'carried', 0) ~= 0 and itemsheetname and type(itemsheetname[1]) == 'table' then
 				local sName = ItemManager.getDisplayName(nodeItem, true)
+				local nodeWeapon = DB.getChild(getDatabaseNode(), '...')
 				for _, v in ipairs(itemsheetname) do
-					if v.field and type(v.field) == 'table' and v.string and isAmmo(nodeItem, v.field[1]) then
+					if v.field and type(v.field) == 'table' and v.string and AmmunitionManager.isAmmo(nodeItem, nodeWeapon, v.field[1]) then
 						table.insert(aAutoFill, sName)
 					end
 				end

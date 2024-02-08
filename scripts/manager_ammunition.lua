@@ -47,6 +47,22 @@ function getShortcutNode(nodeWeapon, shortcutName)
 	end
 end
 
+--	luacheck: globals isAmmo
+function isAmmo(nodeItem, nodeWeapon, sTypeField)
+	local bThrown = false
+	if nodeWeapon and User.getRulesetName() == '5E' then
+		bThrown = DB.getValue(nodeWeapon, 'type', 0) == 2
+	end
+	if sTypeField and DB.getChild(nodeItem, sTypeField) then
+		local sItemType = DB.getValue(nodeItem, sTypeField, ''):lower()
+		if bThrown then
+			return (sItemType:match('weapon') ~= nil)
+		else
+			return (sItemType:match('ammunition') ~= nil) or (sItemType:match('ammo') ~= nil)
+		end
+	end
+end
+
 -- luacheck: globals parseWeaponCapacity
 function parseWeaponCapacity(capacity)
 	local sCapacityLower = capacity:lower()
