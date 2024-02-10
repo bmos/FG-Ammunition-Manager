@@ -260,6 +260,7 @@ local function itemizeAmmunitionPackage(nodeItem)
 	local sItemName = DB.getValue(nodeItem, 'name', '')
 	local nPackageCount
 	sItemName, nPackageCount = string.match(sItemName, '^(.-) %((%d+)%)$')
+	sItemName = string.match(sItemName, "^(.-)s?$")
 	if not nPackageCount then
 		return nodeItem
 	end
@@ -268,7 +269,6 @@ local function itemizeAmmunitionPackage(nodeItem)
 	local nWeight = DB.getValue(nodeItem, 'weight', 0)
 	local sCost = string.lower(DB.getValue(nodeItem, 'cost', ''))
 	local nVal, nCurr = string.match(sCost, '(%d+) ([gscp]p)')
-	Debug.chat(nVal, nCurr)
 	if nVal and nCurr then
 		sCost = tostring(nVal / nPackageCount) .. ' ' .. nCurr
 	end
